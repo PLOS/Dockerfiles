@@ -28,7 +28,7 @@ docker create -v /build --name $NED_BUILD $BASEIMAGE /bin/true
 docker create -v /root/.m2 --name $MAVEN_CACHE $BASEIMAGE /bin/true
 
 # build API war
-docker run -it \
+docker run -rm \
    --volumes-from $MAVEN_CACHE \
    --volumes-from $NED_BUILD \
    --volume $SRC:/src \
@@ -36,7 +36,7 @@ docker run -it \
    bash /scripts/build_ned.bash
 
 # build ETL jar
-docker run -it \
+docker run -rm \
    --volumes-from $MAVEN_CACHE \
    --volumes-from $NED_BUILD \
    --volume $SRC/named-entity.etl:/src \
