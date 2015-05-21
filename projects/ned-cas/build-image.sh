@@ -18,6 +18,8 @@ if [ "$1" == "clean" ]; then
    exit 0
 fi
 
+echo SRC: $SRC
+
 # create build caches if they do not exist
 
 docker inspect $BUILD_CACHE > /dev/null
@@ -32,7 +34,8 @@ docker run --rm \
    --volumes-from $MAVEN_CACHE \
    --volumes-from $BUILD_CACHE \
    --volume $SRC:/src \
-   $BASEIMAGE bash /src/docker/compile.sh
+   --volume $DIR:/scripts \
+   $BASEIMAGE bash /scripts/compile.sh
 
 docker build -t $OUTPUTIMAGE:current .
 
