@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SRC=../../../../named-entity.service/
+SRC=../../../named-entity.service/
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR

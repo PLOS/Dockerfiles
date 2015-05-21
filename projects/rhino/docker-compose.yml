@@ -1,0 +1,24 @@
+ambradb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+
+rhino:
+  build: .
+  links:
+    - ambradb:ambradb
+  ports:
+    - "8080:8080"
+  volumes:
+    - ../:/src
+    - /tmp/ingest:/root/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
+    - /tmp/ingested:/root/ingested
+    - /tmp/autoingest:/root/autoingest
+  external_links:
+    - docker_reposvc_1:repo         # you need to 'docker-compose up' in the content-repo directory first
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_AMBRA_USER=ambra
+    - MYSQL_AMBRA_PASSWORD=ambra
+    - MYSQL_HOSTNAME=ambradb
+    - MYSQL_DATABASE=ambra

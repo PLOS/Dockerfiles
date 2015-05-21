@@ -1,0 +1,44 @@
+akita:
+  image: akita:current
+  ports:
+    - "80:80"
+  links:
+    - nedapi:nedapi
+    - mailcatcher:mailcatcher
+  environment:
+    - NED_SERVICE=http://nedapi:8080
+    - MAILER_ADDRESS=mailcatcher
+
+mailcatcher:
+  image: mailcatcher
+  ports:
+    - "1080:1080"
+
+neddb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+
+nedapi:
+  image: nedapi:current
+  links:
+    - neddb:neddb
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_NED_USER=ned
+    - MYSQL_NED_PASSWORD=ned
+    - MYSQL_HOSTNAME=neddb
+    - MYSQL_DATABASE=namedEntities
+
+nedcas:
+  image: nedcas:current
+  command: /start.sh
+  links:
+    - neddb:neddb
+  ports:
+    - "8090:8080"
+  environment:
+    - MYSQL_NED_USER=ned
+    - MYSQL_NED_PASSWORD=ned
+    - MYSQL_HOSTNAME=neddb
+    - MYSQL_DATABASE=namedEntities
