@@ -20,6 +20,7 @@ This way <workspace>/Dockerfiles/projects/named-entity.service/ knows where to f
 
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
 
+
 Use
 ---
 
@@ -52,3 +53,15 @@ Development/Conventions
 For each project the images created for it should be tagged with a version number and with "current". Current represents the last docker build you ran. It should be noted that "current" does not mean latest.
 
 In each image, create a file at /root/version.txt that contains the version number representing the built artificats. For example, "0.5.0-SNAPSHOT".
+
+
+Tips
+----
+
+Some of our projects make use of PLOS's internal maven repository. So you have to be in network to resolve. Containers seem to pull the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
+
+To allow resolve.conf to populate as it used to I had to open
+/etc/NetworkManager/NetworkManager.conf
+
+and comment out this line: 
+dns=dnsmasq
