@@ -2,7 +2,11 @@
 
 BUILD_DIR=/root
 
+ls /root
+
 SVC_WAR=ned-cas-*.war
+
+source $BUILD_DIR/run-helpers.sh
 
 echo $BUILD_DIR
 
@@ -26,35 +30,41 @@ sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}?us
 
 cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
 
-echo Deleting contents of webapps/
-rm -rf ${CATALINA_HOME}/webapps/*
 
-echo Checking that WAR exists
+setup_war_in_tomcat
 
-WARCOUNT=$(ls ${BUILD_DIR}/${SVC_WAR} 2> /dev/null | wc -l)
+# echo Deleting contents of webapps/
+# rm -rf ${CATALINA_HOME}/webapps/*
 
-if [ $WARCOUNT -ne 0 ] ; then
-  echo Copying WAR to webapps
-  cp `ls -t ${BUILD_DIR}/${SVC_WAR} | head -1` ${CATALINA_HOME}/webapps/cas.war
-else
-  echo "WAR file not found in ${BUILD_DIR}. Exiting..."
-  exit 1
-fi
+# echo Checking that WAR exists
+
+# WARCOUNT=$(ls ${BUILD_DIR}/${SVC_WAR} 2> /dev/null | wc -l)
+
+# if [ $WARCOUNT -ne 0 ] ; then
+#   echo Copying WAR to webapps
+#   cp `ls -t ${BUILD_DIR}/${SVC_WAR} | head -1` ${CATALINA_HOME}/webapps/cas.war
+# else
+#   echo "WAR file not found in ${BUILD_DIR}. Exiting..."
+#   exit 1
+# fi
+
+
+wait_db_ready_for_service
 
 # wait for db to be ready for service
 
-MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE}"
+# MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE}"
 
-$MYSQL_CMD -e 'exit'
-MYSQL_NOT_CONNECTING=$?
-while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
-    sleep 1;
-    $MYSQL_CMD -e 'exit'
-    MYSQL_NOT_CONNECTING=$?
-    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready for CAS ... waiting"
-done;
+# $MYSQL_CMD -e 'exit'
+# MYSQL_NOT_CONNECTING=$?
+# while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
+#     sleep 1;
+#     $MYSQL_CMD -e 'exit'
+#     MYSQL_NOT_CONNECTING=$?
+#     echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready for CAS ... waiting"
+# done;
 
-echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
+# echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
 
 # bring up service
 

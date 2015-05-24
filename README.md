@@ -32,7 +32,7 @@ To build a docker image for a project, run the build script. For example:
 
 Or build them all with:
 
-    projects/*/build-image.sh
+    projects/build-all.sh
 
 Of course this will only work for projects you have the source code locally checked out for.
 

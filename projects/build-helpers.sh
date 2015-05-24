@@ -28,7 +28,7 @@ function build_java_service_images() {
 
 	echo Copying java assets into image
 
-	VERSION=$(docker run --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current bash -c 'cp /build/* /root; cat /root/version.txt')
+	VERSION=$(docker run --volume $DIR:/scripts --volume $DIR/..:/shared --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current sh -c 'cp /build/* /root; cp /shared/run-helpers.sh /root/; cp /scripts/docker_runscript.bash /root/run.sh; cat /root/version.txt')
 
 	docker commit $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current
 
