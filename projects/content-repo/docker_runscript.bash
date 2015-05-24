@@ -5,6 +5,8 @@ SVC_WAR=*.war
 
 
 
+cp ${BUILD_DIR}/context.xml ${CATALINA_HOME}/conf/context.xml
+
 # wait for DB to be ready for schema
 
 MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
@@ -39,8 +41,8 @@ echo "Finished creating user."
 
 # set up tomcat
 
-# echo Deleting contents of webapps/
-# rm -rf /var/lib/tomcat7/webapps/*
+echo Deleting contents of webapps/
+rm -rf ${CATALINA_HOME}/webapps/*
 
 echo Checking that WAR exists
 
@@ -53,6 +55,10 @@ else
   echo "WAR file not found in ${BUILD_DIR}. Exiting..."
   exit 1
 fi
+
+
+ls -l ${CATALINA_HOME}/webapps/ROOT
+
 
 MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u repouser repo"
 

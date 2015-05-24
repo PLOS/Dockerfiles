@@ -7,7 +7,7 @@ rm $BUILDDIR/*
 echo Compiling
 
 cd /src
-mvn clean package
+mvn -Dmaven.test.skip=true clean package
 
 ls -l target
 
