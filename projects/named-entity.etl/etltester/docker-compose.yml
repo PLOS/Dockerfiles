@@ -8,6 +8,7 @@ neddb:
 
 nedapi:
   image: nedapi:current
+  command: /start.sh
   links:
     - neddb:neddb
   environment:
@@ -17,10 +18,14 @@ nedapi:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
 
+nedetl:
+  image: nedetl:current
+  command: tail -f /dev/null
+
 nedetltester:
   build: .
   links:
     - nedapi:nedapi
     - ambradb:ambradb
   volumes_from:
-    - nedbuild
+    - nedetl                 # TODO: fix this share

@@ -1,16 +1,16 @@
 #!/bin/bash
 
-SRC=../../../named-entity.service/
+SRC=../../../content-repo/
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR
 SRC=$DIR/$SRC
 
-BASEIMAGE=maven:3.3-jdk-8
+BASEIMAGE=maven:3.3-jdk-7
 MAVEN_CACHE=maven_cache
-BUILD_CACHE=nedbuild
-TMP_BUILD_CONTAINER=ned_temp_container
-OUTPUTIMAGE=nedapi
+BUILD_CACHE=repobuild
+TMP_BUILD_CONTAINER=repo_temp_container
+OUTPUTIMAGE=contentrepo
 
 if [ "$1" == "clean" ]; then
    echo Removing cache

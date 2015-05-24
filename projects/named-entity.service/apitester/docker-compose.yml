@@ -1,14 +1,12 @@
 neddb:
-  extends:
-    file: ../docker-compose.yml
-    service: neddb
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
 
 nedapi:
   image: nedapi:current
   links:
     - neddb:neddb
-#  volumes_from:
-#    - nedbuild
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_NED_USER=ned

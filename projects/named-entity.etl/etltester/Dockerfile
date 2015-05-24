@@ -4,7 +4,7 @@ FROM python:2.7
 
 RUN apt-get update && apt-get install -y mysql-client  # TODO: replace with python
 
-RUN apt-get install -y  libmysqlclient-dev #python-dev
+RUN apt-get install -y libmysqlclient-dev #python-dev
 
 RUN pip install requests MySQL-python docopt
 
@@ -14,8 +14,11 @@ RUN apt-get install -y openjdk-7-jre && rm -rf /var/lib/apt/lists/*
 
 ENV JAVA_HOME /usr/lib/jvm/java-7-openjdk-amd64
 
-WORKDIR /root
+RUN mkdir /test
 
-COPY * /root/
-COPY data /root/data
-COPY sampletest /root/sampletest
+WORKDIR /test
+
+COPY . /test/
+
+#COPY data /test/data
+#COPY sampletest /test/sampletest

@@ -4,7 +4,7 @@ BUILDDIR="/build"
 
 rm $BUILDDIR/*
 
-echo Building NED
+echo Compiling
 
 cd /src
 

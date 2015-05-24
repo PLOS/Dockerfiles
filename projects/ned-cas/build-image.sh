@@ -5,7 +5,7 @@ SRC=../../../ned-cas/
 BASEIMAGE=maven:3.3-jdk-8
 MAVEN_CACHE=maven_cache
 BUILD_CACHE=nedcasbuild
-TMP_BUILD_CONTAINER=ned_temp_container
+TMP_BUILD_CONTAINER=nedcas_temp_container
 OUTPUTIMAGE=nedcas
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -30,16 +30,22 @@ docker inspect $MAVEN_CACHE > /dev/null
 
 # build API war
 
-docker run --rm \
+echo Building java assets
+
+docker run -it \
    --volumes-from $MAVEN_CACHE \
    --volumes-from $BUILD_CACHE \
    --volume $SRC:/src \
    --volume $DIR:/scripts \
    $BASEIMAGE bash /scripts/compile.sh
 
+echo Building base image
+
 docker build -t $OUTPUTIMAGE:current .
 
 # copy over built assets
+
+echo Copying java assets into image
 
 VERSION=$(docker run --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current bash -c 'cp /build/* /root; cat /root/version.txt')
 

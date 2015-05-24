@@ -8,7 +8,7 @@ import docker_tester
 
 # MAIN
 
-etl_jar = "/build/ned-etl.jar"
+etl_jar = "/root/ned-etl.jar"
 
 if not os.path.exists(etl_jar):
   print ("ETL jar not found: %s" % etl_jar)

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILD_DIR=/build
+BUILD_DIR=/root
 
 # TODO: complain if BUILD_DIR is not found
 

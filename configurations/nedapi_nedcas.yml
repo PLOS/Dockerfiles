@@ -11,13 +11,9 @@ nedcas:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
 
-neddb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-
 nedapi:
   image: nedapi:current
+  command: /start.sh
   links:
     - neddb:neddb
   ports:
@@ -28,3 +24,8 @@ nedapi:
     - MYSQL_NED_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
+
+neddb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
