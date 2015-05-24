@@ -36,7 +36,7 @@
     type="org.plos.repo.service.ObjectStore"
     factory="org.plos.repo.config.MogileStoreFactory"
     domain="maindomain"
-    trackers="tracker:7001"
+    trackers="mogiletracker:7001"
     maxTrackerConnections="1"
     maxIdleConnections="1"
     maxIdleTimeMillis="100" /> -->

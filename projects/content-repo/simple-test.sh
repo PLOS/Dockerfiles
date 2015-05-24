@@ -4,12 +4,12 @@
 curl localhost:8085/config
 
 # check if mogile node is up
-docker exec -it docker_tracker_1 curl http://node:7500/dev1
+docker exec -it contentrepo_tracker_1 curl http://mogilenode:7500/dev1
 
-docker exec -it docker_tracker_1 curl http://node:7500/dev1/usage
+docker exec -it contentrepo_tracker_1 curl http://mogilenode:7500/dev1/usage
 
 # mogile upload
-docker exec -it docker_tracker_1 mogupload --trackers=localhost --domain=maindomain --key=hosts --file=/etc/hosts 
+docker exec -it contentrepo_mogiletracker_1 mogupload --trackers=localhost --domain=maindomain --key=hosts --file=/etc/hosts 
 
 # create a bucket
 BUCKET=bucket_`date +%N`
@@ -25,4 +25,3 @@ curl -F "create=new" -F "key=$OBJECT" -F "bucketName=$BUCKET" -F "file=@`pwd`/RE
 
 # read it back
 curl -I http://localhost:8085/objects/$BUCKET?key=$OBJECT
-

@@ -3,39 +3,34 @@
 BUILD_DIR=/root
 SVC_WAR=*.war
 
-
-
 cp ${BUILD_DIR}/context.xml ${CATALINA_HOME}/conf/context.xml
 
 # wait for DB to be ready for schema
 
 MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
-echo "DROP SCHEMA IF EXISTS repo; CREATE SCHEMA repo;" | ${MYSQL}
+MYSQL_CREATEDB="DROP SCHEMA IF EXISTS ${MYSQL_DATABASE}; CREATE SCHEMA ${MYSQL_DATABASE};"
+
+echo $MYSQL_CREATEDB | ${MYSQL}
 MYSQL_NOT_CONNECTING=$?
 while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
     sleep 1;
-    echo "CREATE database repo" | ${MYSQL}
+    echo $MYSQL_CREATEDB | ${MYSQL}
     MYSQL_NOT_CONNECTING=$?
     echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready for schema ... waiting"
 done;
 
 # set up db
 
-# echo -e "\nCreating Schema"
-# echo "CREATE database repo" | ${MYSQL}
-
 echo -e "\nSeeding Schema"
 ${MYSQL} < ${BUILD_DIR}/setup.mysql
 
 echo 'SELECT User FROM mysql.user' | ${MYSQL}
 
-echo -e "\nCreating DB User (repouser)"
-echo "CREATE USER '${MYSQL_REPO_USER}' IDENTIFIED BY '${MYSQL_REPO_PASSWORD}'" | ${MYSQL}
-echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_REPO_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL}
+echo -e "\nCreating DB User (${MYSQL_USER})"
+echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL}
+echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL}
 echo "Finished creating user."
-
-
 
 
 
@@ -57,10 +52,7 @@ else
 fi
 
 
-ls -l ${CATALINA_HOME}/webapps/ROOT
-
-
-MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u repouser repo"
+MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE}"
 
 $MYSQL_CMD -e 'exit'
 MYSQL_NOT_CONNECTING=$?
@@ -72,11 +64,5 @@ while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
 done;
 
 echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
-
-# /etc/init.d/tomcat7 start
-
-# # The container will run as long as the script is running, 
-# # that's why we need something long-lived here
-# exec tail -f /var/log/tomcat7/catalina.out
 
 ${CATALINA_HOME}/bin/catalina.sh run
