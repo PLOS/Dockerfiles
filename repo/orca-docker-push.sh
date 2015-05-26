@@ -22,4 +22,3 @@ push mailcatcher:latest $REPO
 echo Repo image list:
 
 ssh $REPO /bin/docker-reg-images
-

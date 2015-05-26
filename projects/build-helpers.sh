@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function build_java_service_images() {
+
 	# create build caches if they do not exist
 
 	docker inspect $BUILD_CACHE > /dev/null
@@ -24,11 +25,18 @@ function build_java_service_images() {
 
 	docker build -t $OUTPUTIMAGE:current .
 
-	# copy over built assets
+	# copy assets and scripts into image
 
 	echo Copying java assets into image
 
-	VERSION=$(docker run --volume $DIR:/scripts --volume $DIR/..:/shared --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current sh -c 'cp /build/* /root; cp /shared/run-helpers.sh /root/; cp /scripts/docker_runscript.bash /root/run.sh; cat /root/version.txt')
+	VERSION=$(docker run --volume $DIR:/scripts \
+											 --volume $DIR/..:/shared \
+											 --volumes-from $BUILD_CACHE \
+											 --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current \
+											 sh -c 'cp /build/* /root; \
+											 				cp /shared/run-helpers.sh /root/; 
+											 				cp /scripts/docker_runscript.bash /root/run.sh; 
+											 				cat /root/version.txt')
 
 	docker commit $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current
 

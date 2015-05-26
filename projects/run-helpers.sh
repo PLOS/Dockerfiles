@@ -5,7 +5,11 @@
 
 function create_schema {
 
-	# wait for DB to be ready for schema
+
+
+	# TODO: only populate db if it does not exist already
+
+
 
 	MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
@@ -29,8 +33,9 @@ function create_schema {
 # echo -e "\nSeeding NED Schema"
 # ${MYSQL} < ${BUILD_DIR}/ned-data.mysql.sql
 
-function db_grants {
+function set_db_grants {
 
+	MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 	echo 'SELECT User FROM mysql.user' | ${MYSQL}
 
 	echo -e "\nCreating DB User (ned)"

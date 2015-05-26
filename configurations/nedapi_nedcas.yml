@@ -13,7 +13,7 @@ nedcas:
 
 nedapi:
   image: nedapi:current
-  command: /start.sh
+  command: /root/run.sh
   links:
     - neddb:neddb
   ports:

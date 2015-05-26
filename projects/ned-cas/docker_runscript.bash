@@ -2,8 +2,6 @@
 
 BUILD_DIR=/root
 
-ls /root
-
 SVC_WAR=ned-cas-*.war
 
 source $BUILD_DIR/run-helpers.sh

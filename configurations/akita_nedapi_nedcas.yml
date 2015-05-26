@@ -21,7 +21,7 @@ neddb:
 
 nedapi:
   image: nedapi:current
-  command: /start.sh
+  command: /root/run.sh
   links:
     - neddb:neddb
   environment:
@@ -33,7 +33,7 @@ nedapi:
 
 nedcas:
   image: nedcas:current
-  command: /start.sh
+  command: /root/run.sh
   links:
     - neddb:neddb
   ports:
