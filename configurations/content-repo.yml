@@ -1,6 +1,6 @@
 repoapi:
   image: contentrepo:current
-  command: bash -x /start.sh
+  command: /root/run.sh
   links:
     - repodb
     - mogilenode

@@ -329,7 +329,7 @@
         email varchar(255) unique,
         password longtext not null,
         verificationToken longtext,
-        authId longtext not null unique,
+        authId varchar(255) not null unique,    -- this line was edited from the original because of an error msg
         verified bit not null,
         displayName varchar(255) unique,
         userProfileURI varchar(100) not null,

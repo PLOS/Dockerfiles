@@ -13,4 +13,4 @@ WORKDIR /tracker
 ADD ./mogilefsd.conf /tracker/mogilefsd.conf
 ADD ./run.sh /tracker/run.sh
 EXPOSE 7001
-CMD ["./run.sh"]
+CMD sh ./run.sh

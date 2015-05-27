@@ -9,6 +9,9 @@ SRC=$DIR/$SRC
 docker build -t mailcatcher -f Dockerfile.mailcatcher .
 
 # this is a hack to allow the Dockerfile to exist in this subfolder
+
+echo SRC: $SRC
+
 cp Dockerfile $SRC
 time docker build -t akita:current $SRC
 rm $SRC/Dockerfile

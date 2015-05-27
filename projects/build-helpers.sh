@@ -40,7 +40,8 @@ function build_java_service_images() {
 											 --name $TMP_BUILD_CONTAINER $PROJECTNAME:current \
 											 sh -c 'cp /build/* /root; \
 											 				cp /shared/run-helpers.sh /root/; 
-											 				cp /scripts/docker_runscript.bash /root/run.sh; 
+											 				cp /scripts/run.sh /root/;
+											 				chmod 755 /root/run.sh;
 											 				cat /root/version.txt')
 
 	docker commit $TMP_BUILD_CONTAINER $PROJECTNAME:current

@@ -5,27 +5,27 @@ ambradb:
 
 rhino:
   image: rhino:current
+  command: /root/run.sh
   links:
     - ambradb:ambradb
+    - contentrepo:repo
   ports:
     - "8080:8080"
   volumes:
     - /tmp/ingest:/root/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
-    - /tmp/ingested:/root/ingested
+    - /tmp/ingested:/root/ingested    # make sure these are created on the host first
     - /tmp/autoingest:/root/autoingest
-  links:
-    - repoapi:repo
   environment:
     - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_AMBRA_USER=ambra
-    - MYSQL_AMBRA_PASSWORD=ambra
+    - MYSQL_USER=ambra
+    - MYSQL_USER_PASSWORD=ambra
     - MYSQL_HOSTNAME=ambradb
     - MYSQL_DATABASE=ambra
 
 
-repoapi:
+contentrepo:
   image: contentrepo:current
-  command: bash /start.sh
+  command: /root/run.sh
   links:
     - repodb
     - mogilenode

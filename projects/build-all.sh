@@ -7,5 +7,5 @@ FILES=`ls */build-image.sh`
 for FILE in $FILES
 do
   echo RUNNING $FILE
-  $FILE
+  bash $FILE
 done;

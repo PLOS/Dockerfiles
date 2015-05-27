@@ -52,4 +52,4 @@ RUN mv /src/frontend/dist /src/ember
 RUN rm -rf /src/frontend
 RUN du -sh /src
 
-CMD ["bash", "/src/docker/docker-run.sh"]
+CMD bash /src/docker/run.sh
