@@ -5,15 +5,15 @@ BUILD_DIR=/root
 
 # TODO: complain if BUILD_DIR is not found
 
-BUILDFILES=$(ls ${BUILD_DIR}/*|wc -l)
+# BUILDFILES=$(ls ${BUILD_DIR}/*|wc -l)
 
-if [ $BUILDFILES -eq 0 ] ; then
-  echo "$BUILD_DIR is empty"
-  exit 1
-fi
+# if [ $BUILDFILES -eq 0 ] ; then
+#   echo "$BUILD_DIR is empty"
+#   exit 1
+# fi
 
-echo $BUILD_DIR
-ls $BUILD_DIR
+# echo $BUILD_DIR
+# ls $BUILD_DIR
 
 # echo $SCRIPTS_DIR
 # ls $SCRIPTS_DIR
