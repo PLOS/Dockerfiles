@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PROJECTNAME=contentrepo
-PROJECTDIR=content-repo
+PROJECTNAME=rhino
+PROJECTDIR=rhino
 
 BASEIMAGE=maven:3.3-jdk-7
 
@@ -14,7 +14,3 @@ cd $DIR
 source ../build-helpers.sh
 
 build_java_service_images
-
-# build mogile images
-docker build -t mogiletracker mogiletracker
-docker build -t mogilenode mogilenode

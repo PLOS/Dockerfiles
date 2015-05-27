@@ -3,13 +3,15 @@
 # ping the service
 curl localhost:8085/config
 
-# check if mogile node is up
-docker exec -it contentrepo_tracker_1 curl http://mogilenode:7500/dev1
+TRACKER=configurations_mogiletracker_1
 
-docker exec -it contentrepo_tracker_1 curl http://mogilenode:7500/dev1/usage
+# check if mogile node is up
+docker exec -it $TRACKER curl http://mogilenode:7500/dev1
+
+docker exec -it $TRACKER curl http://mogilenode:7500/dev1/usage
 
 # mogile upload
-docker exec -it contentrepo_mogiletracker_1 mogupload --trackers=localhost --domain=maindomain --key=hosts --file=/etc/hosts 
+docker exec -it $TRACKER mogupload --trackers=localhost --domain=maindomain --key=hosts --file=/etc/hosts 
 
 # create a bucket
 BUCKET=bucket_`date +%N`

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+MAVEN_CACHE=maven_cache
+
+BUILD_CACHE=${PROJECTNAME}_build
+TMP_BUILD_CONTAINER=${PROJECTNAME}_temp_container
+
 function build_java_service_images() {
 
 	# create build caches if they do not exist
@@ -23,7 +28,7 @@ function build_java_service_images() {
 
 	echo Building base image
 
-	docker build -t $OUTPUTIMAGE:current .
+	docker build -t $PROJECTNAME:current .
 
 	# copy assets and scripts into image
 
@@ -32,19 +37,19 @@ function build_java_service_images() {
 	VERSION=$(docker run --volume $DIR:/scripts \
 											 --volume $DIR/..:/shared \
 											 --volumes-from $BUILD_CACHE \
-											 --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current \
+											 --name $TMP_BUILD_CONTAINER $PROJECTNAME:current \
 											 sh -c 'cp /build/* /root; \
 											 				cp /shared/run-helpers.sh /root/; 
 											 				cp /scripts/docker_runscript.bash /root/run.sh; 
 											 				cat /root/version.txt')
 
-	docker commit $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current
+	docker commit $TMP_BUILD_CONTAINER $PROJECTNAME:current
 
 	# tag docker image with asset version number
 
 	echo tagging container with version : $VERSION
 
-	docker tag -f $OUTPUTIMAGE:current $OUTPUTIMAGE:$VERSION
+	docker tag -f $PROJECTNAME:current $PROJECTNAME:$VERSION
 
 	docker rm $TMP_BUILD_CONTAINER
 

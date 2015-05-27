@@ -1,12 +1,11 @@
 #!/bin/bash
 
-SRC=../../../ned-cas/
+PROJECTNAME=nedcas
+PROJECTDIR=ned-cas
 
 BASEIMAGE=maven:3.3-jdk-8
-MAVEN_CACHE=maven_cache
-BUILD_CACHE=nedcasbuild
-TMP_BUILD_CONTAINER=nedcas_temp_container
-OUTPUTIMAGE=nedcas
+
+SRC=../../../${PROJECTDIR}/
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 SRC=$DIR/$SRC

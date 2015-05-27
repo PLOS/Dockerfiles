@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BUILD_DIR=/src/target
-SCRIPTS_DIR=/root
+BUILD_DIR=/root
+# SCRIPTS_DIR=/root
 
 # TODO: complain if BUILD_DIR is not found
 
@@ -15,8 +15,8 @@ fi
 echo $BUILD_DIR
 ls $BUILD_DIR
 
-echo $SCRIPTS_DIR
-ls $SCRIPTS_DIR
+# echo $SCRIPTS_DIR
+# ls $SCRIPTS_DIR
 
 # wait for DB to be ready for schema
 
@@ -35,7 +35,7 @@ done;
 
 # TODO: use a more up to date SQL schema dump
 echo -e "\nCreating Schema"
-${MYSQL} $MYSQL_DATABASE < ${SCRIPTS_DIR}/ddl_mysql.sql
+${MYSQL} $MYSQL_DATABASE < ${BUILD_DIR}/ddl_mysql.sql
 
 
 echo 'SELECT User FROM mysql.user' | ${MYSQL}
@@ -58,11 +58,11 @@ cp /usr/local/tomcat/conf/* /etc/ambra
 rm -rf /usr/local/tomcat/conf
 ln -s /etc/ambra /usr/local/tomcat/conf
 
-cp ${SCRIPTS_DIR}/*.xml /etc/ambra
-cp ${SCRIPTS_DIR}/rhino.yaml /etc/ambra
+cp ${BUILD_DIR}/*.xml /etc/ambra
+cp ${BUILD_DIR}/rhino.yaml /etc/ambra
 
-cp ${SCRIPTS_DIR}/mysql-connector-java-*.jar /usr/local/tomcat/lib/
-cp $SCRIPTS_DIR/tomcat-jdbc-*.jar /usr/local/tomcat/lib/
+# cp ${BUILD_DIR}/mysql-connector-java-*.jar /usr/local/tomcat/lib/
+# cp $BUILD_DIR/tomcat-jdbc-*.jar /usr/local/tomcat/lib/
 
 echo /usr/local/tomcat
 ls -l /usr/local/tomcat

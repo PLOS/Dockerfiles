@@ -1,0 +1,61 @@
+ambradb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+
+rhino:
+  image: rhino:current
+  links:
+    - ambradb:ambradb
+  ports:
+    - "8080:8080"
+  volumes:
+    - /tmp/ingest:/root/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
+    - /tmp/ingested:/root/ingested
+    - /tmp/autoingest:/root/autoingest
+  links:
+    - repoapi:repo
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_AMBRA_USER=ambra
+    - MYSQL_AMBRA_PASSWORD=ambra
+    - MYSQL_HOSTNAME=ambradb
+    - MYSQL_DATABASE=ambra
+
+
+repoapi:
+  image: contentrepo:current
+  command: bash /start.sh
+  links:
+    - repodb
+    - mogilenode
+    - mogiletracker
+  ports:
+    - "8085:8080"
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=repouser
+    - MYSQL_USER_PASSWORD=
+    - MYSQL_HOSTNAME=repodb
+    - MYSQL_DATABASE=repo
+
+repodb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+
+mogiletracker:
+  image: mogiletracker
+  links:
+    - mogiledb
+    - mogilenode
+  environment:
+    - MOG_DB_HOST=mogiledb
+    - MOG_NODE_HOST=mogilenode
+
+mogilenode:
+  image: mogilenode
+#  image: rail44/mogile-mogilenode
+
+mogiledb:
+  image: orchardup/mysql                    # TODO: replace with percona
