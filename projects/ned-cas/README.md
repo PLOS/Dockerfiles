@@ -1,30 +1,8 @@
 CAS Docker
 ==========
 
-Requirements
-------------
-* docker >= 1.3 (www.docker.com)
-* docker-compose >= 1.2.0 (https://docs.docker.com/compose/)
-
-Setup
+Notes
 -----
-
-The CAS docker container depends on NED's DB docker image to be built.
-Here's how to start NED's docker containers:
-
-    cd <workspace>/named-entity.service/docker/builder && ./ned-build.sh
-
-Build CAS images:
-
-    <workspace>/ned-cas/docker/build-image.sh
-
-Running
--------
-
-Included is a sample docker-compose.yml which represents a configured stack containing NED and NED CAS. Run it like so:
-
-    cd <workspace>/ned-cas/docker
-    docker-compose up
 
 CAS login page:
 http://localhost:8090/cas/login

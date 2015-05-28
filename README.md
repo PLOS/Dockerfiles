@@ -12,11 +12,11 @@ Setup
 
 All the directories in the projects/ directory correspond to a PLOS project in github. The folder should have the same name as their github project. And those projects should be checked out at the same level as this Dockerfiles project. For example, lets assume you have your git projects checked out like so:
 
-<workspace>/named-entity.service
-<workspace>/ned-cas
-<workspace>/Dockerfiles
+    (workspace)/named-entity.service
+    (workspace)/ned-cas
+    (workspace)/Dockerfiles
 
-This way <workspace>/Dockerfiles/projects/named-entity.service/ knows where to find the source code.
+This way (workspace)/Dockerfiles/projects/named-entity.service/ knows where to find the source code.
 
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
 
@@ -42,9 +42,9 @@ To see a list of sample stacks that combine the use of these images see the conf
 
 Now, in the case above you can visit some pages to see they are up:
 
-http://localhost/registration/new     # Akita registration page:
-http://localhost:1080                 # mailcatcher
-http://localhost:8090/cas/login       # CAS login page
+    http://localhost/registration/new     # Akita registration page:
+    http://localhost:1080                 # mailcatcher
+    http://localhost:8090/cas/login       # CAS login page
 
 
 Development/Conventions
@@ -58,7 +58,7 @@ In each image, create a file at /root/version.txt that contains the version numb
 Tips
 ----
 
-Some of our projects make use of PLOS's internal maven repository. So you have to be in network to resolve. Containers seem to pull the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
+Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
 
 To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
