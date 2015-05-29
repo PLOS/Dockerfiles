@@ -27,7 +27,7 @@ function curl_test_ok {
 function wait_for_web_service {
 
   URL=$1
-  TEST_CMD="curl -I $URL"
+  TEST_CMD="curl -sI $URL -o /dev/null"
   TEST_RETURN_CODE=1
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do

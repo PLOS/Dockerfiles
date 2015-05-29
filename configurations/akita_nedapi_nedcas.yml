@@ -1,5 +1,6 @@
 akita:
   image: akita:current
+  command: /root/run.sh
   ports:
     - "80:80"
   links:
@@ -8,6 +9,8 @@ akita:
   environment:
     - NED_SERVICE=http://nedapi:8080
     - MAILER_ADDRESS=mailcatcher
+    - NED_USERAPP=dev
+    - NED_PASSWORD=dev
 
 mailcatcher:
   image: mailcatcher
