@@ -32,17 +32,17 @@
     password=""
     url="jdbc:mysql://repodb:3306/repo" />
     
-<!--   <Resource name="repo/objectStore"
+  <Resource name="repo/objectStore"
     type="org.plos.repo.service.ObjectStore"
     factory="org.plos.repo.config.MogileStoreFactory"
     domain="maindomain"
     trackers="mogiletracker:7001"
     maxTrackerConnections="1"
     maxIdleConnections="1"
-    maxIdleTimeMillis="100" /> -->
+    maxIdleTimeMillis="100" />
 
-  <Resource name="repo/objectStore"
+<!--   <Resource name="repo/objectStore"
     type="org.plos.repo.service.ObjectStore"
-    factory="org.plos.repo.config.InMemoryStoreFactory" />
+    factory="org.plos.repo.config.InMemoryStoreFactory" /> -->
     
 </Context>

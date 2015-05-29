@@ -18,9 +18,7 @@ function build_java_service_images() {
 
 	  git clone git@github.com:PLOS/${PROJECTDIR}.git $SRC
 
-		# TODO: checkout to temp directory?
-		#       https://github.com/PLOS/tahi/blob/dev-heroku-push/push_to_heroku.sh
-
+	  if [ ! -d $SRC ]; then die "git clone failed"; fi
 	fi
 
 	# create build caches if they do not exist

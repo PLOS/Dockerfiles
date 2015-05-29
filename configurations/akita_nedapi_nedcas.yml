@@ -39,6 +39,7 @@ nedcas:
   ports:
     - "8090:8080"
   environment:
+    - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ned
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
