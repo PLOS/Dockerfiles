@@ -13,7 +13,7 @@ sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
 sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}?useUnicode=true\&amp;characterEncoding=utf8/" $CONTEXTTEMPLATE
 cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
 
-setup_war_in_tomcat
+setup_war_in_tomcat cas.war
 
 wait_until_db_ready
 

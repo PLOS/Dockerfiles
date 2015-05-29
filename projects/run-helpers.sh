@@ -32,6 +32,12 @@ function set_db_grants {
 
 function setup_war_in_tomcat {
 
+	# allow optional renaming of war to support urls with subdirectories
+	TO_WAR=$1
+	if [ -z $1 ]; then TO_WAR="ROOT.war"; fi
+
+	echo Deploying war to $TO_WAR
+
 	echo Deleting contents of webapps/
 	rm -rf ${CATALINA_HOME}/webapps/*
 
@@ -41,7 +47,7 @@ function setup_war_in_tomcat {
 
 	if [ $WARCOUNT -ne 0 ] ; then
 	  echo Copying WAR to webapps
-	  cp `ls -t ${BUILD_DIR}/${SVC_WAR} | head -1` ${CATALINA_HOME}/webapps/ROOT.war
+	  cp `ls -t ${BUILD_DIR}/${SVC_WAR} | head -1` ${CATALINA_HOME}/webapps/$TO_WAR
 	else
 	  echo "WAR file not found in ${BUILD_DIR}. Exiting..."
 	  exit 1

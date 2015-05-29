@@ -16,9 +16,10 @@ function curl_test_ok {
   URL=$1
   echo "curling $URL"
 
-  HTTP_CODE=$(curl -sL -w "%{http_code}\\n" $URL -o /dev/null)
+  HTTP_CODE=$(curl -s -w "%{http_code}\\n" $URL -o /dev/null)
   if [[ "$HTTP_CODE" -ne "200" ]]; then
-    echo "TEST FAILED : url = $URL   status code = $HTTP_CODE"
+    echo "url = $URL   status code = $HTTP_CODE"
+    echo "TEST FAILED"
     exit 1
   fi
 }
