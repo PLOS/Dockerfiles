@@ -5,10 +5,23 @@ MAVEN_CACHE=maven_cache
 BUILD_CACHE=${PROJECTNAME}_build
 TMP_BUILD_CONTAINER=${PROJECTNAME}_temp_container
 
+function die () {
+  echo "$@" 1>&2
+  exit 1
+}
+
 function build_java_service_images() {
 
-	# TODO: if $SRC is not an existing dir, error out, or try to do a git checkout
-	#       https://github.com/PLOS/tahi/blob/dev-heroku-push/push_to_heroku.sh
+	if [ ! -d $SRC ]; then
+	  echo "Source directory not found $SRC"
+	  git --version > /dev/null || die "git is not installed"
+
+	  git clone git@github.com:PLOS/${PROJECTDIR}.git $SRC
+
+		# TODO: checkout to temp directory?
+		#       https://github.com/PLOS/tahi/blob/dev-heroku-push/push_to_heroku.sh
+
+	fi
 
 	# create build caches if they do not exist
 
