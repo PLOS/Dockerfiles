@@ -1,71 +1,34 @@
 #!/bin/bash
 
-# TODO: only populate db if it does not exist already
+MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
+function start_tomcat {
+	${CATALINA_HOME}/bin/catalina.sh run
+}
 
-function create_schema {
+function wait_until_db_ready {
 
-
-
-	# TODO: only populate db if it does not exist already
-
-
-
-	MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
-
-	$MYSQL_CREATE_SCHEMA
-	# ${MYSQL} < ${BUILD_DIR}/ned-schema.mysql.sql
+	$MYSQL_ROOT -e 'exit'
 	MYSQL_NOT_CONNECTING=$?
 	while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
 	    sleep 1;
-	    $MYSQL_CREATE_SCHEMA
-	    # ${MYSQL} < ${BUILD_DIR}/ned-schema.mysql.sql
+	    $MYSQL_ROOT -e 'exit'
 	    MYSQL_NOT_CONNECTING=$?
-	    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready for schema ... waiting"
+	    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready ... waiting"
 	done;
+
+	echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
+
 }
-
-# set up db
-
-# echo -e "\nCreating NED Schema"
-# ${MYSQL} < ${BUILD_DIR}/ned-schema.mysql.sql
-
-# echo -e "\nSeeding NED Schema"
-# ${MYSQL} < ${BUILD_DIR}/ned-data.mysql.sql
 
 function set_db_grants {
 
-	MYSQL="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
-	echo 'SELECT User FROM mysql.user' | ${MYSQL}
-
 	echo -e "\nCreating DB User (ned)"
-	echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL}
-	echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL}
+	echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL_ROOT}
+	echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL_ROOT}
 	echo "Finished creating user."
 
 }
-
-# # set up tomcat
-
-# CONTEXTTEMPLATE=${BUILD_DIR}/context-template.xml
-
-# if [ ! -f "$CONTEXTTEMPLATE" ]; then
-#    echo context template not found
-#    exit 1
-# fi
-
-# echo Creating context file
-
-# # TODO: source these vars from a shared environment file
-
-# sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXTTEMPLATE
-# sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXTTEMPLATE
-# sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
-# sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXTTEMPLATE
-
-# cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
-
-# cat ${CATALINA_HOME}/conf/context.xml
 
 function setup_war_in_tomcat {
 
@@ -86,21 +49,32 @@ function setup_war_in_tomcat {
 
 }
 
-# wait for db to be ready for service
+# function create_schema {
 
-function wait_db_ready_for_service {
+# 	# TODO: only populate db if it does not exist already
 
-	MYSQL_CMD="mysql -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE}"
+# }
 
-	$MYSQL_CMD -e 'exit'
-	MYSQL_NOT_CONNECTING=$?
-	while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
-	    sleep 1;
-	    $MYSQL_CMD -e 'exit'
-	    MYSQL_NOT_CONNECTING=$?
-	    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready for API ... waiting"
-	done;
 
-	echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
+# function simple_tomcat_context_setup {
+	
+# 	# CONTEXTTEMPLATE=${BUILD_DIR}/context-template.xml
 
-}
+# 	# if [ ! -f "$CONTEXTTEMPLATE" ]; then
+# 	#    echo context template not found
+# 	#    exit 1
+# 	# fi
+
+# 	# echo Creating context file
+
+# 	# # TODO: source these vars from a shared environment file
+
+# 	# sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXTTEMPLATE
+# 	# sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXTTEMPLATE
+# 	# sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
+# 	# sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXTTEMPLATE
+
+# 	# cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
+
+# 	# cat ${CATALINA_HOME}/conf/context.xml
+# }

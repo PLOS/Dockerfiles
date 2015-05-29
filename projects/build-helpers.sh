@@ -7,6 +7,9 @@ TMP_BUILD_CONTAINER=${PROJECTNAME}_temp_container
 
 function build_java_service_images() {
 
+	# TODO: if $SRC is not an existing dir, error out, or try to do a git checkout
+	#       https://github.com/PLOS/tahi/blob/dev-heroku-push/push_to_heroku.sh
+
 	# create build caches if they do not exist
 
 	docker inspect $BUILD_CACHE > /dev/null
