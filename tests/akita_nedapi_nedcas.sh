@@ -13,7 +13,7 @@ wait_for_web_service $SVC_URL
 
 # begin tests
 
-curl_test_ok $SVC_URL/articles
+curl_test_ok $SVC_URL/registration/new
 
 # end tests
 

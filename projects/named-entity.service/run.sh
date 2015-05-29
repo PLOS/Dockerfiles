@@ -18,7 +18,11 @@ wait_until_db_ready
 $MYSQL_ROOT < ${BUILD_DIR}/ned-schema.mysql.sql
 $MYSQL_ROOT < ${BUILD_DIR}/ned-data.mysql.sql
 # insert dev:dev user fpr userapp authentication
-echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','$2a$04$QYhHKyIbics6CfTXcUUzie7XSDrl3P.53sOklGBaDWFUG5z2Tj0SG');" | $MYSQL_ROOT
+# echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','$2a$04$QYhHKyIbics6CfTXcUUzie7XSDrl3P.53sOklGBaDWFUG5z2Tj0SG');" | $MYSQL_ROOT
+
+echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','$2a$04$hU.LHE1cHoFZxhXNJS3xZeIi4PDBgIkucfPj6f1hmzVitml23sKy.');" | $MYSQL_ROOT
+
+echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 set_db_grants
 

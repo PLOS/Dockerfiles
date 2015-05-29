@@ -25,6 +25,8 @@ neddb:
 nedapi:
   image: nedapi:current
   command: /root/run.sh
+  ports:
+    - "8081:8080"
   links:
     - neddb:neddb
   environment:
