@@ -9,8 +9,10 @@ source $BUILD_DIR/run-helpers.sh
 wait_until_db_ready
 
 # TODO: use a more up to date SQL schema dump
-echo "CREATE SCHEMA IF NOT EXISTS $MYSQL_DATABASE" | $MYSQL_ROOT
-$MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ddl_mysql.sql
+if ! check_db_exists; then
+  echo "CREATE SCHEMA IF NOT EXISTS $MYSQL_DATABASE" | $MYSQL_ROOT
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ddl_mysql.sql
+fi
 
 set_db_grants
 

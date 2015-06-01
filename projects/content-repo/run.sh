@@ -10,8 +10,10 @@ cp ${BUILD_DIR}/context.xml ${CATALINA_HOME}/conf/context.xml
 
 wait_until_db_ready
 
-echo "DROP SCHEMA IF EXISTS ${MYSQL_DATABASE}; CREATE SCHEMA ${MYSQL_DATABASE};" | $MYSQL_ROOT
-$MYSQL_ROOT < ${BUILD_DIR}/setup.mysql
+if ! check_db_exists; then
+  echo "DROP SCHEMA IF EXISTS ${MYSQL_DATABASE}; CREATE SCHEMA ${MYSQL_DATABASE};" | $MYSQL_ROOT
+  $MYSQL_ROOT < ${BUILD_DIR}/setup.mysql
+fi
 
 set_db_grants
 

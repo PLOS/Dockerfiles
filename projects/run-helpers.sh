@@ -55,32 +55,28 @@ function setup_war_in_tomcat {
 
 }
 
-# function create_schema {
+function check_db_exists {
+	# this function exists because we dont want to recreated a DB if we are pointing to a service that already has a running schema on it
+	$MYSQL_ROOT -e 'use ${MYSQL_DATABASE}'
+}
 
-# 	# TODO: only populate db if it does not exist already
-
-# }
-
-
-# function simple_tomcat_context_setup {
+function setup_simple_tomcat_context {
 	
-# 	# CONTEXTTEMPLATE=${BUILD_DIR}/context-template.xml
+	CONTEXTTEMPLATE=$1
 
-# 	# if [ ! -f "$CONTEXTTEMPLATE" ]; then
-# 	#    echo context template not found
-# 	#    exit 1
-# 	# fi
+	if [ ! -f "$CONTEXTTEMPLATE" ]; then
+	   echo context template not found
+	   exit 1
+	fi
 
-# 	# echo Creating context file
+	echo Creating context file
 
-# 	# # TODO: source these vars from a shared environment file
+	sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXTTEMPLATE
+	sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXTTEMPLATE
+	sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
+	sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXTTEMPLATE
 
-# 	# sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXTTEMPLATE
-# 	# sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXTTEMPLATE
-# 	# sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
-# 	# sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXTTEMPLATE
+	cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
 
-# 	# cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
-
-# 	# cat ${CATALINA_HOME}/conf/context.xml
-# }
+	cat ${CATALINA_HOME}/conf/context.xml
+}
