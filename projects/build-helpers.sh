@@ -3,7 +3,10 @@
 MAVEN_CACHE=maven_cache
 
 BUILD_CACHE=${PROJECTNAME}_build
+
 TMP_BUILD_CONTAINER=${PROJECTNAME}_temp_container
+
+GITHUB_REPO=git@github.com:PLOS/${PROJECTDIR}.git
 
 function die () {
   echo "$@" 1>&2
@@ -16,7 +19,7 @@ function build_java_service_images() {
 	  echo "Source directory not found $SRC"
 	  git --version > /dev/null || die "git is not installed"
 
-	  git clone git@github.com:PLOS/${PROJECTDIR}.git $SRC
+	  git clone $GITHUB_REPO $SRC
 
 	  if [ ! -d $SRC ]; then die "git clone failed"; fi
 	fi

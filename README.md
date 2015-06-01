@@ -4,7 +4,9 @@ PLOS Dockerfiles
 Requirements
 ------------
 * docker >= 1.6 (www.docker.com)
-* docker-compose >= 1.2.0 (https://docs.docker.com/compose/)
+* docker-compose >= 1.2.0 (docs.docker.com/compose/)
+* curl (optional, for running the tests)
+* git  (optional, for checking out missing project sources if they are not found)
 
 
 Setup
@@ -34,7 +36,7 @@ Or build them all with:
 
     projects/build-all.sh
 
-Of course this will only work for projects you have the source code locally checked out for.
+This will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
 
 To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
 
@@ -64,4 +66,4 @@ To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
 
 and comment out this line: 
-dns=dnsmasq
+    dns=dnsmasq
