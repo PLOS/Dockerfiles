@@ -57,6 +57,14 @@ For each project the images created for it should be tagged with a version numbe
 In each image, create a file at /root/version.txt that contains the version number representing the built artificats. For example, "0.5.0-SNAPSHOT".
 
 
+Docker Registry
+---------------
+
+Images can be pushed and pulled from our local Docker Registry (2.0). See the registry directory. As an example, here is how you would pull a stack from the repo:
+
+    ./registry.sh pull_stack configurations/akita_nedapi_nedcas.yml
+
+
 Tips
 ----
 

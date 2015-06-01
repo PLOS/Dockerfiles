@@ -11,6 +11,9 @@ function die () {
 
 function get_service_ip {
   CONTAINER_BASENAME=$1
+
+  # TODO: this fails when the terminal is not wide enough. weird. fix this.
+  #   or file a ticket for docker-compose ps
   CONTAINER=$(docker-compose -f $COMPOSE_FILE ps | grep $CONTAINER_BASENAME | awk 'END {print $1}')
 
   echo $(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
