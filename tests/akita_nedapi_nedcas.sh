@@ -7,7 +7,7 @@ source $SCRIPTDIR/test-helper.sh
 
 start_stack
 
-SVC_URL=$(get_service_ip akita):8080
+SVC_URL=$(get_service_ip akita)
 
 wait_for_web_service $SVC_URL
 

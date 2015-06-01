@@ -20,9 +20,9 @@ set_db_grants
 setup_war_in_tomcat
 
 # insert dev:dev user for userapp authentication
-# TODO: get this to work out of the war
-cd $CATALINA_HOME/webapps/ROOT/WEB-INF
-PASSWORD=java -cp classes:$(lib/spring-security-crypto-*.RELEASE.jar | head -1) org.plos.namedentity.spring.security.BCrypt dev
+unzip -q $BUILD_DIR/$SVC_WAR -d $BUILD_DIR/ned
+cd $BUILD_DIR/ned/WEB-INF
+PASSWORD=$(java -cp classes:$(ls lib/spring-security-crypto-*.RELEASE.jar | head -1) org.plos.namedentity.spring.security.BCrypt dev)
 echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','${PASSWORD}');" | $MYSQL_ROOT
 echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 

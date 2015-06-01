@@ -35,8 +35,7 @@ curl -I http://$SVC_URL/objects/$BUCKET?key=$OBJECT
 diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT
 
 if [[ $? -ne 0 ]]; then
-  echo "TEST FAILED"
-  exit 1
+  die "TEST FAILED"
 fi
 
 echo "TESTS PASSED"
