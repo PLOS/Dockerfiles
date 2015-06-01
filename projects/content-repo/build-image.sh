@@ -1,19 +1,9 @@
 #!/bin/bash
 
-PROJECTNAME=contentrepo
-PROJECTDIR=content-repo
+# so this script can be run from any directory
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-BASEIMAGE=maven:3.3-jdk-7
-
-SRC=../../../${PROJECTDIR}/
-
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-SRC=$DIR/$SRC
-
-cd $DIR
-source ../build-helpers.sh
-
-build_java_service_images
+../build-helpers.sh build_java_service_images maven:3.3-jdk-7 content-repo contentrepo
 
 # build mogile images
 docker build -t mogiletracker mogiletracker

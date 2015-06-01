@@ -60,7 +60,7 @@ function push_stack {
     # see if the project is one of ours. dont push ones that came from dockerhub
     # TODO: fix this such that it pushes things like mailcatcher
 
-    CHECK_OURS=$(grep "PROJECTNAME=${PROJECTNAME}" ../projects/*/build-image.sh | wc -l)
+    CHECK_OURS=$(grep " ${PROJECTNAME} " ../projects/*/build-image.sh | wc -l)
 
     if [ $CHECK_OURS -eq 0 ]; then
       echo "Skipping push of $IMAGE since it looks like it came from dockerhub"
