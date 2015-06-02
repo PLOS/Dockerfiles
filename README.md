@@ -60,9 +60,17 @@ In each image, create a file at /root/version.txt that contains the version numb
 Docker Registry
 ---------------
 
-Images can be pushed and pulled from our local Docker Registry (2.0). See the registry directory. As an example, here is how you would pull a stack from the repo:
+The Docker registry is a place to host images. Images can be pushed and pulled from our local Docker Registry (2.0). If an image is there you, you can pull from it instead of having to build it.
+
+To use our registry make sure you have configured your Docker daemon such that it can talk to our repo.
+
+As an example, here is how you would pull a stack from the repo:
 
     ./registry.sh pull_stack configurations/akita_nedapi_nedcas.yml
+    docker-compose -f configurations/akita_nedapi_nedcas.yml up
+
+To see the Akita home page, visit:
+    http://localhost
 
 
 Tips
