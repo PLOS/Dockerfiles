@@ -12,6 +12,10 @@ REPO=$DOCKER_REPO_HOST:5000
 
 echo Using repository: $REPO
 
+function _get_images_from_config {
+  echo $(grep '^ *image:' $1 | sed -r 's/.*image: *([^ ]+).*$/\1/')
+}
+
 function push {
   NAME=$1
   # REPO=$2
@@ -39,7 +43,9 @@ function pull {
 
 function pull_stack {
   CONFIG_FILE=$1
-  IMAGES=$(grep 'image:' $CONFIG_FILE | sed 's/\s*image:\s*//')
+
+  IMAGES=$(_get_images_from_config $CONFIG_FILE)
+
   echo "Images to pull: $IMAGES"
 
   for IMAGE in $IMAGES; do
@@ -59,20 +65,22 @@ function pull_stack {
 
 function push_stack {
   CONFIG_FILE=$1
-  IMAGES=$(grep 'image:' $CONFIG_FILE | sed 's/\s*image:\s*//')
+
+  IMAGES=$(_get_images_from_config $CONFIG_FILE)
+
   echo "Images to push: $IMAGES"
 
   for IMAGE in $IMAGES; do
 
-    PROJECTNAME=$(echo $IMAGE | sed 's/:.*$//')
+    PROJECTNAME=$(echo $IMAGE | sed -r 's/^([^:]+).*$/\1/')
 
     # see if the project is one of ours. dont push ones that came from dockerhub
     # TODO: fix this such that it pushes things like mailcatcher
 
-    CHECK_OURS=$(grep " ${PROJECTNAME} " $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/projects/*/build-image.sh | wc -l)
+    CHECK_OURS=$(grep " ${PROJECTNAME}[\s\n]*" $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/projects/*/build-image.sh | wc -l)
 
     if [ $CHECK_OURS -eq 0 ]; then
-      echo "Skipping push of $IMAGE since it looks like it came from dockerhub"
+      echo "Skipping push of $IMAGE since it probably came from dockerhub"
     else
       echo "Pushing $IMAGE to $REPO"
       push $IMAGE
