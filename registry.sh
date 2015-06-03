@@ -13,8 +13,15 @@ REPO=$DOCKER_REPO_HOST:5000
 echo Using repository: $REPO
 
 function _get_images_from_config {
-  echo $(grep '^ *image:' $1 | sed -r 's/.*image: *([^ ]+).*$/\1/')
+  echo $(grep '^ *image:' $1 | sed -r 's/.*image: *([^ ]+).*$/\1/')   # TODO: wont work on OSX
 }
+
+# function delete_image {
+#   # perhahps this will be implemented in registry 2.1 : https://github.com/docker/distribution/issues/422
+#   NAME=$(echo $1 | cut -f1 -d:)
+#   TAG=$(echo $1 | cut -f2 -d:)
+#   curl -X DELETE --insecure https://${REPO}/v2/${NAME}/manifests/${TAG}
+# }
 
 function push {
   NAME=$1
@@ -89,9 +96,11 @@ function push_stack {
   done;
 }
 
-function list_images {
+function images {
   echo Repo image list:
-  ssh $DOCKER_REPO_HOST /bin/docker-reg-images
+  # ssh $DOCKER_REPO_HOST /bin/docker-reg-images
+  ssh $DOCKER_REPO_HOST find /var/docker-registry/data/docker/registry/v2/repositories -maxdepth 4 | grep _manifests/tags/ | sed 's/^\(\/var\/docker-registry\/data\/docker\/registry\/v2\/repositories\/\)//'| sed 's/\/_manifests\/tags\//:/'|sort
+ 
 }
 
 if [ "$#" -eq 0 ]; then

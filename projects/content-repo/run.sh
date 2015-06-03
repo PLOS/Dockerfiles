@@ -8,7 +8,7 @@ source $BUILD_DIR/run-helpers.sh
 
 cp ${BUILD_DIR}/context.xml ${CATALINA_HOME}/conf/context.xml
 
-wait_until_db_ready
+wait_until_db_service_up
 
 if ! check_db_exists; then
   echo "DROP SCHEMA IF EXISTS ${MYSQL_DATABASE}; CREATE SCHEMA ${MYSQL_DATABASE};" | $MYSQL_ROOT

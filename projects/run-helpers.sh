@@ -1,12 +1,13 @@
 #!/bin/bash
 
-MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
+MYSQL="mysql --default-character-set=utf8"
+MYSQL_ROOT="$MYSQL -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
 function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
 }
 
-function wait_until_db_ready {
+function wait_until_db_service_up {
 
 	$MYSQL_ROOT -e 'exit'
 	MYSQL_NOT_CONNECTING=$?
@@ -19,6 +20,22 @@ function wait_until_db_ready {
 
 	echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
 
+}
+
+function wait_until_db_schema_ready {
+
+	MYSQL_CMD="$MYSQL -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE} -e exit"
+
+	$(MYSQL_CMD)
+	MYSQL_NOT_CONNECTING=$?
+	while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
+	    sleep 1;
+	    $(MYSQL_CMD)
+	    MYSQL_NOT_CONNECTING=$?
+	    echo -e "\Schema (${MYSQL_DATABASE}) not ready ... waiting"
+	done;
+
+	echo -e "\nSchema (${MYSQL_DATABASE}) ready!"
 }
 
 function set_db_grants {

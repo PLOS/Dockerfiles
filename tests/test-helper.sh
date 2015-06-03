@@ -37,6 +37,7 @@ function wait_for_web_service {
   TEST_CMD="curl -sI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
+  MAX_TRIES=30
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do
     sleep 2;
@@ -45,7 +46,7 @@ function wait_for_web_service {
     echo "Service ($URL) not ready ... waiting"
 
     ((TRY_COUNT++))
-    if [ $TRY_COUNT -gt 20 ]; then
+    if [ $TRY_COUNT -gt $MAX_TRIES ]; then
       die "Service did not respond in a reasonable amount of time"
     fi
 
