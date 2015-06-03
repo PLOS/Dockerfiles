@@ -1,0 +1,10 @@
+solr:
+  image: solr:current
+  command: /root/run.sh
+  ports:
+    - "8983:8080"
+  volumes:
+    - "/Users/saghajani/datastores/filestore:/root/datastores/filestore"
+    - "/Users/saghajani/datastores/solr:/root/datastores/solr"
+  expose:
+    - "8983"
