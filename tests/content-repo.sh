@@ -1,38 +1,43 @@
 #!/bin/bash
 
-# TODO: start and stop docker-compose. wait until servcice is up
-
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+COMPOSE_FILE=content-repo.yml
 
 source $SCRIPTDIR/test-helper.sh
 
-REPO_URL=$(get_service_ip repoapi content-repo.yml):8080
+start_stack
+
+SVC_URL=$(get_service_ip repoapi):8080
+
+wait_for_web_service $SVC_URL
 
 
 # perform tests
 
-curl $REPO_URL/config
+curl $SVC_URL/config
+curl_test_ok $SVC_URL/config
 
 # create a bucket
 BUCKET=bucket_`date +%N`
 
-curl --data "name=$BUCKET"  http://$REPO_URL/buckets
+curl --data "name=$BUCKET" http://$SVC_URL/buckets
 
 # create an object
 OBJECT=object_`date +%N`
 
 THISSCRIPT=${BASH_SOURCE[0]}
 
-curl -F "create=new" -F "key=$OBJECT" -F "bucketName=$BUCKET" -F "file=@$THISSCRIPT" http://$REPO_URL/objects
+curl -F "create=new" -F "key=$OBJECT" -F "bucketName=$BUCKET" -F "file=@$THISSCRIPT" http://$SVC_URL/objects
 
 # read it back
-curl -I http://$REPO_URL/objects/$BUCKET?key=$OBJECT
+curl -I http://$SVC_URL/objects/$BUCKET?key=$OBJECT
 
-diff -s <(curl http://$REPO_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT
+diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT
 
-if [[ $? -eq 0 ]]; then
-  echo "TESTS PASSED"
-else
-  echo "TEST FAILED"
-  exit 1
+if [[ $? -ne 0 ]]; then
+  die "TEST FAILED"
 fi
+
+echo "TESTS PASSED"
+
+stop_stack

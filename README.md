@@ -4,7 +4,9 @@ PLOS Dockerfiles
 Requirements
 ------------
 * docker >= 1.6 (www.docker.com)
-* docker-compose >= 1.2.0 (https://docs.docker.com/compose/)
+* docker-compose >= 1.2.0 (docs.docker.com/compose/)
+* curl (optional, for running the tests)
+* git  (optional, for checking out missing project sources if they are not found)
 
 
 Setup
@@ -34,7 +36,7 @@ Or build them all with:
 
     projects/build-all.sh
 
-Of course this will only work for projects you have the source code locally checked out for.
+This will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
 
 To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
 
@@ -55,6 +57,22 @@ For each project the images created for it should be tagged with a version numbe
 In each image, create a file at /root/version.txt that contains the version number representing the built artificats. For example, "0.5.0-SNAPSHOT".
 
 
+Docker Registry
+---------------
+
+The Docker registry is a place to host images. Images can be pushed and pulled from our local Docker Registry (2.0). If an image is there you, you can pull from it instead of having to build it.
+
+To use our registry make sure you have configured your Docker daemon such that it can talk to our repo.
+
+As an example, here is how you would pull a stack from the repo:
+
+    ./registry.sh pull_stack configurations/akita_nedapi_nedcas.yml
+    docker-compose -f configurations/akita_nedapi_nedcas.yml up
+
+To see the Akita home page, visit:
+    http://localhost
+
+
 Tips
 ----
 
@@ -64,4 +82,4 @@ To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
 
 and comment out this line: 
-dns=dnsmasq
+    dns=dnsmasq
