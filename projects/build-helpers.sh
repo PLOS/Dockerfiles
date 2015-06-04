@@ -63,11 +63,11 @@ function build_java_service_images() {
 		--volume $DOCKER_SETUP_DIR/..:/shared \
 		--volumes-from $BUILD_RESULT_DIR \
 		--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current \
-		sh -c 'cp -r /build/* /root; \
-		cp /shared/run-helpers.sh /root/;
-		cp /scripts/run.sh /root/;
-		chmod 755 /root/run.sh;
-		cat /root/version.txt')
+		    sh -c 'cp -r /build/* /root; \
+		    cp /shared/run-helpers.sh /root/;
+		    cp /scripts/run.sh /root/;
+		    chmod 755 /root/run.sh;
+		    cat /root/version.txt')
 
 	docker commit $TMP_BUILD_CONTAINER $PROJECT_NAME:current
 
