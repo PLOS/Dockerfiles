@@ -1,6 +1,5 @@
 akita:
   image: akita:current
-  command: /root/run.sh
   ports:
     - "80:80"
   links:
@@ -24,7 +23,6 @@ neddb:
 
 nedapi:
   image: nedapi:current
-  command: /root/run.sh
   ports:
     - "8081:8080"
   links:
@@ -38,7 +36,6 @@ nedapi:
 
 nedcas:
   image: nedcas:current
-  command: /root/run.sh
   links:
     - neddb:neddb
   ports:

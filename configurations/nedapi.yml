@@ -5,7 +5,6 @@ neddb:
 
 nedapi:
   image: nedapi:current
-  command: /root/run.sh
   links:
     - neddb:neddb
   ports:
