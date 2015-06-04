@@ -62,13 +62,17 @@ function build_java_service_images() {
 											 --volume $DOCKER_DIR/..:/shared \
 											 --volumes-from $BUILD_CACHE \
 											 --name $TMP_BUILD_CONTAINER $PROJECT_NAME:current \
-											 sh -c 'cp /build/* /root; \
+											 sh -c 'cp -r /build/* /root;
 											 				cp /shared/run-helpers.sh /root/; 
 											 				cp /scripts/run.sh /root/;
 											 				chmod 755 /root/run.sh;
 											 				cat /root/version.txt')
 
 	docker commit $TMP_BUILD_CONTAINER $PROJECT_NAME:current
+
+	# TODO: docker commit --change CMD bash /root/run.sh
+
+
 
 	# tag docker image with asset version number
 

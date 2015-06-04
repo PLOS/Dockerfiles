@@ -16,10 +16,10 @@ echo Using repository: $REPO
 # TODO: get TLS handshate working on boot2docker
 
 function _get_images_from_config {
-
+  CONFIG_FILE=$1
   # TODO: make sure this works OSX
 
-  echo $(grep '^ *image:' $1 | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
+  echo $(grep '^ *image:' $CONFIG_FILE | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
 # function delete_image {
@@ -85,16 +85,9 @@ function push_stack {
 
   for IMAGE in $IMAGES; do
 
-    PROJECTNAME=$(echo $IMAGE | sed 's/^\([^:][^:]*\).*$/\1/')
+    CHECK_PLOS_IMAGE=$(docker inspect --format '{{ .Config.Labels.vendor }}' $IMAGE | grep -ci "Public Library of Science")
 
-    # see if the project is one of ours. dont push ones that came from dockerhub
-    # TODO: fix this such that it pushes things like mailcatcher
-
-    CHECK_OURS=$(grep " ${PROJECTNAME}[\s\n]*" $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/projects/*/build-image.sh | wc -l)
-
-    # TODO: fix the above grep so it works with Akits which has a different build-image format
-
-    if [ $CHECK_OURS -eq 0 ]; then
+    if [ $CHECK_PLOS_IMAGE -eq 0 ]; then
       echo "Skipping push of ($IMAGE) since it probably came from dockerhub"
     else
       echo "Pushing ($IMAGE) to $REPO"

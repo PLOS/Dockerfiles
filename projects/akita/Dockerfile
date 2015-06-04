@@ -1,5 +1,7 @@
 FROM ruby:2.2-slim
 
+LABEL vendor="Public Library of Science"
+
 # install system dependencies
 
 RUN apt-get update -qq && \
