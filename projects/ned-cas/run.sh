@@ -10,6 +10,6 @@ setup_simple_tomcat_context ${BUILD_DIR}/context-template.xml
 
 setup_war_in_tomcat cas.war
 
-wait_until_db_schema_ready
+wait_for_web_service $NED_SERVICE/service/config
 
 start_tomcat

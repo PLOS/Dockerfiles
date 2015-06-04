@@ -49,3 +49,4 @@ nedcas:
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
+    - NED_SERVICE=http://nedapi:8080

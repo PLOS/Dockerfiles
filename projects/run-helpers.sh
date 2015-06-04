@@ -1,7 +1,6 @@
 #!/bin/bash
 
-MYSQL="mysql --default-character-set=utf8"
-MYSQL_ROOT="$MYSQL -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
+MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
 function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
@@ -22,20 +21,28 @@ function wait_until_db_service_up {
 
 }
 
-function wait_until_db_schema_ready {
+function wait_for_web_service {
 
-	MYSQL_CMD="$MYSQL -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} -p${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE} -e exit"
+  URL=$1
+  TEST_CMD="curl -sI $URL -o /dev/null"
+  TEST_RETURN_CODE=1
+  TRY_COUNT=0
+  MAX_TRIES=30
 
-	$(MYSQL_CMD)
-	MYSQL_NOT_CONNECTING=$?
-	while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
-	    sleep 1;
-	    $(MYSQL_CMD)
-	    MYSQL_NOT_CONNECTING=$?
-	    echo -e "\Schema (${MYSQL_DATABASE}) not ready ... waiting"
-	done;
+  while [ $TEST_RETURN_CODE -ne 0 ] ; do
+    sleep 2;
+    $TEST_CMD
+    TEST_RETURN_CODE=$?
+    echo "Service ($URL) not ready ... waiting"
 
-	echo -e "\nSchema (${MYSQL_DATABASE}) ready!"
+    ((TRY_COUNT++))
+    if [ $TRY_COUNT -gt $MAX_TRIES ]; then
+      die "Service did not respond in a reasonable amount of time"
+    fi
+
+  done;
+
+  echo "Service ($URL) is up and ready for tests"
 }
 
 function set_db_grants {

@@ -10,6 +10,8 @@ function die () {
 
 function build_java_service_images() {
 
+	# TODO: implement --no-cache option or mark images with build date
+
 	BASE_IMAGE=$1
 	PROJECT_DIR=$2
 	PROJECT_NAME=$3

@@ -12,8 +12,14 @@ REPO=$DOCKER_REPO_HOST:5000
 
 echo Using repository: $REPO
 
+
+# TODO: get TLS handshate working on boot2docker
+
 function _get_images_from_config {
-  echo $(grep '^ *image:' $1 | sed -r 's/.*image: *([^ ]+).*$/\1/')   # TODO: wont work on OSX
+
+  # TODO: make sure this works OSX
+
+  echo $(grep '^ *image:' $1 | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
 # function delete_image {
@@ -44,12 +50,14 @@ function pull {
     return 1;
   fi
 
-  docker tag -f $REPO/$NAME $NAME # destructively replates local copy
+  docker tag -f $REPO/$NAME $NAME   # destructively replates local copy
   docker rmi $REPO/$NAME
 }
 
 function pull_stack {
   CONFIG_FILE=$1
+
+  # TODO: implement dry run option
 
   IMAGES=$(_get_images_from_config $CONFIG_FILE)
 
@@ -75,21 +83,21 @@ function push_stack {
 
   IMAGES=$(_get_images_from_config $CONFIG_FILE)
 
-  echo "Images to push: $IMAGES"
-
   for IMAGE in $IMAGES; do
 
-    PROJECTNAME=$(echo $IMAGE | sed -r 's/^([^:]+).*$/\1/')
+    PROJECTNAME=$(echo $IMAGE | sed 's/^\([^:][^:]*\).*$/\1/')
 
     # see if the project is one of ours. dont push ones that came from dockerhub
     # TODO: fix this such that it pushes things like mailcatcher
 
     CHECK_OURS=$(grep " ${PROJECTNAME}[\s\n]*" $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/projects/*/build-image.sh | wc -l)
 
+    # TODO: fix the above grep so it works with Akits which has a different build-image format
+
     if [ $CHECK_OURS -eq 0 ]; then
-      echo "Skipping push of $IMAGE since it probably came from dockerhub"
+      echo "Skipping push of ($IMAGE) since it probably came from dockerhub"
     else
-      echo "Pushing $IMAGE to $REPO"
+      echo "Pushing ($IMAGE) to $REPO"
       push $IMAGE
     fi
 
