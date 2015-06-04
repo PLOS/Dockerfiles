@@ -15,6 +15,7 @@ ls
 mvn clean install initialize package
 
 cp target/*.war $BUILDDIR
+cp logging/log4j.xml $BUILDDIR
 cp /scripts/* $BUILDDIR
 
 grep ^version= target/maven-archiver/pom.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
