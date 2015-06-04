@@ -2,6 +2,8 @@ FROM tomcat:6-jre7
 MAINTAINER Public Library of Science <BAU_Team@plos.org>
 
 RUN mkdir /etc/ambra
+RUN mkdir -p /usr/local/tomcat/solr/home
+RUN mkdir -p /usr/local/tomcat/solr/home/data
 
 RUN wget -O /usr/local/tomcat/lib/slf4j-log4j12-1.6.1.jar \
    https://search.maven.org/remotecontent?filepath=org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar

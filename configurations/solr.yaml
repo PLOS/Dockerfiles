@@ -4,7 +4,6 @@ solr:
   ports:
     - "8983:8080"
   volumes:
-    - "/Users/saghajani/datastores/filestore:/root/datastores/filestore"
-    - "/Users/saghajani/datastores/solr:/root/datastores/solr"
+    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
   expose:
     - "8983"
