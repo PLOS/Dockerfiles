@@ -1,0 +1,8 @@
+solr:
+  image: solr:current
+  ports:
+    - "8983:8080"
+  volumes:
+    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+  expose:
+    - "8983"
