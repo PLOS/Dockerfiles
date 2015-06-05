@@ -1,6 +1,5 @@
 nedcas:
   image: nedcas:current
-  command: /root/run.sh
   links:
     - neddb:neddb
   ports:
@@ -11,10 +10,10 @@ nedcas:
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
+    - NED_SERVICE=http://nedapi:8080
 
 nedapi:
   image: nedapi:current
-  command: /root/run.sh
   links:
     - neddb:neddb
   ports:

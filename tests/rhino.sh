@@ -3,7 +3,7 @@
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 COMPOSE_FILE=rhino.yml
 
-source $SCRIPTDIR/test-helper.sh
+source $SCRIPTDIR/test-helpers.sh
 
 start_stack
 

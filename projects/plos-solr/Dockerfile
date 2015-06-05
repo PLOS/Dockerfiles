@@ -1,5 +1,7 @@
 FROM tomcat:6-jre7
+
 MAINTAINER Public Library of Science <BAU_Team@plos.org>
+LABEL vendor="Public Library of Science"
 
 RUN mkdir /etc/ambra
 RUN mkdir -p $CATALINA_HOME/solr/home

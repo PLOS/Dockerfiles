@@ -10,6 +10,8 @@ function die () {
 
 function build_java_service_images() {
 
+	# TODO: implement --no-cache option or mark images with build date
+
 	BASE_IMAGE=$1
 	PROJECT_DIR=$2
 	PROJECT_NAME=$3
@@ -58,18 +60,14 @@ function build_java_service_images() {
 
 	echo "Copying Java Assets into Tomcat Image..."
 
-	VERSION=$(docker run \
-	    --volume $DOCKER_SETUP_DIR:/scripts \
-		--volume $DOCKER_SETUP_DIR/..:/shared \
-		--volumes-from $BUILD_RESULT_DIR \
-		--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current \
-		    sh -c 'cp -r /build/* /root; \
-		    cp /shared/run-helpers.sh /root/;
-		    cp /scripts/run.sh /root/;
-		    chmod 755 /root/run.sh;
-		    cat /root/version.txt')
+	VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
+							--volume $DOCKER_SETUP_DIR/..:/shared \
+							--volumes-from $BUILD_RESULT_DIR \
+							--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
+								'cp /shared/run-helpers.sh /scripts/run.sh -r /build/* /root;
+								 cat /root/version.txt')
 
-	docker commit $TMP_BUILD_CONTAINER $PROJECT_NAME:current
+	docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current
 
 	# tag docker image with asset version number
 	echo "tagging container with version : $VERSION"

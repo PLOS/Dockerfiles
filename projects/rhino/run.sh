@@ -6,7 +6,7 @@ SVC_WAR=rhino.war
 
 source $BUILD_DIR/run-helpers.sh
 
-wait_until_db_ready
+wait_until_db_service_up
 
 # TODO: use a more up to date SQL schema dump
 if ! check_db_exists; then
@@ -24,6 +24,6 @@ cp ${BUILD_DIR}/rhino.yaml /etc/ambra
 
 setup_war_in_tomcat
 
-wait_until_db_ready
+wait_for_web_service $REPO_SERVICE/config
 
 start_tomcat

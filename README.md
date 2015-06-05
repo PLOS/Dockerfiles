@@ -82,4 +82,5 @@ To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
 
 and comment out this line: 
+
     dns=dnsmasq

@@ -1,6 +1,5 @@
 solr:
   image: solr:current
-  command: /root/run.sh
   ports:
     - "8983:8080"
   volumes:

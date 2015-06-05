@@ -6,7 +6,7 @@ function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
 }
 
-function wait_until_db_ready {
+function wait_until_db_service_up {
 
 	$MYSQL_ROOT -e 'exit'
 	MYSQL_NOT_CONNECTING=$?
@@ -19,6 +19,30 @@ function wait_until_db_ready {
 
 	echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
 
+}
+
+function wait_for_web_service {
+
+  URL=$1
+  TEST_CMD="curl -sI $URL -o /dev/null"
+  TEST_RETURN_CODE=1
+  TRY_COUNT=0
+  MAX_TRIES=30
+
+  while [ $TEST_RETURN_CODE -ne 0 ] ; do
+    sleep 2;
+    $TEST_CMD
+    TEST_RETURN_CODE=$?
+    echo "Service ($URL) not ready ... waiting"
+
+    ((TRY_COUNT++))
+    if [ $TRY_COUNT -gt $MAX_TRIES ]; then
+      die "Service did not respond in a reasonable amount of time"
+    fi
+
+  done;
+
+  echo "Service ($URL) is up and ready for tests"
 }
 
 function set_db_grants {

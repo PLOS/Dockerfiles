@@ -8,7 +8,7 @@ source $BUILD_DIR/run-helpers.sh
 
 setup_simple_tomcat_context ${BUILD_DIR}/context-template.xml
 
-wait_until_db_ready
+wait_until_db_service_up
 
 if ! check_db_exists; then
   $MYSQL_ROOT < ${BUILD_DIR}/ned-schema.mysql.sql
