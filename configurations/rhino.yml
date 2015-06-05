@@ -20,6 +20,7 @@ rhino:
     - MYSQL_USER_PASSWORD=ambra
     - MYSQL_HOSTNAME=ambradb
     - MYSQL_DATABASE=ambra
+    - REPO_SERVICE=http://repo:8080
 
 
 contentrepo:

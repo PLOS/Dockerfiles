@@ -24,6 +24,6 @@ cp ${BUILD_DIR}/rhino.yaml /etc/ambra
 
 setup_war_in_tomcat
 
-wait_until_db_ready
+wait_for_web_service $REPO_SERVICE/config
 
 start_tomcat
