@@ -20,13 +20,13 @@ function kill_all_containers {
   docker kill $(docker ps -q)
 }
 
-function clean {
+function basic {
   delete_untagged_images
   delete_stopped_containers
 }
 
 if [ "$#" -eq 0 ]; then
-  echo "EXAMPLE USE: $0 clean"
+  echo "EXAMPLE USE: $0 delete_untagged_images"
   # echo "Available methods: "
   # grep "^function" $0
 else

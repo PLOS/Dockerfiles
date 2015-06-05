@@ -22,7 +22,6 @@ rhino:
     - MYSQL_DATABASE=ambra
     - REPO_SERVICE=http://repo:8080
 
-
 contentrepo:
   image: contentrepo:current
   links:

@@ -6,7 +6,7 @@ SVC_WAR=rhino.war
 
 source $BUILD_DIR/run-helpers.sh
 
-wait_until_db_ready
+wait_until_db_service_up
 
 # TODO: use a more up to date SQL schema dump
 if ! check_db_exists; then
