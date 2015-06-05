@@ -14,7 +14,7 @@ unzip $BUILD_DIR/solr.war -d  $BUILD_DIR/temp/
 cp -r $BUILD_DIR/temp/collection1 $CATALINA_HOME/solr/home/
 rm -rf  $BUILD_DIR/temp/
 
-setup_war_in_tomcat
+setup_war_in_tomcat solr.war
 
 export JAVA_OPTS="$JAVA_OPTS -Dsolr.solr.home=$CATALINA_HOME/solr/home"
 export JAVA_OPTS="$JAVA_OPTS -Dsolr.data.dir=$CATALINA_HOME/solr/home/data"
