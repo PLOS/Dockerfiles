@@ -32,7 +32,7 @@ curl -F "create=new" -F "key=$OBJECT" -F "bucketName=$BUCKET" -F "file=@$THISSCR
 # read it back
 curl -I http://$SVC_URL/objects/$BUCKET?key=$OBJECT
 
-diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT
+diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT > /dev/null
 
 if [[ $? -ne 0 ]]; then
   die "TEST FAILED"

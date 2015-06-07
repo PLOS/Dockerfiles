@@ -24,27 +24,25 @@ RUN bundle install
 
 ADD . /src
 
+RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > /root/version.txt
+
 RUN bin/setup
 
 WORKDIR /src/frontend
 RUN ./node_modules/.bin/ember build --environment=development
 
-RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("package.json"))["version"]'` > /root/version.txt
-
 
 # setup application
 
-RUN mkdir /var/log/akita && chmod 777 /var/log/akita
-
-RUN mv /src/docker/akita-nginx.conf /etc/nginx/sites-available/
-RUN ln -s /etc/nginx/sites-available/akita-nginx.conf /etc/nginx/conf.d/akita-nginx.conf
-RUN rm -f /etc/nginx/sites-enabled/default
-
+RUN mkdir /var/log/akita && chmod 777 /var/log/akita && \
+		mv /src/docker/akita-nginx.conf /etc/nginx/sites-available/ && \
+		ln -s /etc/nginx/sites-available/akita-nginx.conf /etc/nginx/conf.d/akita-nginx.conf && \
+		rm -f /etc/nginx/sites-enabled/default
 
 # cleanup (does not recude image size, but does reduce attack service)
 
-RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y
-RUN mv /src/frontend/dist /src/ember
-RUN rm -rf /src/frontend
+RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
+		mv /src/frontend/dist /src/ember && \
+		rm -rf /src/frontend
 
 # CMD bash /root/run.sh
