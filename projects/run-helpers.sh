@@ -2,6 +2,11 @@
 
 MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
+function die {
+  echo "$@" 1>&2
+  exit 1
+}
+
 function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
 }
@@ -27,7 +32,7 @@ function wait_for_web_service {
   TEST_CMD="curl -sI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
-  MAX_TRIES=30
+  MAX_TRIES=50
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do
     sleep 2;

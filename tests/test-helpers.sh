@@ -13,8 +13,12 @@ function die {
 function get_service_ip {
   CONTAINER_BASENAME=$1
 
-  # TODO: this fails when the terminal is not wide enough. compose bug?
-  CONTAINER=$(docker-compose -f $COMPOSE_FILE ps | grep $CONTAINER_BASENAME | awk 'END {print $1}')
+  # CONTAINER=$(docker-compose -f $COMPOSE_FILE ps | grep $CONTAINER_BASENAME | awk 'END {print $1}')
+
+  # workaround because the previous line does not work yet.
+  # see: https://github.com/docker/compose/issues/1513
+
+  CONTAINER=$(docker inspect -f '{{if .State.Running}}{{.Name}}{{end}}' $(docker-compose -f $COMPOSE_FILE ps -q) | sed 's/^\///' | grep $CONTAINER_BASENAME)
 
   echo $(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
 }
