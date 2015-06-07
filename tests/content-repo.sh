@@ -15,7 +15,7 @@ wait_for_web_service $SVC_URL
 # perform tests
 
 curl $SVC_URL/config
-curl_test_ok $SVC_URL/config
+curl_test_ok $SVC_URL/config "Repo"
 
 # create a bucket
 BUCKET=bucket_`date +%N`

@@ -18,11 +18,13 @@ RUN mkdir /src
 WORKDIR /src
 
 # pre-bundle, as an optimization
-ADD Gemfile /src/
-ADD Gemfile.lock /src/
+COPY Gemfile /src/
+COPY Gemfile.lock /src/
 RUN bundle install
 
-ADD . /src
+COPY . /src
+
+# TODO: use dockerfile USER to isolate source files and runtime
 
 RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > /root/version.txt
 

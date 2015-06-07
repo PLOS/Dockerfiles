@@ -13,7 +13,7 @@ wait_for_web_service $SVC_URL
 
 # begin tests
 
-curl_test_ok $SVC_URL/service/config
+curl_test_ok $SVC_URL/service/config "NED API"
 
 # end tests
 

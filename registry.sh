@@ -24,6 +24,19 @@ function _get_images_from_config {
 #   curl -X DELETE --insecure https://${REPO}/v2/${NAME}/manifests/${TAG}
 # }
 
+function test_pull {
+  IMAGE=$(echo "$(images)" | tail -n1)
+  echo Pulling image $IMAGE
+  $(pull $IMAGE)
+
+  if [ "$?" -eq 0 ]; then
+    echo "Pull worked"
+  else
+    echo "Pull failed"
+  fi
+
+}
+
 function push {
   NAME=$1
   # REPO=$2

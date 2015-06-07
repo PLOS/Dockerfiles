@@ -34,7 +34,8 @@ function stop_stack {
 function curl_test_ok {
 
   URL=$1
-  echo "curling $URL"
+  TITLE=$2
+  echo "curling $URL  ($TITLE)"
 
   HTTP_CODE=$(curl -s -w "%{http_code}\\n" $URL -o /dev/null)
   if [[ "$HTTP_CODE" -ne "200" ]]; then

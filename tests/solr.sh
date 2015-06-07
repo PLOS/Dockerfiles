@@ -13,7 +13,7 @@ wait_for_web_service $SVC_URL
 
 # begin tests
 
-curl_test_ok $SVC_URL/solr/
+curl_test_ok $SVC_URL/solr/ "Solr"
 
 # end tests
 
