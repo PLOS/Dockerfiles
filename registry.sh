@@ -27,9 +27,11 @@ function _get_images_from_config {
 function test_pull {
   IMAGE=$(echo "$(images)" | tail -n1)
   echo Pulling image $IMAGE
-  pull $IMAGE
+
+  docker pull $REPO/$IMAGE
 
   if [ "$?" -eq 0 ]; then
+    docker rmi $REPO/$IMAGE
     echo "Pull worked"
   else
     echo "Pull failed"
