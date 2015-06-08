@@ -27,7 +27,7 @@ function _get_images_from_config {
 function test_pull {
   IMAGE=$(echo "$(images)" | tail -n1)
   echo Pulling image $IMAGE
-  $(pull $IMAGE)
+  pull $IMAGE
 
   if [ "$?" -eq 0 ]; then
     echo "Pull worked"
