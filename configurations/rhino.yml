@@ -1,19 +1,15 @@
-ambradb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-
 rhino:
   image: rhino:current
   links:
     - ambradb:ambradb
     - contentrepo:repo
+    - solr:solr
   ports:
     - "8080:8080"
   volumes:
-    - /tmp/ingest:/root/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
-    - /tmp/ingested:/root/ingested    # make sure these are created on the host first
-    - /tmp/autoingest:/root/autoingest
+    - $HOME/datastores/ingest:/root/datastores/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
+    - $HOME/datastores/ingested:/root/datastores/ingested    # make sure these are created on the host first
+    - $HOME/datastores/filestore/ambra:/root/datastores/filestore/ambra
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
@@ -21,6 +17,22 @@ rhino:
     - MYSQL_HOSTNAME=ambradb
     - MYSQL_DATABASE=ambra
     - REPO_SERVICE=http://repo:8080
+
+ambradb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  ports:
+    - "3306:3306"
+
+solr:
+  image: solr:current
+  ports:
+    - "8983:8080"
+  volumes:
+    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+  expose:
+    - "8983"
 
 contentrepo:
   image: contentrepo:current
@@ -41,6 +53,8 @@ repodb:
   image: percona:5.6
   environment:
     - MYSQL_ROOT_PASSWORD=root
+  ports:
+    - "3305:3306"
 
 mogiletracker:
   image: mogiletracker

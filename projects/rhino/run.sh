@@ -11,7 +11,7 @@ wait_until_db_service_up
 # TODO: use a more up to date SQL schema dump
 if ! check_db_exists; then
   echo "CREATE SCHEMA IF NOT EXISTS $MYSQL_DATABASE" | $MYSQL_ROOT
-  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ddl_mysql.sql
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra.sql
 fi
 
 set_db_grants
@@ -25,5 +25,7 @@ cp ${BUILD_DIR}/rhino.yaml /etc/ambra
 setup_war_in_tomcat
 
 wait_for_web_service $REPO_SERVICE/config
+
+curl -X POST $REPO_SERVICE/buckets --data name=corpus
 
 start_tomcat
