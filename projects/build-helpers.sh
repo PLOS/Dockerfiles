@@ -64,7 +64,8 @@ function build_java_service_images() {
 							--volume $DOCKER_SETUP_DIR/..:/shared \
 							--volumes-from $BUILD_RESULT_DIR \
 							--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
-								'cp /shared/run-helpers.sh /scripts/run.sh -r /build/* /root;
+								'cp -r /build/*  /root;
+								 cp /shared/run-helpers.sh /scripts/run.sh /root/;
 								 cat /root/version.txt')
 
 	docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current
