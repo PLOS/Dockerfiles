@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  $HeadURL:: http://svn.topazproject.org/svn/head/packages/ambra/src/main/resources/ambra.xml    $ 
+  $Id: ambra.xml 7248 2009-02-05 00:26:54Z russ $ 
+
+  Copyright (c) 2007-2008 by Topaz, Inc. 
+  http://topazproject.org 
+
+  Licensed under the Apache License, Version 2.0 (the "License"); 
+  you may not use this file except in compliance with the License. 
+  You may obtain a copy of the License at 
+
+      http://www.apache.org/licenses/LICENSE-2.0 
+
+  Unless required by applicable law or agreed to in writing, software 
+  distributed under the License is distributed on an "AS IS" BASIS, 
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+  See the License for the specific language governing permissions and 
+  limitations under the License. 
+-->
+<!-- Ambra Configuration file -->
+<config> 
+  <ambra> 
+    <network> 
+      <hosts> 
+        <!-- Set hosts.default to FQHN (not localhost) if installing all components on one host 
+          (or to webhead FQHN for multiple host installation) --> 
+        <default>plosone</default>
+        <mailhost>localhost</mailhost> 
+        <!-- For multibox install, change the following entires to the appropriate FQHNs --> 
+        <cas>cas-dev.plos.org</cas>
+        <registration>${ambra.network.hosts.cas}</registration> 
+        <fedora>${ambra.network.hosts.default}</fedora> 
+        <mulgara>${ambra.network.hosts.default}</mulgara> 
+        <ambra>${ambra.network.hosts.default}</ambra> 
+      </hosts> 
+
+      <!-- Ports for the various components. Default for HTTP and HTTPS can be left out --> 
+      <ports> 
+        <default>${ambra.network.ports.ambra}</default> 
+        <cas-ssl>43</cas-ssl> 
+        <mulgara>8111</mulgara> 
+      </ports> 
+    </network> 
+
+    <platform>
+      <template_cache>
+        <strong>350</strong>
+        <soft>100</soft>
+        <update_delay>0</update_delay>  <!-- set to 0 for not cache freemarker templates -->
+      </template_cache>
+
+      <appContext></appContext>
+      <!-- common display constants -->
+      <!-- common display constants --> 
+      <copyright> 
+        This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License, 
+        http://creativecommons.org/licenses/by-sa/3.0/ 
+      </copyright> 
+      <email> 
+        <general>admin@plos.org</general> 
+        <feedback>admin@plos.org</feedback> 
+		    <errors>admin@plos.org</errors>
+      </email> 
+      <freemarker>
+        <almHost>http://alm.plos.org</almHost>
+      </freemarker>
+      <name>PLoS</name> 
+      <guid-prefix>info:doi/0.0/</guid-prefix>
+			<dummySsoEnabled>true</dummySsoEnabled>
+    </platform> 
+
+    <!-- 
+      URI aliases. eg. id:annotation/... can be used in place of info:doi/10.1371/ 
+      The main use for this is to define aliases that are used by id generators 
+      and such that are configured with OTM. But could be used in other config 
+      file sections to consolidate identifier prefix usages. 
+    --> 
+    <aliases> 
+      <doiPrefix>info:doi</doiPrefix> 
+      <id>${ambra.aliases.doiPrefix}/10.1371/</id> 
+      <annoteaBodyId>info:fedora/</annoteaBodyId> 
+    </aliases> 
+
+    <!-- Overlay journal config -->
+    <virtualJournals>
+      <templateDir>/root/templates</templateDir>
+      <default>PLoSDefault</default>
+      <journals>
+        PLoSDefault,PLoSClinicalTrials,PLoSCollections,PLoSCompBiol,PLoSGenetics,PLoSNTD,PLoSONE,PLoSPathogens,PLoSBiology,PLoSMedicine
+      </journals>
+      <AmbraJournal>
+        <url>http://ambra-local</url>
+      </AmbraJournal>
+      <PLoSDefault>
+        <url>http://ambra-local</url>
+        <eIssn>0000-0000</eIssn>
+      </PLoSDefault>
+      <PLoSClinicalTrials>
+        <url>http://clinicaltrials-local</url>
+        <eIssn>1555-5887</eIssn>
+      </PLoSClinicalTrials>
+      <PLoSCollections>
+        <url>http://ploscollections-local</url>
+        <eIssn>3333-3333</eIssn>
+      </PLoSCollections>
+      <PLoSCompBiol>
+        <url>http://ploscompbiol-local</url>
+        <eIssn>1553-7358</eIssn>
+      </PLoSCompBiol>
+      <PLoSGenetics>
+        <url>http://plosgenetics-local</url>
+        <eIssn>1553-7404</eIssn>
+      </PLoSGenetics>
+      <PLoSNTD>
+        <url>http://plosntds-local</url>
+        <eIssn>1935-2735</eIssn>
+      </PLoSNTD>
+      <PLoSONE>
+        <url>http://plosone-local</url>
+        <eIssn>1932-6203</eIssn>
+      </PLoSONE>
+      <PLoSPathogens>
+        <url>http://plospathogens-local</url>
+        <eIssn>1553-7374</eIssn>
+      </PLoSPathogens>
+      <PLoSBiology>
+        <url>http://plosbiology-local</url>
+        <eIssn>1545-7885</eIssn>
+      </PLoSBiology>
+      <PLoSMedicine>
+        <url>http://plosmedicine-local</url>
+        <eIssn>1549-1676</eIssn>
+      </PLoSMedicine>
+    </virtualJournals>
+
+    <services> 
+			 <database>
+			   <driver>com.mysql.jdbc.Driver</driver>
+				 <url>jdbc:mysql://ambradb/ambra</url>
+				 <username>ambra</username>
+				 <password>ambra</password>
+      </database> 
+      <filestore>
+        <basedir>/root/datastores/filestore/ambra</basedir>
+      </filestore>
+		  <search>
+        <articleIndexingQueue>activemq:plos.solr.article.index</articleIndexingQueue>
+        <indexingMailReceiver>do-not-reply@plos.org</indexingMailReceiver>
+        <!-- Fields of lucene meta data that are searched by default --> 
+        <defaultFields>description,title,body,creator</defaultFields> 
+        <!-- Number of snippets to show per document --> 
+        <snippetsMax>3</snippetsMax> 
+        <!-- Max chars per indexed field? --> 
+        <fieldMaxLength>50</fieldMaxLength> 
+        <!-- Number of results per page --> 
+        <pageSize>10</pageSize> 
+				<server>
+
+				
+				<url>http://solr:8080/solr</url>
+				</server>
+      </search> 
+
+      <registration> 
+        <!-- Default assumption is that the registration application is running on ambra-cas. If the 
+        configuration is different, please set here --> 
+        <appContext>/ambra-registration</appContext> 
+      </registration> 
+
+      <!-- defaults for generating an Atom Feed --> 
+      <feed> 
+        <title>PLoS ONE</title> 
+        <tagline>Publishing science, accelerating research</tagline> 
+        <icon>${webserver-url}images/favicon.ico</icon> 
+        <!-- Unique id. Should change for different criteria --> 
+        <id>info:doi/1371/feed.pone</id> 
+        <extended> 
+          <!-- namespace prefix for custom elements --> 
+          <prefix>plos</prefix> 
+          <!-- custom element namespace --> 
+          <namespace>http://www.plos.org/atom/ns#plos</namespace> 
+        </extended> 
+        <!-- Path to feeds after journal context --> 
+        <basePath>/article/</basePath> 
+        <!-- Default feed if none other specified --> 
+        <defaultFile>feed</defaultFile> 
+        <!-- File prefix for a specific category --> 
+        <categoryPrefix>feed?category=</categoryPrefix> 
+        <!-- Name of default feed (prefixed by journal) --> 
+        <defaultName>New Articles</defaultName> 
+        <!-- Default duration in months --> 
+        <defaultDuration>3</defaultDuration> 
+      </feed>
+
+      <documentManagement> 
+	<ingestSourceDir>/root/datastores/ingest/</ingestSourceDir>
+	<ingestDestinationDir>/root/datastores/ingested/</ingestDestinationDir>
+        <imageMagick> 
+          <executablePath>/usr/bin/convert</executablePath> 
+          <tempDirectory>/tmp</tempDirectory> 
+          <imageSetConfigs> 
+            <imageSet name="#default"> 
+              <small width="70" quality="80"/> 
+              <medium maxDimension="600" quality="80"/> 
+              <large quality="80"/> 
+            </imageSet> 
+            <imageSet name="issueImage"> 
+              <small width="120"/> 
+            </imageSet> 
+          </imageSetConfigs> 
+        </imageMagick> 
+      </documentManagement>
+
+      <!-- crossref information - set parameters and sendToXref to true to turn on --> 
+      <crossref> 
+				<xsl>crossref.xsl</xsl>
+
+        <plos> 
+          <doiurl> 
+            http://dx.plos.org/ambra-doi-resolver/
+          </doiurl> 
+          <!-- email address to send info to --> 
+          <email>plosdoi@plos.org</email> 
+        </plos> 
+        <!-- crossref login --> 
+        <login>crossref-jfinger</login> 
+        <!-- crossref password --> 
+        <password>your-password</password> 
+        <area>test</area> 
+        <!-- Set to true to turn on crossref posting --> 
+        <sendToXref>false</sendToXref> 
+      </crossref> 
+
+      <syndications>
+
+        <!-- Pub Med Central syndication configuration -->
+        <syndication target="PMC">
+          <name>Pub Med Central</name>
+          <queue>activemq:plos.pmc</queue>
+          <responseQueue>activemq:plos.pmc.response</responseQueue>
+        </syndication>
+	        <!-- Crossref syndication configuration -->
+
+        <syndication target="CROSSREF">
+          <name>Crossref</name>
+          <queue>activemq:plos.crossref</queue>
+          <responseQueue>activemq:plos.crossref.response</responseQueue>
+        </syndication>
+      </syndications>
+	  <browse>
+
+		 <cache>true</cache>
+		 <time>15</time>
+	  </browse>
+
+
+    <ehcache>
+	    <configFileLocation>/etc/ambra/ehcache.xml</configFileLocation>
+    </ehcache>
+
+    </services> 
+    
+    <articleTypeList>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/1</typeUri>
+        <typeHeading>Unclassified</typeHeading>
+
+        <typeHeadingPlural>Unclassified</typeHeadingPlural>
+        <default>true</default>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Message%20from%20the%20Founders</typeUri>
+        <typeHeading>Message from the Founders</typeHeading>
+        <typeHeadingPlural>Messages from the Founders</typeHeadingPlural>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Message%20from%20the%20PLoS%20Founders</typeUri>
+        <typeHeading>Message from the PLoS Founders</typeHeading>
+        <typeHeadingPlural>Messages from the PLoS Founders</typeHeadingPlural>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Message%20from%20PLoS</typeUri>
+        <typeHeading>Message from PLoS</typeHeading>
+        <typeHeadingPlural>Messages from PLoS</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Editorial</typeUri>
+        <typeHeading>Editorial</typeHeading>
+
+        <typeHeadingPlural>Editorials</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Online%20Only:%20Editorial</typeUri>
+        <typeHeading>Online Only: Editorial</typeHeading>
+        <typeHeadingPlural>Online Only: Editorials</typeHeadingPlural>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Overview</typeUri>
+        <typeHeading>Overview</typeHeading>
+        <typeHeadingPlural>Overviews</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Message%20from%20ISCB</typeUri>
+
+        <typeHeading>Message from ISCB</typeHeading>
+        <typeHeadingPlural>Messages from ISCB</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Synopsis</typeUri>
+        <typeHeading>Synopsis</typeHeading>
+        <typeHeadingPlural>Synopses</typeHeadingPlural>
+
+        <typeCode>synopsis</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Education</typeUri>
+        <typeHeading>Education</typeHeading>
+        <typeHeadingPlural>Education Articles</typeHeadingPlural>
+        <typeCode>education</typeCode>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Interview</typeUri>
+        <typeHeading>Interview</typeHeading>
+        <typeHeadingPlural>Interviews</typeHeadingPlural>
+        <typeCode>interview</typeCode>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Debate</typeUri>
+        <typeHeading>Debate</typeHeading>
+        <typeHeadingPlural>Debates</typeHeadingPlural>
+        <typeCode>debate</typeCode>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/The%20PLoS%20Medicine%20Debate</typeUri>
+        <typeHeading>The PLoS Medicine Debate</typeHeading>
+        <typeHeadingPlural>The PLoS Medicine Debates</typeHeadingPlural>
+        <typeCode>the_plos_medicine_debate</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Viewpoints</typeUri>
+
+        <typeHeading>Viewpoints</typeHeading>
+        <typeHeadingPlural>Viewpoints</typeHeadingPlural>
+        <typeCode>viewpoints</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Expert%20Commentary</typeUri>
+        <typeHeading>Expert Commentary</typeHeading>
+
+        <typeHeadingPlural>Expert Commentaries</typeHeadingPlural>
+        <typeCode>expert_commentary</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Essay</typeUri>
+        <typeHeading>Essay</typeHeading>
+        <typeHeadingPlural>Essays</typeHeadingPlural>
+
+        <typeCode>essay</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Feature</typeUri>
+        <typeHeading>Feature</typeHeading>
+        <typeHeadingPlural>Features</typeHeadingPlural>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Unsolved%20Mystery</typeUri>
+        <typeHeading>Unsolved Mystery</typeHeading>
+        <typeHeadingPlural>Unsolved Mysteries</typeHeadingPlural>
+        <typeCode>unsolved_mystery</typeCode>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Neglected%20Diseases</typeUri>
+        <typeHeading>Neglected Diseases</typeHeading>
+        <typeHeadingPlural>Neglected Diseases</typeHeadingPlural>
+        <typeCode>neglected_diseases</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Special%20Report</typeUri>
+
+        <typeHeading>Special Report</typeHeading>
+        <typeHeadingPlural>Special Reports</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Opinion</typeUri>
+        <typeHeading>Opinion</typeHeading>
+        <typeHeadingPlural>Opinions</typeHeadingPlural>
+
+        <typeCode>opinion</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Perspective</typeUri>
+        <typeHeading>Perspective</typeHeading>
+        <typeHeadingPlural>Perspectives</typeHeadingPlural>
+        <typeCode>perspective</typeCode>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Historical%20and%20Philosophical%20Perspectives</typeUri>
+        <typeHeading>Historical and Philosophical Perspectives</typeHeading>
+        <typeHeadingPlural>Historical and Philosophical Perspectives</typeHeadingPlural>
+        <typeCode>historical_and_philosophical_perspectives</typeCode>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Book%20Review</typeUri>
+        <typeHeading>Book Review</typeHeading>
+        <typeHeadingPlural>Book Reviews</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Book%20Review%2FScience%20in%20the%20Media</typeUri>
+
+        <typeHeading>Book Review/Science in the Media</typeHeading>
+        <typeHeadingPlural>Book Reviews/Science in the Media</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Obituary</typeUri>
+        <typeHeading>Obituary</typeHeading>
+        <typeHeadingPlural>Obituaries</typeHeadingPlural>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Journal%20Club</typeUri>
+        <typeHeading>Journal Club</typeHeading>
+        <typeHeadingPlural>Journal Clubs</typeHeadingPlural>
+        <typeCode>journal_club</typeCode>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Primer</typeUri>
+        <typeHeading>Primer</typeHeading>
+        <typeHeadingPlural>Primers</typeHeadingPlural>
+        <typeCode>primer</typeCode>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Community%20Page</typeUri>
+        <typeHeading>Community Page</typeHeading>
+        <typeHeadingPlural>Community Pages</typeHeadingPlural>
+        <typeCode>community_page</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Health%20in%20Action</typeUri>
+
+        <typeHeading>Health in Action</typeHeading>
+        <typeHeadingPlural>Health in Action</typeHeadingPlural>
+        <typeCode>health_in_action</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Policy%20Platform</typeUri>
+        <typeHeading>Policy Platform</typeHeading>
+
+        <typeHeadingPlural>Policy Platform</typeHeadingPlural>
+        <typeCode>policy_platform</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Policy%20Forum</typeUri>
+        <typeHeading>Policy Forum</typeHeading>
+        <typeHeadingPlural>Policy Forums</typeHeadingPlural>
+
+        <typeCode>policy_forum</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Guidelines%20and%20Guidance</typeUri>
+        <typeHeading>Guidelines and Guidance</typeHeading>
+        <typeHeadingPlural>Guidelines and Guidance</typeHeadingPlural>
+        <typeCode>guidelines_and_guidance</typeCode>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Historical%20Profiles%20and%20Perspectives</typeUri>
+        <typeHeading>Historical Profiles and Perspectives</typeHeading>
+        <typeHeadingPlural>Historical Profiles and Perspectives</typeHeadingPlural>
+        <typeCode>historical_profiles_and_perspectives</typeCode>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/From%20Innovation%20to%20Application</typeUri>
+        <typeHeading>From Innovation to Application</typeHeading>
+        <typeHeadingPlural>From Innovation to Application</typeHeadingPlural>
+        <typeCode>from_innovation_to_application</typeCode>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Research%20in%20Translation</typeUri>
+        <typeHeading>Research in Translation</typeHeading>
+        <typeHeadingPlural>Research in Translation</typeHeadingPlural>
+        <typeCode>research_in_translation</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Best%20Practice</typeUri>
+
+        <typeHeading>Best Practice</typeHeading>
+        <typeHeadingPlural>Best Practices</typeHeadingPlural>
+        <typeCode>best_practice</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Student%20Forum</typeUri>
+        <typeHeading>Student Forum</typeHeading>
+
+        <typeHeadingPlural>Student Forum</typeHeadingPlural>
+        <typeCode>student_forum</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Photo%20Quiz</typeUri>
+        <typeHeading>Photo Quiz</typeHeading>
+        <typeHeadingPlural>Photo Quizzes</typeHeadingPlural>
+
+        <typeCode>photo_quiz</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Symposium</typeUri>
+        <typeHeading>Symposium</typeHeading>
+        <typeHeadingPlural>Symposiums</typeHeadingPlural>
+        <typeCode>symposium</typeCode>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Learning%20Forum</typeUri>
+        <typeHeading>Learning Forum</typeHeading>
+        <typeHeadingPlural>Learning Forums</typeHeadingPlural>
+        <typeCode>learning_forum</typeCode>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Case%20Report</typeUri>
+        <typeHeading>Case Report</typeHeading>
+        <typeHeadingPlural>Case Reports</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Pearls</typeUri>
+
+        <typeHeading>Pearls</typeHeading>
+        <typeHeadingPlural>Pearls</typeHeadingPlural>
+        <typeCode>pearls</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Review</typeUri>
+        <typeHeading>Review</typeHeading>
+
+        <typeHeadingPlural>Reviews</typeHeadingPlural>
+        <typeCode>review</typeCode>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Technical%20Report</typeUri>
+        <typeHeading>Technical Report</typeHeading>
+        <typeHeadingPlural>Technical Reports</typeHeadingPlural>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Research%20Article</typeUri>
+        <typeHeading>Research Article</typeHeading>
+        <typeHeadingPlural>Research Articles</typeHeadingPlural>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Correspondence</typeUri>
+        <typeHeading>Correspondence</typeHeading>
+        <typeHeadingPlural>Correspondence</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Correspondence%20and%20Other%20Communications</typeUri>
+        <typeHeading>Correspondence and Other Communications</typeHeading>
+
+        <typeHeadingPlural>Correspondence and Other Communications</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Reader%20Poll</typeUri>
+        <typeHeading>Reader Poll</typeHeading>
+        <typeHeadingPlural>Reader Polls</typeHeadingPlural>
+      </articleType>
+
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Quiz</typeUri>
+        <typeHeading>Quiz</typeHeading>
+        <typeHeadingPlural>Quizzes</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Correction</typeUri>
+
+        <typeHeading>Correction</typeHeading>
+        <typeHeadingPlural>Corrections</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Retraction</typeUri>
+        <typeHeading>Retraction</typeHeading>
+        <typeHeadingPlural>Retractions</typeHeadingPlural>
+
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/History/Profile</typeUri>
+        <typeHeading>History/Profile</typeHeading>
+        <typeHeadingPlural>History/Profile</typeHeadingPlural>
+      </articleType>
+      <articleType>
+
+        <typeUri>http://rdf.plos.org/RDF/articleType/Retrospective</typeUri>
+        <typeHeading>Retrospective</typeHeading>
+        <typeHeadingPlural>Retrospectives</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Medical%20Image</typeUri>
+        <typeHeading>Medical Image</typeHeading>
+
+        <typeHeadingPlural>Medical Images</typeHeadingPlural>
+      </articleType>
+      <articleType>
+        <typeUri>http://rdf.plos.org/RDF/articleType/Issue%20Image</typeUri>
+        <typeHeading>Issue Image</typeHeading>
+        <typeHeadingPlural>Issue Images</typeHeadingPlural>
+        <imageSetConfigName>issueImage</imageSetConfigName>
+
+      </articleType>
+    </articleTypeList>
+    <userAlerts> 
+      <categories> 
+        <category key="biology">PLoS Biology</category> 
+        <category key="computational_biology">PLoS Computational Biology</category> 
+        <category key="clinical_trials">PLoS Hub for Clinical Trials</category> 
+        <category key="genetics">PLoS Genetics</category> 
+        <category key="medicine">PLoS Medicine</category> 
+        <category key="pathogens">PLoS Pathogens</category> 
+        <category key="plosntds">PLoS Neglected Tropical Diseases</category> 
+        <category key="plosone">PLoS ONE</category> 
+      </categories> 
+      <monthly>biology, clinical_trials, computational_biology, genetics, medicine, pathogens, plosntds</monthly> 
+      <weekly>biology, clinical_trials, computational_biology, genetics, medicine, pathogens, plosntds, plosone</weekly> 
+    </userAlerts> 
+    
+  </ambra> 
+
+</config>

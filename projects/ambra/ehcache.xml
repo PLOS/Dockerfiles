@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="false" monitoring="autodetect">
+
+<!--  <cacheManagerPeerProviderFactory
+      class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+      properties="peerDiscovery=automatic,
+                  multicastGroupAddress=230.0.0.1,
+  multicastGroupPort=4446"/>
+-->
+  <cacheManagerPeerProviderFactory
+      class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+      properties="peerDiscovery=manual, rmiUrls="/>
+
+  <!--
+  Mandatory Default Cache configuration. These settings will be applied to caches
+  created programmtically using CacheManager.add(String cacheName).
+
+  The defaultCache has an implicit name "default" which is a reserved cache name.
+  -->
+  <defaultCache
+      maxElementsInMemory="10000"
+      eternal="false"
+      timeToIdleSeconds="86400"
+      timeToLiveSeconds="0"
+      overflowToDisk="false"
+      diskPersistent="false"
+      diskExpiryThreadIntervalSeconds="120"
+      memoryStoreEvictionPolicy="LRU">
+    <cacheEventListenerFactory
+        class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+    <bootstrapCacheLoaderFactory
+        class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+  </defaultCache>
+
+  <!--
+  Feed cache
+  This cache stores lists of artilces for generating atom feeds
+  This cache replicates using defaults.
+  It also bootstraps from the cluster, using default properties.
+  -->
+  <cache name="FeedCache"
+         maxElementsInMemory="10000"
+         eternal="false"
+         timeToIdleSeconds="0"
+         timeToLiveSeconds="82800"
+         memoryStoreEvictionPolicy="LFU"
+         overflowToDisk="true">
+    <cacheEventListenerFactory
+        class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+    <bootstrapCacheLoaderFactory
+        class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+  </cache>
+
+  <!--
+  Browse Solr cache
+  This cache stores browse information
+  -->
+  <cache name="BrowseSolrCache"
+         maxElementsInMemory="10000"
+         eternal="false"
+         memoryStoreEvictionPolicy="LFU"
+         overflowToDisk="true">
+  </cache>
+
+  <!--
+  ArticleHtmlCache.
+  This cache stores Article(transformed).
+  -->
+  <cache name="ArticleHtmlCache"
+         timeToLiveSeconds="900"
+         maxElementsInMemory="20000"
+         memoryStoreEvictionPolicy="LFU"
+         overflowToDisk="true">
+    <cacheEventListenerFactory
+        class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/>
+    <bootstrapCacheLoaderFactory
+        class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"/>
+  </cache>
+
+</ehcache>
