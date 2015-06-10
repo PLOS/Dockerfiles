@@ -1,0 +1,32 @@
+ambra:
+  image: ambra:current
+  links:
+    - ambradb:ambradb
+    - solr:solr
+  ports:
+    - "8080:8080"
+  volumes:
+    - $HOME/datastores/ingest:/root/datastores/ingest
+    - $HOME/datastores/ingested:/root/datastores/ingested
+    - $HOME/datastores/filestore/ambra:/root/datastores/filestore/ambra
+    - $HOME/Projects/templates:/root/templates
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=ambra
+    - MYSQL_USER_PASSWORD=ambra
+    - MYSQL_HOSTNAME=ambradb
+    - MYSQL_DATABASE=ambra
+
+ambradb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  ports:
+    - "3306:3306"
+
+solr:
+  image: solr:current
+  ports:
+    - "8983:8080"
+  volumes:
+    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
