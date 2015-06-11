@@ -2,6 +2,7 @@
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 COMPOSE_FILE=rhino.yml
+SVC_TITLE=rhino
 
 source $SCRIPTDIR/test-helpers.sh
 
@@ -13,7 +14,7 @@ wait_for_web_service $SVC_URL
 
 # begin tests
 
-curl_test_ok $SVC_URL/articles
+curl_test_ok $SVC_URL/articles $SVC_TITLE
 
 # end tests
 

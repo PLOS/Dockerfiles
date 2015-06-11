@@ -2,6 +2,7 @@ nedcas:
   image: nedcas:current
   links:
     - neddb:neddb
+    - nedapi:nedapi
   ports:
     - "8090:8080"
   environment:

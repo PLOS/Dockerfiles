@@ -2,6 +2,11 @@
 
 MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
+function die {
+  echo "$@" 1>&2
+  exit 1
+}
+
 function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
 }
@@ -27,7 +32,7 @@ function wait_for_web_service {
   TEST_CMD="curl -sI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
-  MAX_TRIES=30
+  MAX_TRIES=50
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do
     sleep 2;
@@ -47,7 +52,7 @@ function wait_for_web_service {
 
 function set_db_grants {
 
-	echo -e "\nCreating DB User (ned)"
+	echo -e "\nCreating DB User (${MYSQL_USER})"
 	echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL_ROOT}
 	echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL_ROOT}
 	echo "Finished creating user."
@@ -86,21 +91,25 @@ function check_db_exists {
 
 function setup_simple_tomcat_context {
 	
-	CONTEXTTEMPLATE=$1
+	CONTEXT_TEMPALTE=$1
 
-	if [ ! -f "$CONTEXTTEMPLATE" ]; then
+	if [ ! -f "$CONTEXT_TEMPALTE" ]; then
 	   echo context template not found
 	   exit 1
 	fi
 
-	echo Creating context file
+	setup_db_in_tomcat_context_template $CONTEXT_TEMPALTE
 
-	sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXTTEMPLATE
-	sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXTTEMPLATE
-	sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXTTEMPLATE
-	sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXTTEMPLATE
+	cp $CONTEXT_TEMPALTE ${CATALINA_HOME}/conf/context.xml
+}
 
-	cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
+function setup_db_in_tomcat_context_template {
+	CONTEXT_TEMPALTE=$1
 
-	cat ${CATALINA_HOME}/conf/context.xml
+	echo "Updating database in context template"
+
+	sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXT_TEMPALTE
+	sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXT_TEMPALTE
+	sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXT_TEMPALTE
+	sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXT_TEMPALTE
 }

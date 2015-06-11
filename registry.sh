@@ -12,13 +12,8 @@ REPO=$DOCKER_REPO_HOST:5000
 
 echo Using repository: $REPO
 
-
-# TODO: get TLS handshate working on boot2docker
-
 function _get_images_from_config {
   CONFIG_FILE=$1
-  # TODO: make sure this works OSX
-
   echo $(grep '^ *image:' $CONFIG_FILE | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
@@ -28,6 +23,21 @@ function _get_images_from_config {
 #   TAG=$(echo $1 | cut -f2 -d:)
 #   curl -X DELETE --insecure https://${REPO}/v2/${NAME}/manifests/${TAG}
 # }
+
+function test_pull {
+  IMAGE=$(echo "$(images)" | tail -n1)
+  echo Pulling image $IMAGE
+
+  docker pull $REPO/$IMAGE
+
+  if [ "$?" -eq 0 ]; then
+    docker rmi $REPO/$IMAGE
+    echo "Pull worked"
+  else
+    echo "Pull failed"
+  fi
+
+}
 
 function push {
   NAME=$1
@@ -100,8 +110,14 @@ function push_stack {
 function images {
   echo Repo image list:
   # ssh $DOCKER_REPO_HOST /bin/docker-reg-images
-  ssh $DOCKER_REPO_HOST find /var/docker-registry/data/docker/registry/v2/repositories -maxdepth 4 | grep _manifests/tags/ | sed 's/^\(\/var\/docker-registry\/data\/docker\/registry\/v2\/repositories\/\)//'| sed 's/\/_manifests\/tags\//:/'|sort
- 
+  LIST_URL=$DOCKER_REPO_HOST:5001/images
+
+  HTTP_CODE=$(curl -s -w "%{http_code}\\n" $LIST_URL -o /dev/null)
+  if [[ "$HTTP_CODE" -ne "200" ]]; then
+    ssh $DOCKER_REPO_HOST find /var/docker-registry/data/docker/registry/v2/repositories -maxdepth 4 | grep _manifests/tags/ | sed 's/^\(\/var\/docker-registry\/data\/docker\/registry\/v2\/repositories\/\)//'| sed 's/\/_manifests\/tags\//:/'|sort
+  else
+    curl $LIST_URL
+  fi
 }
 
 if [ "$#" -eq 0 ]; then

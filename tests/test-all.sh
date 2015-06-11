@@ -6,6 +6,6 @@ cd $DIR
 FILES=`ls *.sh | grep -v test`
 for FILE in $FILES
 do
-  echo RUNNING $FILE
+  echo RUNNING TEST $FILE
   bash $FILE
 done;

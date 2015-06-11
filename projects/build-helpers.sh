@@ -51,6 +51,7 @@ function build_java_service_images() {
 	   --volume $DOCKER_SETUP_DIR:/scripts \
 	   $BASE_IMAGE bash /scripts/compile.sh
 
+	# TODO: run tests in build
 
 	echo "Building base image ..."
 

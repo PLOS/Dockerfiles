@@ -8,10 +8,6 @@ echo Compiling
 
 cd /src
 
-echo `pwd`
-ls
-
-# TODO: run tests in build
 mvn clean package
 
 cp target/*.war $BUILDDIR

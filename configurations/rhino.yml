@@ -67,7 +67,8 @@ mogiletracker:
 
 mogilenode:
   image: mogilenode
-#  image: rail44/mogile-mogilenode
 
 mogiledb:
-  image: orchardup/mysql                    # TODO: replace with percona
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root

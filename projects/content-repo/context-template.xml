@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Licensed to the Apache Software Foundation (ASF) under one or more
   contributor license agreements.  See the NOTICE file distributed with
@@ -15,34 +15,34 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<!-- The contents of this file will be loaded for each web application -->
 <Context>
- 
+
   <!-- Default set of monitored resources -->
   <WatchedResource>WEB-INF/web.xml</WatchedResource>
-            
-  <Resource name="jdbc/repoDB"
-    auth="Container"
-    type="javax.sql.DataSource"
-    factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
-    validationQuery="SELECT 1"
-    testOnBorrow="true"
-    driverClassName="com.mysql.jdbc.Driver"
-    username="repouser"
-    password=""
-    url="jdbc:mysql://repodb:3306/repo" />
-    
-  <Resource name="repo/objectStore"
-    type="org.plos.repo.service.ObjectStore"
-    factory="org.plos.repo.config.MogileStoreFactory"
-    domain="maindomain"
-    trackers="mogiletracker:7001"
-    maxTrackerConnections="1"
-    maxIdleConnections="1"
-    maxIdleTimeMillis="100" />
 
+  <Resource name="jdbc/repoDB" 
+            auth="Container" 
+            type="javax.sql.DataSource" 
+            factory="org.apache.tomcat.jdbc.pool.DataSourceFactory" 
+            validationQuery="SELECT 1" 
+            testOnBorrow="true" 
+            driverClassName="${db.driver}" 
+            username="${db.username}" 
+            password="${db.password}" 
+            url="${db.url}" />
+
+  <Resource name="repo/objectStore"
+            type="org.plos.repo.service.ObjectStore"
+            factory="org.plos.repo.config.MogileStoreFactory"
+            domain="maindomain"
+            trackers="mogiletracker:7001"
+            maxTrackerConnections="1"
+            maxIdleConnections="1"
+            maxIdleTimeMillis="100" />
+
+ 
 <!--   <Resource name="repo/objectStore"
     type="org.plos.repo.service.ObjectStore"
     factory="org.plos.repo.config.InMemoryStoreFactory" /> -->
-    
+
 </Context>

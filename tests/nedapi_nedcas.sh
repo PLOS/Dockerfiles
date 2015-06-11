@@ -13,8 +13,7 @@ wait_for_web_service $SVC_URL
 
 # begin tests
 
-curl_test_ok $SVC_URL/cas/login
-# curl_test_ok $SVC_URL/cas/status
+curl_test_ok $SVC_URL/cas/login "CAS"
 
 # end tests
 
