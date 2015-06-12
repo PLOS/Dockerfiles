@@ -48,7 +48,10 @@ mogiletracker:
     - mogiledb
     - mogilenode
   environment:
-    - MOG_DB_HOST=mogiledb
+    - MYSQL_HOSTNAME=mogiledb
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=mogile
+    - MYSQL_USER_PASSWORD=mogile
     - MOG_NODE_HOST=mogilenode
 
 mogilenode:

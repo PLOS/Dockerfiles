@@ -25,7 +25,9 @@ mogiletracker:
     - mogilenode
   environment:
     - MYSQL_HOSTNAME=mogiledb
-    - MYSQL_ROOT_PASSWORD=b
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=mogile
+    - MYSQL_USER_PASSWORD=mogile
     - MOG_NODE_HOST=mogilenode
 
 mogilenode:
@@ -34,4 +36,4 @@ mogilenode:
 mogiledb:
   image: percona:5.6
   environment:
-    - MYSQL_ROOT_PASSWORD=b
+    - MYSQL_ROOT_PASSWORD=root

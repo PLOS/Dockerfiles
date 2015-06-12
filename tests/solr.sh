@@ -7,7 +7,8 @@ source $SCRIPTDIR/test-helpers.sh
 
 start_stack
 
-SVC_URL=$(get_service_ip solr):8080
+# SVC_URL=$(get_service_ip solr):8080
+SVC_URL=localhost:8983
 
 wait_for_web_service $SVC_URL
 
