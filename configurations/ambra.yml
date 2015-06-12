@@ -4,7 +4,7 @@ ambra:
     - ambradb:ambradb
     - solr:solr
   ports:
-    - "8080:8080"
+    - "80:8080"
   volumes:
     - $HOME/datastores/ingest:/root/datastores/ingest
     - $HOME/datastores/ingested:/root/datastores/ingested
