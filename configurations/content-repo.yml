@@ -24,14 +24,14 @@ mogiletracker:
     - mogiledb
     - mogilenode
   environment:
-    - MOG_DB_HOST=mogiledb
+    - MYSQL_HOSTNAME=mogiledb
+    - MYSQL_ROOT_PASSWORD=b
     - MOG_NODE_HOST=mogilenode
 
 mogilenode:
   image: mogilenode
-#  image: rail44/mogile-mogilenode
 
 mogiledb:
   image: percona:5.6
   environment:
-    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_ROOT_PASSWORD=b

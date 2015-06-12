@@ -29,6 +29,7 @@ function start_stack {
 
 function stop_stack {
   docker-compose -f $COMPOSE_FILE kill
+  docker-compose -f $COMPOSE_FILE rm -f
 }
 
 function curl_test_ok {
