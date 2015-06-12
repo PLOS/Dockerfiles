@@ -43,15 +43,5 @@
     password="ambra"
     url="jdbc:mysql://ambradb:3306/ambra" />
 
-   <!--
-
- <Resource name="ambra/FileStore"
-    type="org.ambraproject.filestore.FileStoreService"
-    factory="org.ambraproject.filestore.impl.LocalFileStoreFactory"
-    baseDir="/home/jfinger/datastores/filesystem"
-    domain="ambra" />
-
-   -->
-
 </Context>
 
