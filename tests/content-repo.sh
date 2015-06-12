@@ -7,7 +7,8 @@ source $SCRIPTDIR/test-helpers.sh
 
 start_stack
 
-SVC_URL=$(get_service_ip repoapi):8080
+# SVC_URL=$(get_service_ip repoapi):8080
+SVC_URL=$(get_docker_host):8085
 
 wait_for_web_service $SVC_URL
 

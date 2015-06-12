@@ -10,6 +10,20 @@ function die {
   exit 1
 }
 
+function get_docker_host {
+  HOST="localhost"
+
+  if [ "$DOCKER_HOST"]; then
+    HOST=$DOCKER_HOST
+  elif [ command -v docker-machine >/dev/null 2>&1 ]; then
+    HOST=$(docker-machine ip)
+  elif [ command -v boot2docker >/dev/null 2>&1 ]; then
+    HOST=$(boot2docker ip)
+  fi
+  
+  echo $HOST
+}
+
 function get_service_ip {
   CONTAINER_BASENAME=$1
 
@@ -29,6 +43,7 @@ function start_stack {
 
 function stop_stack {
   docker-compose -f $COMPOSE_FILE kill
+  docker-compose -f $COMPOSE_FILE rm -f
 }
 
 function curl_test_ok {
