@@ -9,7 +9,7 @@ source $SCRIPTDIR/test-helpers.sh
 start_stack
 
 # SVC_URL=$(get_service_ip rhino):8080
-SVC_URL=localhost:8080
+SVC_URL=$(get_docker_host):8080
 
 wait_for_web_service $SVC_URL
 
