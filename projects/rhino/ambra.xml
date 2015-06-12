@@ -25,10 +25,10 @@
       <hosts> 
         <!-- Set hosts.default to FQHN (not localhost) if installing all components on one host 
           (or to webhead FQHN for multiple host installation) --> 
-        <default>plosone-jfinger</default> 
+        <default>plosone</default>
         <mailhost>localhost</mailhost> 
         <!-- For multibox install, change the following entires to the appropriate FQHNs --> 
-        <cas>${ambra.network.hosts.default}</cas>
+        <cas>cas-dev.plos.org</cas>
         <registration>${ambra.network.hosts.cas}</registration> 
         <fedora>${ambra.network.hosts.default}</fedora> 
         <mulgara>${ambra.network.hosts.default}</mulgara> 
@@ -43,7 +43,15 @@
       </ports> 
     </network> 
 
-    <platform> 
+    <platform>
+      <template_cache>
+        <strong>350</strong>
+        <soft>100</soft>
+        <update_delay>0</update_delay>  <!-- set to 0 for not cache freemarker templates -->
+      </template_cache>
+
+      <appContext></appContext>
+      <!-- common display constants -->
       <!-- common display constants --> 
       <copyright> 
         This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License, 
@@ -52,8 +60,7 @@
       <email> 
         <general>admin@plos.org</general> 
         <feedback>admin@plos.org</feedback> 
-		<errors>admin@plos.org</errors>
-
+		    <errors>admin@plos.org</errors>
       </email> 
       <freemarker>
         <almHost>http://alm.plos.org</almHost>
@@ -75,56 +82,71 @@
       <annoteaBodyId>info:fedora/</annoteaBodyId> 
     </aliases> 
 
-    <!-- Overlay journal config --> 
-    <virtualJournals> 
-      <templateDir>/home/jfinger/templates</templateDir>
-
-      <default>PLoSDefault</default> 
-      <journals>PLoSDefault,PLoSClinicalTrials,PLoSCollections,PLoSCompBiol,PLoSGenetics,PLoSNTD,PLoSONE,PLoSPathogens,PLoSBiology,PLoSMedicine</journals> 
-      <PLoSDefault> 
-        <url>http://ambra-jfinger:8080</url> 
-      </PLoSDefault> 
-      <PLoSClinicalTrials> 
-        <url>http://clinicaltrials-jfinger:8080</url> 
-      </PLoSClinicalTrials> 
-      <PLoSCollections> 
-        <url>http://ploscollections-jfinger:8080</url> 
-      </PLoSCollections> 
-      <PLoSCompBiol> 
-        <url>http://ploscompbiol-jfinger:8080</url> 
-    </PLoSCompBiol>
-
-			<PLoSGenetics> 
-        <url>http://plosgenetics-jfinger:8080</url> 
-      </PLoSGenetics> 
-      <PLoSNTD> 
-        <url>http://plosntds-jfinger:8080</url> 
-      </PLoSNTD> 
-      <PLoSONE> 
-        <url>http://plosone-jfinger:8080</url> 
-      </PLoSONE> 
-      <PLoSPathogens> 
-        <url>http://plospathogens-jfinger:8080</url> 
-      </PLoSPathogens> 
-      <PLoSBiology> 
-        <url>http://plosbiology-jfinger:8080</url> 
-      </PLoSBiology> 
-      <PLoSMedicine> 
-        <url>http://plosmedicine-jfinger:8080</url> 
-      </PLoSMedicine> 
-    </virtualJournals> 
+    <!-- Overlay journal config -->
+    <virtualJournals>
+      <templateDir>/root/templates</templateDir>
+      <default>PLoSDefault</default>
+      <journals>
+        PLoSDefault,PLoSClinicalTrials,PLoSCollections,PLoSCompBiol,PLoSGenetics,PLoSNTD,PLoSONE,PLoSPathogens,PLoSBiology,PLoSMedicine
+      </journals>
+      <AmbraJournal>
+        <url>http://ambra-local</url>
+      </AmbraJournal>
+      <PLoSDefault>
+        <url>http://ambra-local</url>
+        <eIssn>0000-0000</eIssn>
+      </PLoSDefault>
+      <PLoSClinicalTrials>
+        <url>http://clinicaltrials-local</url>
+        <eIssn>1555-5887</eIssn>
+      </PLoSClinicalTrials>
+      <PLoSCollections>
+        <url>http://ploscollections-local</url>
+        <eIssn>3333-3333</eIssn>
+      </PLoSCollections>
+      <PLoSCompBiol>
+        <url>http://ploscompbiol-local</url>
+        <eIssn>1553-7358</eIssn>
+      </PLoSCompBiol>
+      <PLoSGenetics>
+        <url>http://plosgenetics-local</url>
+        <eIssn>1553-7404</eIssn>
+      </PLoSGenetics>
+      <PLoSNTD>
+        <url>http://plosntds-local</url>
+        <eIssn>1935-2735</eIssn>
+      </PLoSNTD>
+      <PLoSONE>
+        <url>http://plosone-local</url>
+        <eIssn>1932-6203</eIssn>
+      </PLoSONE>
+      <PLoSPathogens>
+        <url>http://plospathogens-local</url>
+        <eIssn>1553-7374</eIssn>
+      </PLoSPathogens>
+      <PLoSBiology>
+        <url>http://plosbiology-local</url>
+        <eIssn>1545-7885</eIssn>
+      </PLoSBiology>
+      <PLoSMedicine>
+        <url>http://plosmedicine-local</url>
+        <eIssn>1549-1676</eIssn>
+      </PLoSMedicine>
+    </virtualJournals>
 
     <services> 
 			 <database>
-					<driver>com.mysql.jdbc.Driver</driver>
-					<url>jdbc:mysql://ambradb/ambra</url>
-					<username>ambra</username>
-					<password>ambra</password>
+			   <driver>com.mysql.jdbc.Driver</driver>
+				 <url>jdbc:mysql://ambradb/ambra</url>
+				 <username>ambra</username>
+				 <password>ambra</password>
       </database> 
       <filestore>
         <basedir>/root/datastores/filestore/ambra</basedir>
       </filestore>
-		<search> 
+		  <search>
+        <articleIndexingQueue>activemq:plos.solr.article.index</articleIndexingQueue>
+        <indexingMailReceiver>do-not-reply@plos.org</indexingMailReceiver>
         <!-- Fields of lucene meta data that are searched by default --> 
         <defaultFields>description,title,body,creator</defaultFields> 
         <!-- Number of snippets to show per document --> 
@@ -136,7 +158,7 @@
 				<server>
 
 				
-				<url>http://solr:8983/solr</url>
+				<url>http://solr:8080/solr</url>
 				</server>
       </search> 
 
@@ -174,8 +196,6 @@
       <documentManagement> 
 	<ingestSourceDir>/root/datastores/ingest/</ingestSourceDir>
 	<ingestDestinationDir>/root/datastores/ingested/</ingestDestinationDir>
-	<auto_ingestSourceDir>/root/datastores/autoingest/</auto_ingestSourceDir>
-	<auto_ingestDestinationDir>/root/datastores/ingested/</auto_ingestDestinationDir>
         <imageMagick> 
           <executablePath>/usr/bin/convert</executablePath> 
           <tempDirectory>/tmp</tempDirectory> 
@@ -190,14 +210,7 @@
             </imageSet> 
           </imageSetConfigs> 
         </imageMagick> 
-      </documentManagement> 
-
-      <!-- taxonomy -->
-
-      <ai>
-        <url>http://tax.plos.org:9080/servlet/dh</url>
-        <thesaurus>plosthes.2013-5</thesaurus>
-      </ai> 
+      </documentManagement>
 
       <!-- crossref information - set parameters and sendToXref to true to turn on --> 
       <crossref> 
@@ -245,7 +258,6 @@
     <ehcache>
 	    <configFileLocation>/etc/ambra/ehcache.xml</configFileLocation>
     </ehcache>
-
 
     </services> 
     
