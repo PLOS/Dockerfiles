@@ -1,0 +1,434 @@
+################################ System Config ################################
+
+server: http://rhino:8080/
+# URL of the server for the service API ("Rhino")
+
+compiledAssetDir: null
+# The local directory to which to write compiled JavaScript and CSS assets.
+#
+# If null, JavaScript and CSS code will not be compiled, so it will show up
+# unminified for "dev mode".
+
+httpConnectionPool:
+  maxTotal:           100
+  defaultMaxPerRoute: 100
+# Values for HTTP connection management. Setting these too low can cause
+# serious performance degradation. For details, see
+# org.apache.http.impl.conn.PoolingHttpClientConnectionManager,
+# http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html
+
+cache:
+  memcachedHost: null
+  memcachedPort: null
+  cacheAppPrefix: null
+# Parameters for Memcached. Set all to null to disable Memcached. Otherwise,
+# all three are required.
+
+cas:
+  casUrl: https://register.plos.org/cas
+  loginUrl: https://register.plos.org/cas/login
+  logoutUrl: https://register.plos.org/cas/logout
+
+  serviceUrl: http://localhost:8234/wombat/j_spring_cas_security_check
+  logoutServiceUrl: http://localhost:8234/wombat/user/logout
+# cas.serviceUrl is in the form of 'webapp url/j_spring_cas_security_check'.
+# cas.logoutServiceUrl is the url that will be used by cas to bring the user
+# back to the web application. This url should be in the form of 'webapp
+# url/user/logout'.
+
+################################### Themes ####################################
+
+themes:
+
+  # ========================================
+  # Prototype non-PLOS themes.
+
+  - key:    DesktopGeneric
+    path:   /root/themes/code/desktop/Generic
+    parent: .Desktop
+
+  - key:    MobileGeneric
+    path:   /root/themes/code/mobile/Generic
+    parent: .Mobile
+
+  # ========================================
+  # Theme common to all PLOS journal sites, regardless of the device type
+  # (desktop or mobile) and which journal it is.
+
+  - key:    Plos
+    path:   /root/themes/code/general/Plos
+    parent: .Root
+
+  # ========================================
+  # Themes for a site category (device type) that are not specific to a
+  # journal.
+
+  - key:    DesktopPlos
+    path:   /root/themes/code/desktop/Plos
+    parent:
+      - Plos
+      - .Desktop
+
+  - key:    MobilePlos
+    path:   /root/themes/code/mobile/Plos
+    parent:
+      - Plos
+      - .Mobile
+
+  # ========================================
+  # Themes for a journal that are not specific to a site category.
+
+  - key:    PlosOne
+    path:   /root/themes/code/general/PlosOne
+    parent: Plos
+
+  - key:    PlosBiology
+    path:   /root/themes/code/general/PlosBiology
+    parent: Plos
+
+  - key:    PlosMedicine
+    path:   /root/themes/code/general/PlosMedicine
+    parent: Plos
+
+  - key:    PlosCompBiol
+    path:   /root/themes/code/general/PlosCompBiol
+    parent: Plos
+
+  - key:    PlosGenetics
+    path:   /root/themes/code/general/PlosGenetics
+    parent: Plos
+
+  - key:    PlosPathogens
+    path:   /root/themes/code/general/PlosPathogens
+    parent: Plos
+
+  - key:    PlosNtds
+    path:   /root/themes/code/general/PlosNtds
+    parent: Plos
+
+  - key:    PlosCollections
+    path:   /root/themes/code/general/PlosCollections
+    parent: Plos
+
+  - key:    PlosClinicalTrials
+    path:   /root/themes/code/general/PlosClinicalTrials
+    parent: Plos
+
+  # ========================================
+  # Themes for individual sites. Each of these is specific to both a journal
+  # and a device type.
+
+  - key:    DesktopPlosOne
+    path:   /root/themes/code/desktop/PlosOne
+    parent:
+      - PlosOneContent
+      - DesktopPlos
+      - PlosOne
+
+  - key:    DesktopPlosBiology
+    path:   /root/themes/code/desktop/PlosBiology
+    parent:
+      - PlosBiologyContent
+      - DesktopPlos
+      - PlosBiology
+
+  - key:    DesktopPlosMedicine
+    path:   /root/themes/code/desktop/PlosMedicine
+    parent:
+      - PlosMedicineContent
+      - DesktopPlos
+      - PlosMedicine
+
+  - key:    DesktopPlosCompBiol
+    path:   /root/themes/code/desktop/PlosCompBiol
+    parent:
+      - PlosCompBiolContent
+      - DesktopPlos
+      - PlosCompBiol
+
+  - key:    DesktopPlosGenetics
+    path:   /root/themes/code/desktop/PlosGenetics
+    parent:
+      - PlosGeneticsContent
+      - DesktopPlos
+      - PlosGenetics
+
+  - key:    DesktopPlosPathogens
+    path:   /root/themes/code/desktop/PlosPathogens
+    parent:
+      - PlosPathogensContent
+      - DesktopPlos
+      - PlosPathogens
+
+  - key:    DesktopPlosNtds
+    path:   /root/themes/code/desktop/PlosNtds
+    parent:
+      - PlosNtdsContent
+      - DesktopPlos
+      - PlosNtds
+
+  - key:    DesktopPlosCollections
+    path:   /root/themes/code/desktop/PlosCollections
+    parent:
+      - PlosCollectionsContent
+      - DesktopPlos
+      - PlosCollections
+
+  - key:    DesktopPlosClinicalTrials
+    path:   /root/themes/code/desktop/PlosClinicalTrials
+    parent:
+      - PlosClinicalTrialsContent
+      - DesktopPlos
+      - PlosClinicalTrials
+
+  - key:    MobilePlosOne
+    path:   /root/themes/code/mobile/PlosOne
+    parent:
+      - PlosOneContent
+      - MobilePlos
+      - PlosOne
+
+  - key:    MobilePlosBiology
+    path:   /root/themes/code/mobile/PlosBiology
+    parent:
+      - PlosBiologyContent
+      - MobilePlos
+      - PlosBiology
+
+  - key:    MobilePlosMedicine
+    path:   /root/themes/code/mobile/PlosMedicine
+    parent:
+      - PlosMedicineContent
+      - MobilePlos
+      - PlosMedicine
+
+  - key:    MobilePlosCompBiol
+    path:   /root/themes/code/mobile/PlosCompBiol
+    parent:
+      - PlosCompBiolContent
+      - MobilePlos
+      - PlosCompBiol
+
+  - key:    MobilePlosGenetics
+    path:   /root/themes/code/mobile/PlosGenetics
+    parent:
+      - PlosGeneticsContent
+      - MobilePlos
+      - PlosGenetics
+
+  - key:    MobilePlosPathogens
+    path:   /root/themes/code/mobile/PlosPathogens
+    parent:
+      - PlosPathogensContent
+      - MobilePlos
+      - PlosPathogens
+
+  - key:    MobilePlosNtds
+    path:   /root/themes/code/mobile/PlosNtds
+    parent:
+      - PlosNtdsContent
+      - MobilePlos
+      - PlosNtds
+
+  - key:    MobilePlosCollections
+    path:   /root/themes/code/mobile/PlosCollections
+    parent:
+      - PlosCollectionsContent
+      - MobilePlos
+      - PlosCollections
+
+  - key:    MobilePlosClinicalTrials
+    path:   /root/themes/code/mobile/PlosClinicalTrials
+    parent:
+      - PlosClinicalTrialsContent
+      - MobilePlos
+      - PlosClinicalTrials
+
+  # ========================================
+  # Content themes, which contain template snippets that are frequently edited
+  # in order to update site content.
+
+  - key:    PlosContent
+    path:   /root/themes/content/Plos
+    parent: Plos
+
+  - key:    PlosOneContent
+    path:   /root/themes/content/PlosOne
+    parent:
+      - PlosContent
+      - PlosOne
+
+  - key:    PlosBiologyContent
+    path:   /root/themes/content/PlosBiology
+    parent:
+      - PlosContent
+      - PlosBiology
+
+  - key:    PlosMedicineContent
+    path:   /root/themes/content/PlosMedicine
+    parent:
+      - PlosContent
+      - PlosMedicine
+
+  - key:    PlosCompBiolContent
+    path:   /root/themes/content/PlosCompBiol
+    parent:
+      - PlosContent
+      - PlosCompBiol
+
+  - key:    PlosGeneticsContent
+    path:   /root/themes/content/PlosGenetics
+    parent:
+      - PlosContent
+      - PlosGenetics
+
+  - key:    PlosPathogensContent
+    path:   /root/themes/content/PlosPathogens
+    parent:
+      - PlosContent
+      - PlosPathogens
+
+  - key:    PlosNtdsContent
+    path:   /root/themes/content/PlosNtds
+    parent:
+      - PlosContent
+      - PlosNtds
+
+  - key:    PlosCollectionsContent
+    path:   /root/themes/content/PlosCollections
+    parent:
+      - PlosContent
+      - PlosCollections
+
+  - key:    PlosClinicalTrialsContent
+    path:   /root/themes/content/PlosClinicalTrials
+    parent:
+      - PlosContent
+      - PlosClinicalTrials
+
+#################################### Sites ####################################
+
+sites:
+
+  - key:   DesktopGeneric
+    theme: DesktopGeneric
+
+  - key:   MobileGeneric
+    theme: MobileGeneric
+
+  - key:   DesktopPlosOne
+    theme: DesktopPlosOne
+
+  - key:   DesktopPlosBiology
+    theme: DesktopPlosBiology
+
+  - key:   DesktopPlosMedicine
+    theme: DesktopPlosMedicine
+
+  - key:   DesktopPlosCompBiol
+    theme: DesktopPlosCompBiol
+
+  - key:   DesktopPlosGenetics
+    theme: DesktopPlosGenetics
+
+  - key:   DesktopPlosPathogens
+    theme: DesktopPlosPathogens
+
+  - key:   DesktopPlosNtds
+    theme: DesktopPlosNtds
+
+  - key:   DesktopPlosCollections
+    theme: DesktopPlosCollections
+
+  - key:   DesktopPlosClinicalTrials
+    theme: DesktopPlosClinicalTrials
+
+  - key:   MobilePlosOne
+    theme: MobilePlosOne
+
+  - key:   MobilePlosBiology
+    theme: MobilePlosBiology
+
+  - key:   MobilePlosMedicine
+    theme: MobilePlosMedicine
+
+  - key:   MobilePlosCompBiol
+    theme: MobilePlosCompBiol
+
+  - key:   MobilePlosGenetics
+    theme: MobilePlosGenetics
+
+  - key:   MobilePlosPathogens
+    theme: MobilePlosPathogens
+
+  - key:   MobilePlosNtds
+    theme: MobilePlosNtds
+
+  - key:   MobilePlosCollections
+    theme: MobilePlosCollections
+
+  - key:   MobilePlosClinicalTrials
+    theme: MobilePlosClinicalTrials
+
+
+
+
+# +?++?++?++?++??????===+?=~:~=~~=~++~~~~:,~~,,,::,,,,,,,,::,,,,,~::~=~==::,,:,,:=
+# +?+++?+++=+=+?+++====I7+:~:~~=~~~~::~~:,:::,,:,...,,....:~.:,,:.::+~=~==~::,,,,=
+# +?++???++=~~=++=+===?:,:~~:~~~=~~~~~=~:,::,,,,,,,.,,..,.I..,,.,,~:?=~~==~::::,,:
+# ==~===+====~====~~+?,:::++~:~~=~~====::::,,,,,,...,,. .=.:,..,,::~~=~+==::,,,,,,
+# ====~=~~~:,~=~=~~~=,,::~,~=::~==+~~~::::,,,.,...... . ,=Z...,.,,,:~+=+~~~:::,,,,
+# =~~~~~~:~..+,,,:~,,,,:,,:~:.,:=+~~:~::,.,..,,,......=~,.8=....,,,,~~=~~~~~:~~,,,
+# ~~~::~:==:,.~.~,,.,,,,:,~:,,,:~:::::,,.... ... .. .++=.:DZ ,.,,,,::::~~:~~:::,,,
+# :::~=:~=:,.....: ,,....,~:,,,,:~~,,:,,,,....... .::+~..+D ...,,:,:,:,:::~~~::,,,
+# ~::::~:::, .....=:.., ,::,:,::I~,:,,,.........:+.. .,..$M .,,:::,,.,,:::~~~~~:,,
+# ~:::::,. , ......:$...,:,,:,:~~:::,,:,,::~=~,:?+~......O$:,,,:,,:,,.,,,::~~~~=,:
+# ~,:,,.. ..........,$I.,~~~,==+:,:,,.:~+$77?=?.. +.. ...$:,,,,:,::,,,,.,::~~~~~::
+# ~~,................,++:~~~==+7?8O++IO$I?~,,=+.:.,== ...7 ,::::,:,,,,,,~:~~~~~~~,
+# =~,... .............=+..:+~:.?~?$87Z$7==~+:,~~$7+:~:...+..:::::::::,,~~::~~~~::,
+# ==~::,,,.. .........+ . :,... .:?Z,?~~~,~,. ,,.=?7?+~: ~..:::::::~::~=~~~~~~:,,.
+# ==~,,,,,......... ..:,.......,:?==+???,~.,:  ,.:::I7=I7:.,:::::::~::+=~~::~:::.,
+# ==~:,,,..,,,......~..+.   .. .~+I=~~~.=,=. :,:~,:,,+$7O$?~:,:,,::~,:+==~~~:~~:.:
+# ===:,..,..,,.....:.. .. ......+,+~~~=~:.:......~.,..:7ZZ$~::,,,,,,:~=~~~~~~~~,.,
+# ~~~:,.,:,.,.......... .........=~.=~I=....:, ,. ..,~::$O8I::,..,,:,:~::~:~:::..:
+# ::~:,,:,,,....................... ,:. .. ,:~~~7 ~: ~~=?8DN?~:..:,.,::::~,:::,...
+# ~~:.,.:,,,.,.,.~:.................., . .. . . ~~?+??~:+7DNMD:,,::,.,::::,,:,,...
+# ~::,:.,,,,. .,:==........:: .... .. ... ....~..~,$7I=:+7ODNMM?,:,,,....,,:,,,.,,
+# ::,,,,...,...,,==~:.... ..........,.:,.......:,,,$+OI7I?ZD8MMMO::,.......,::, ,,
+# :,,,:......,,..++:~...,...  .........,  ......?=7$7+ZI77$DOMMM8I+,,......,,~, ,,
+# :::::,,....,,::I++,..:...., ..... ..,:,,.:....?$MMMMMD=?I8DNDD$77Z, . .,,:=,,..,
+# ::.,,.... . ~,:7=+:==~~ZZ7$+ .....  :.: ..:?~ ~Z78NNMZZ$78NMMNO~+7I?,...~:.....,
+# ,,,........++7I7?+~==~MMNO$+   .....=:~=::~=I~.+ZDI.:DO7$ZDNNMI+I+Z$7,.,~: . ...
+# ,,,.......?~~7$~=, .+$78?I::.~:...,.=+?++~I=I7$=ZZ?.+O8O$8NNMMI~~~=I7$:. . ....
+# ,,......~?:+I?,,?..,~=, .I.:,. .~=~+,..,~=~+I$7=~=7??=7$OOOMMM7.~?:?OZ77,, . ...
+# ,,.....=:~+?I=~===:~I? ...:+,..~:=~, .,~~~:~?7Z=...~I++~=O8MMM$~:++IZ$I$Z: . ...
+# ,,,..~:~.:7$?:~?+=:~?=+ .. ..,,:~~~,,.,.~===+I?= .... ~?.$ZDMM8+.?~=?ZZIZO:.....
+# ,. ,I+~~:+7$ :,  ~~I? , ......~==~ , .. .:?:=I?==:,,.+I=,OOO8DM~? ~=+ZZZZDZ ....
+# ,.~+~,~=+7I~~= :,.:........ . ~++:.......??:=+I7ZI~~=~,:,NMNMMN~, ,++?IODNZ ....
+# ,~~=..,=,7+++,..==+......... ::I~.=+??$+77$+?O$$$$=~=?==IDDNNMNO=:+++7OZ8DD=....
+# :,. ,~,==I~.+, .=~=........ .:7$$?$7778?7Z8M$ODI?ZN?7$IZ8NND8DDO7+=~~78OZ88O,...
+#  . . ~:=I?+==,...=,........ ,.7ZZOI$I?I++ZM?+8O=+$D$$ZZZOI?OMNDNO+~?7+IZ8ZZN~ ..
+# ...,~:=II~.==  ..~,=?~....  . =ZZ7=??:,=?=$ODD7,ZI8D88?77IZNMMM8$?==?7ZDZZ88$...
+# ... ,:IZ$::. ... ,.:=:,    ,.  ~7ZZOOZ7$$??7++,:77Z$ZO$7Z8MMMDMMI.7+.7OO?$788, .
+# ....,:Z77=,,.....,,.........,.. .=O$$~:.......IZ7?I88O88MMMNMMNI7:..I7Z7I~I8O: .
+# ..: .=II=:. ......?+,...........~ ...:+OI+:IIN78$$NDZNDMMMMNMD+?~  ~$=7+:~?OO+ .
+# .,.:=?I.~,,,,.....:?$OI=~. .....:+7Z8DMD88O88$7ZOD$8NMMNMMMM887  .?=++,=~=?O8$,.
+#  ~+.=I7.~~.,.... .,O=Z77O$,,... ,++I$ONMMDZZ$I$ZZOMMNMMNMNN887, ,~~$?:.,..?8DDDD
+# ~:.= +$, :~ ......... .IM$7I7++?+IZZDMMMMMMMMMNNMMMMMNNNMN8OZ$I,,,.==..,=?$ZDNMN
+# ,:=~=7$ .. . ,..,= ~....:=+OZOZIZOODMNMMMMMMMMMMMM8NDD8MDOZ$7I~ ... +I: ..?ZDDNM
+# =?I+?7?... .~:: ...,~......:~Z8?I$O8MMNMMMMMMMMMMMDNN8MDO$7I+~........ .=?IZ8NNM
+# ,~=I$?7,,...... .. ..?,: ....,,=. ~I7$ZNO8NMMMMMNN8OON8Z$$7?=~,.........,?$$OMMM
+# ,=?IZ7$.. .........., .. , ........ .,:,I?$NNZO8Z$$$ZZ$II7ODZI+.,++~.....,.I8NON
+# .,==78Z:............................. ..+IZ7$?=??+~+~=+~~,:=~:.+7........,=ZDDNM
+# ...:I$ZI............................ ,+=ZOZ$N:..,........::?$O? .......,.~?ZMMNM
+# . . ~I$:     .      . . ..  . . .  ..,,=IOI:,...........,$7Z7:......... ,=$ONMMM
+# ....~+$................................., .............,IZ8I...........=$Z8MMMMD
+# .....+? . ...............................  ............7DM=...........,$8NMDDMOZ
+#
+# Photo: "Southern Hairy-nosed Wombat (Lasiorhinus latifrons)" by Stygiangloom
+# <http://commons.wikimedia.org/wiki/File:Wombat_1.jpg>
+# Available under the Creative Commons Attribution 2.0 Generic License
+# <http://creativecommons.org/licenses/by/2.0/deed.en>
+#
+# ASCII-fied by <http://www.glassgiant.com/ascii/>
+
