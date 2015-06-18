@@ -17,7 +17,7 @@ rhino:
   ports:
     - "8080:8080"
   volumes:
-    - $HOME/datastores/ingest:/root/ingest 
+    - $HOME/datastores/ingest:/root/ingest
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
