@@ -8,10 +8,12 @@ source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
 
-# TODO: use a more up to date SQL schema dump
-echo "CREATE SCHEMA IF NOT EXISTS $MYSQL_DATABASE" | $MYSQL_ROOT
-$MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_schema.sql
-$MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_version.sql
+if ! check_db_exists; then
+  echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_schema_1005.sql
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_data.sql
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/issue.sql
+fi
 
 set_db_grants
 
@@ -23,7 +25,5 @@ cp /etc/ambra/log4j.xml $CATALINA_HOME/lib
 cp /etc/ambra/ehcache.xml $CATALINA_HOME/lib
 
 setup_war_in_tomcat
-
-wait_until_db_ready
 
 start_tomcat

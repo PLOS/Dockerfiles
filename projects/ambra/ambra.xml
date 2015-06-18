@@ -135,9 +135,6 @@
     </virtualJournals>
 
     <services>
-      <filestore>
-        <basedir>/root/datastores/filestore/ambra</basedir>
-      </filestore>
 		  <search>
         <articleIndexingQueue>activemq:plos.solr.article.index</articleIndexingQueue>
         <indexingMailReceiver>do-not-reply@plos.org</indexingMailReceiver>

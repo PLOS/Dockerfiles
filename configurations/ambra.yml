@@ -3,12 +3,12 @@ ambra:
   links:
     - ambradb:ambradb
     - solr:solr
+    - contentrepo:repo
   ports:
     - "80:8080"
   volumes:
     - $HOME/datastores/ingest:/root/datastores/ingest
     - $HOME/datastores/ingested:/root/datastores/ingested
-    - $HOME/datastores/filestore/ambra:/root/datastores/filestore/ambra
     - $HOME/Projects/templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
@@ -30,3 +30,45 @@ solr:
     - "8983:8080"
   volumes:
     - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+
+contentrepo:
+  image: contentrepo:current
+  links:
+    - repodb
+    - mogilenode
+    - mogiletracker
+  ports:
+    - "8085:8080"
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=repouser
+    - MYSQL_USER_PASSWORD=
+    - MYSQL_HOSTNAME=repodb
+    - MYSQL_DATABASE=repo
+
+repodb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  ports:
+    - "3305:3306"
+
+mogiletracker:
+  image: mogiletracker
+  links:
+    - mogiledb
+    - mogilenode
+  environment:
+    - MYSQL_HOSTNAME=mogiledb
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=mogile
+    - MYSQL_USER_PASSWORD=mogile
+    - MOG_NODE_HOST=mogilenode
+
+mogilenode:
+  image: mogilenode
+
+mogiledb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
