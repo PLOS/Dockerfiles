@@ -13,12 +13,10 @@ function die {
 function get_docker_host {
   HOST="localhost"
 
-  if [ "$DOCKER_HOST"]; then
-    HOST=$DOCKER_HOST
-  elif [ command -v docker-machine >/dev/null 2>&1 ]; then
-    HOST=$(docker-machine ip)
-  elif [ command -v boot2docker >/dev/null 2>&1 ]; then
+  if command -v boot2docker >/dev/null 2>&1 ; then
     HOST=$(boot2docker ip)
+  elif command -v docker-machine >/dev/null 2>&1 ; then
+    HOST=$(docker-machine ip)
   fi
   
   echo $HOST
