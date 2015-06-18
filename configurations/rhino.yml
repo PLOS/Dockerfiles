@@ -7,8 +7,7 @@ rhino:
   ports:
     - "8080:8080"
   volumes:
-    - $HOME/datastores/ingest:/root/datastores/ingest      # is this how you ingest still? look at sfo-dpro-devstack01
-    - $HOME/datastores/ingested:/root/datastores/ingested    # make sure these are created on the host first
+    - $HOME/datastores/ingest:/root/ingest
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
