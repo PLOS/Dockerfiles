@@ -134,13 +134,7 @@
       </PLoSMedicine>
     </virtualJournals>
 
-    <services> 
-			 <database>
-			   <driver>com.mysql.jdbc.Driver</driver>
-				 <url>jdbc:mysql://ambradb/ambra</url>
-				 <username>ambra</username>
-				 <password>ambra</password>
-      </database> 
+    <services>
       <filestore>
         <basedir>/root/datastores/filestore/ambra</basedir>
       </filestore>
