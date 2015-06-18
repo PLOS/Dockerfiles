@@ -13,8 +13,6 @@ if ! check_db_exists; then
   echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_schema_1005.sql
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_data.sql
- # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/volume.sql
- # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/articleList.sql
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/issue.sql
 fi
 
