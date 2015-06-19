@@ -84,7 +84,6 @@
 
     <!-- Overlay journal config -->
     <virtualJournals>
-      <templateDir>/root/templates</templateDir>
       <default>PLoSDefault</default>
       <journals>
         PLoSDefault,PLoSClinicalTrials,PLoSCollections,PLoSCompBiol,PLoSGenetics,PLoSNTD,PLoSONE,PLoSPathogens,PLoSBiology,PLoSMedicine
@@ -135,9 +134,6 @@
     </virtualJournals>
 
     <services>
-      <filestore>
-        <basedir>/root/datastores/filestore/ambra</basedir>
-      </filestore>
 		  <search>
         <articleIndexingQueue>activemq:plos.solr.article.index</articleIndexingQueue>
         <indexingMailReceiver>do-not-reply@plos.org</indexingMailReceiver>

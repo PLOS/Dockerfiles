@@ -7,9 +7,6 @@ ambra:
   ports:
     - "80:8080"
   volumes:
-    - $HOME/datastores/ingest:/root/datastores/ingest
-    - $HOME/datastores/ingested:/root/datastores/ingested
-    - $HOME/datastores/filestore/ambra:/root/datastores/filestore/ambra
     - $HOME/Projects/templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
