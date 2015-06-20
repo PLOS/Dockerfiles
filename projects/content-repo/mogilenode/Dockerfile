@@ -15,7 +15,7 @@ ADD ./mogstored.conf /node/mogstored.conf
 #RUN bash df.sh
 #RUN type df
 
-RUN echo "$(which df) $(echo $@ | sed s/-l//)" > /root/df; chmod 755 /root/df
+RUN echo "$(which df) \$(echo \$@ | sed s/-l//)" > /root/df; chmod 755 /root/df
 ENV PATH /root:$PATH
 RUN echo $PATH
 RUN which df
