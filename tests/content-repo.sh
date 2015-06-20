@@ -15,6 +15,17 @@ wait_for_web_service $SVC_URL
 
 # perform tests
 
+MOGILE_TRACKER=$(get_container_name mogiletracker)
+
+docker exec -it $MOGILE_TRACKER bash -c  "echo -n foo | mogupload --trackers=localhost --domain=maindomain --key=bar --file='-'"
+
+MOGOUT=$(docker exec -it $MOGILE_TRACKER mogfetch --trackers=localhost --domain=maindomain --key=bar --file='-')
+
+if [[ "$MOGOUT" != "foo" ]]; then
+	die "Mogile write failed"
+fi
+
+
 curl $SVC_URL/config
 curl_test_ok $SVC_URL/config "Repo"
 
