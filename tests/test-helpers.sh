@@ -13,19 +13,20 @@ function die {
 function get_docker_host {
   HOST="localhost"
 
-<<<<<<< HEAD
   if boot2docker ip >/dev/null 2>&1 ; then
     HOST=$(boot2docker ip)
   elif docker-machine ip >/dev/null 2>&1 ; then
-=======
-  if command -v boot2docker >/dev/null 2>&1 ; then
-    HOST=$(boot2docker ip)
-  elif command -v docker-machine >/dev/null 2>&1 ; then
->>>>>>> master
     HOST=$(docker-machine ip)
   fi
   
   echo $HOST
+}
+
+function parse_json {
+  INPUT=$1
+  LOOK_FOR=$2
+
+  echo "$($INPUT | bash JSON.sh -b | sed 's/\"//g' | grep '\[$LOOK_FOR\]' | awk '{print $2}')"
 }
 
 function get_container_name {
