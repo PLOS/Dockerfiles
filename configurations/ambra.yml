@@ -1,20 +1,19 @@
-rhino:
-  image: rhino:current
+ambra:
+  image: ambra:current
   links:
     - ambradb:ambradb
-    - contentrepo:repo
     - solr:solr
+    - contentrepo:repo
   ports:
-    - "8080:8080"
+    - "80:8080"
   volumes:
-    - $HOME/datastores/ingest:/root/ingest
+    - $HOME/Projects/templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
     - MYSQL_USER_PASSWORD=ambra
     - MYSQL_HOSTNAME=ambradb
     - MYSQL_DATABASE=ambra
-    - REPO_SERVICE=http://repo:8080
 
 ambradb:
   image: percona:5.6

@@ -3,6 +3,6 @@ solr:
   ports:
     - "8983:8080"
   volumes:
-    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+    - $HOME/datastores/solr:/usr/local/tomcat/solr/home/data
   expose:
     - "8983"
