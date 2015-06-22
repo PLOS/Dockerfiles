@@ -13,12 +13,10 @@ function die {
 function get_docker_host {
   HOST="localhost"
 
-  if [ "$DOCKER_HOST"]; then
-    HOST=$DOCKER_HOST
-  elif [ command -v docker-machine >/dev/null 2>&1 ]; then
-    HOST=$(docker-machine ip)
-  elif [ command -v boot2docker >/dev/null 2>&1 ]; then
+  if command -v boot2docker >/dev/null 2>&1 ; then
     HOST=$(boot2docker ip)
+  elif command -v docker-machine >/dev/null 2>&1 ; then
+    HOST=$(docker-machine ip)
   fi
   
   echo $HOST
@@ -52,7 +50,7 @@ function curl_test_ok {
   TITLE=$2
   echo "curling $URL  ($TITLE)"
 
-  HTTP_CODE=$(curl -s -w "%{http_code}\\n" $URL -o /dev/null)
+  HTTP_CODE=$(curl -w "%{http_code}\\n" -s -o /dev/null $URL)
   if [[ "$HTTP_CODE" -ne "200" ]]; then
     echo "url = $URL   status code = $HTTP_CODE"
     die "TEST FAILED"

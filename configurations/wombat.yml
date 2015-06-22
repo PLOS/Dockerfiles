@@ -1,3 +1,13 @@
+wombat:
+  image: wombat:current
+  links:
+    - rhino:rhino
+    - contentrepo:repo
+  volumes:
+    - $HOME/Projects/themes:/root/themes
+  ports:
+      - "8081:8080"
+
 rhino:
   image: rhino:current
   links:

@@ -84,6 +84,7 @@
 
     <!-- Overlay journal config -->
     <virtualJournals>
+      <templateDir>/root/templates</templateDir>
       <default>PLoSDefault</default>
       <journals>
         PLoSDefault,PLoSClinicalTrials,PLoSCollections,PLoSCompBiol,PLoSGenetics,PLoSNTD,PLoSONE,PLoSPathogens,PLoSBiology,PLoSMedicine
@@ -146,8 +147,6 @@
         <!-- Number of results per page --> 
         <pageSize>10</pageSize> 
 				<server>
-
-				
 				<url>http://solr:8080/solr</url>
 				</server>
       </search> 
@@ -183,9 +182,7 @@
         <defaultDuration>3</defaultDuration> 
       </feed>
 
-      <documentManagement> 
-	<ingestSourceDir>/root/datastores/ingest/</ingestSourceDir>
-	<ingestDestinationDir>/root/datastores/ingested/</ingestDestinationDir>
+      <documentManagement>
         <imageMagick> 
           <executablePath>/usr/bin/convert</executablePath> 
           <tempDirectory>/tmp</tempDirectory> 

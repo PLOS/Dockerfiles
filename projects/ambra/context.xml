@@ -43,5 +43,11 @@
     password="ambra"
     url="jdbc:mysql://ambradb:3306/ambra" />
 
+  <Resource name="ambra/FileStore"
+    type="org.ambraproject.filestore.FileStoreService"
+    factory="org.ambraproject.filestore.impl.ContentRepoFactory"
+    repoServer="http://repo:8080/"
+    bucketName="corpus"/>
+
 </Context>
 
