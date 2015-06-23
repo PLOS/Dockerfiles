@@ -61,11 +61,16 @@ function build_java_service_images() {
 
 # IN zsh works: docker run --volumes-from nedapi_build maven:3.3-jdk-8 tar -cf - -C /build . > out3.tar
 
+# works:  docker run -it --volumes-from nedapi_build maven:3.3-jdk-8 sh -c 'tar -cf /root/out.tar -C /build .; tar -tvf /root/out.tar'
+
+
 # ALSO WORKS: docker run --volumes-from nedapi_build maven:3.3-jdk-8 tar -czf - /build/ > out3.tar.gz
 
-	echo "	docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar"
+#  docker run --volumes-from nedapi_build maven:3.3-jdk-8 tar -cf - -C /build . > out3.tar
 
-	docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar
+	echo "	docker run --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar"
+
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar
 
 	# TODO: run tests in build
 
