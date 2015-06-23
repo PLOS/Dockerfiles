@@ -49,11 +49,33 @@ function build_java_service_images() {
 	   --volumes-from $BUILD_RESULT_DIR \
 	   --volume $PROJECT_LOCAL_REPO:/src \
 	   --volume $DOCKER_SETUP_DIR:/scripts \
-	   $BASE_IMAGE bash /scripts/compile.sh
+	   --volume $DOCKER_SETUP_DIR/..:/shared \
+	   $BASE_IMAGE sh -c 'cp /shared/run-helpers.sh /scripts/run.sh /root/;\
+	   	bash /scripts/compile.sh;'
+
+	   	# TODO: --rm this
+
+	# docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf /root/out.tar /build/*; cat /root/out.tar'> out.tar
+
+	# docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf /root/out.tar -C /build .; cat /root/out.tar'> out.tar
+
+# IN zsh works: docker run --volumes-from nedapi_build maven:3.3-jdk-8 tar -cf - -C /build . > out3.tar
+
+# ALSO WORKS: docker run --volumes-from nedapi_build maven:3.3-jdk-8 tar -czf - /build/ > out3.tar.gz
+
+	echo "	docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar"
+
+	docker run -it --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE tar -cf - -C /build . > out.tar
 
 	# TODO: run tests in build
 
 	echo "Building base image ..."
+
+
+
+	# docker build - < archive.tar.gz     The Dockerfile must be at the root of the archive
+
+
 
 	docker build -t $PROJECT_NAME:current $DOCKER_SETUP_DIR
 
@@ -61,12 +83,9 @@ function build_java_service_images() {
 
 	echo "Copying Java Assets into Tomcat Image..."
 
-	VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-							--volume $DOCKER_SETUP_DIR/..:/shared \
-							--volumes-from $BUILD_RESULT_DIR \
+	VERSION=$(docker run --volumes-from $BUILD_RESULT_DIR \
 							--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
 								'cp -r /build/*  /root;
-								 cp /shared/run-helpers.sh /scripts/run.sh /root/;
 								 cat /root/version.txt')
 
 	docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current

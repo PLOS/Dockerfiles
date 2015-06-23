@@ -19,7 +19,10 @@ cp src/main/resources/ned-*.mysql.sql $BUILDDIR
 
 # cp target/classes/version.properties $BUILDDIR/ned.version.properties
 # cp config/tomcat/context.xml $BUILDDIR/context-template.xml
+# ls /scripts
+
 cp /scripts/context-template.xml $BUILDDIR
+cp /scripts/Dockerfile $BUILDDIR
 
 grep ^version= target/classes/version.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
 
