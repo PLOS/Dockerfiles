@@ -10,7 +10,7 @@ echo Compiling
 cd /src
 ./ned.sh install
 
-ls -l target
+# ls -l target
 
 cp target/*.?ar $BUILDDIR
 
@@ -27,3 +27,5 @@ cp /scripts/Dockerfile $BUILDDIR
 grep ^version= target/classes/version.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
 
 rm -rf target
+
+ls $BUILDDIR
