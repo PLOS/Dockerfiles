@@ -4,6 +4,6 @@ LABEL vendor="Public Library of Science"
 
 RUN apt-get update && apt-get install -y mysql-client
 
-COPY /build/* /root
+COPY . /root
 
 CMD bash /root/run.sh

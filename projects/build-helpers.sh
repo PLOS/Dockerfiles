@@ -3,7 +3,7 @@
 MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
 
-function die () {
+function die() {
   echo "$@" 1>&2
   exit 1
 }
@@ -21,7 +21,7 @@ function build_java_service_images() {
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
 	BUILD_RESULT_DIR=${PROJECT_NAME}_build
-	TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
+	# TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
 
      # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];
@@ -50,18 +50,18 @@ function build_java_service_images() {
 	   --volume $PROJECT_LOCAL_REPO:/src \
 	   --volume $DOCKER_SETUP_DIR:/scripts \
 	   --volume $DOCKER_SETUP_DIR/..:/shared \
-	   $BASE_IMAGE sh -c 'cp /shared/run-helpers.sh /scripts/run.sh /root/;\
+	   $BASE_IMAGE sh -c 'cp /shared/run-helpers.sh /scripts/run.sh /build/;\
 	   	bash /scripts/compile.sh;'
 
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
 
 	echo version : $VERSION
 
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf - -C /build .' > docker build -t $PROJECT_NAME:current -
-
 	echo "Building base image ..."
 
-	# docker build - < archive.tar.gz     The Dockerfile must be at the root of the archive
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf - -C /build .' | docker build -t $PROJECT_NAME:current -
+
+	# docker build - < archive.tar.gz   # TODO: use gz file
 
 	# tag docker image with asset version number
 	echo "tagging container with version : $VERSION"
