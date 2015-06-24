@@ -41,7 +41,7 @@ function build_java_service_images() {
 	docker inspect $MAVEN_LOCAL_REPO > /dev/null
 	[ $? -eq 1 ] && docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
 
-	# build API war
+	# build java assets (ie - API war)
 	echo "Building and Loading Java Assets on Base Image (maven)..."
 
 	docker run --rm \
@@ -50,20 +50,16 @@ function build_java_service_images() {
 	   --volume $PROJECT_LOCAL_REPO:/src \
 	   --volume $DOCKER_SETUP_DIR:/scripts \
 	   --volume $DOCKER_SETUP_DIR/..:/shared \
-	   $BASE_IMAGE sh -c 'cp /shared/run-helpers.sh /scripts/run.sh /build/;\
-	   	bash /scripts/compile.sh;'
+	   $BASE_IMAGE bash /scripts/compile.sh
 
-	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
-
-	echo version : $VERSION
-
-	echo "Building base image ..."
-
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf - -C /build .' | docker build -t $PROJECT_NAME:current -
+	echo "Building runnable docker image ..."
 
 	# docker build - < archive.tar.gz   # TODO: use gz file
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf - -C /build .' | docker build -t $PROJECT_NAME:current -
 
 	# tag docker image with asset version number
+	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
+
 	echo "tagging container with version : $VERSION"
 
 	docker tag -f $PROJECT_NAME:current $PROJECT_NAME:$VERSION

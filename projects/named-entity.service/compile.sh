@@ -23,9 +23,11 @@ cp src/main/resources/ned-*.mysql.sql $BUILDDIR
 
 cp /scripts/context-template.xml $BUILDDIR
 cp /scripts/Dockerfile $BUILDDIR
+cp /scripts/run.sh $BUILDDIR
+cp /shared/run-helpers.sh $BUILDDIR
 
 grep ^version= target/classes/version.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
 
 rm -rf target
 
-ls $BUILDDIR
+# ls $BUILDDIR
