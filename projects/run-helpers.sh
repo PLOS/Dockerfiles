@@ -106,6 +106,8 @@ function setup_simple_tomcat_context {
 function setup_db_in_tomcat_context_template {
 	CONTEXT_TEMPALTE=$1
 
+	# TODO: simplify bash template: http://stackoverflow.com/questions/2914220/bash-templating-how-to-build-configuration-files-from-templates-with-bash
+
 	echo "Updating database in context template"
 
 	sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXT_TEMPALTE

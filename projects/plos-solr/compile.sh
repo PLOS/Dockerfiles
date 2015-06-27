@@ -1,23 +1,13 @@
 #!/bin/bash
 
-BUILDDIR="/build"
+source /shared/compile-helpers.sh
 
-rm $BUILDDIR/*
-
-echo Compiling
-
-cd /src
-
-echo `pwd`
-ls
+java_compile_prepare
 
 # TODO: run tests in build
-mvn clean install initialize package
 
+mvn clean install initialize package
 cp target/*.war $BUILDDIR
 cp logging/log4j.xml $BUILDDIR
-cp /scripts/* $BUILDDIR
 
-grep ^version= target/maven-archiver/pom.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
-
-rm -rf target
+java_compile_finish "target/maven-archiver/pom.properties"

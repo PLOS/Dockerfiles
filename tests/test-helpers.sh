@@ -18,7 +18,7 @@ function get_docker_host {
   elif docker-machine ip >/dev/null 2>&1 ; then
     HOST=$(docker-machine ip)
   fi
-  
+
   echo $HOST
 }
 
