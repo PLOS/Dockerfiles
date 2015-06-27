@@ -1,33 +1,11 @@
 #!/bin/bash
 
-BUILDDIR="/build"
-CONTEXTFILE=$BUILDDIR/context.xml
+source /shared/compile-helpers.sh
 
-rm $BUILDDIR/*
+java_compile_prepare
 
-echo Compiling
-
-cd /src
 ./ned.sh install
-
-# ls -l target
-
 cp target/*.?ar $BUILDDIR
-
-#ln -s $BUILDDIR/named-entity-service-*.war $BUILDDIR/ned.war
 cp src/main/resources/ned-*.mysql.sql $BUILDDIR
 
-# cp target/classes/version.properties $BUILDDIR/ned.version.properties
-# cp config/tomcat/context.xml $BUILDDIR/context-template.xml
-# ls /scripts
-
-cp /scripts/context-template.xml $BUILDDIR
-cp /scripts/Dockerfile $BUILDDIR
-cp /scripts/run.sh $BUILDDIR
-cp /shared/run-helpers.sh $BUILDDIR
-
-grep ^version= target/classes/version.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
-
-rm -rf target
-
-# ls $BUILDDIR
+java_compile_finish "target/classes/version.properties"

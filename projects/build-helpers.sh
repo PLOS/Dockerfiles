@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
 
@@ -54,8 +56,7 @@ function build_java_service_images() {
 
 	echo "Building runnable docker image ..."
 
-	# docker build - < archive.tar.gz   # TODO: use gz file
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -cf - -C /build .' | docker build -t $PROJECT_NAME:current -
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $PROJECT_NAME:current -
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
