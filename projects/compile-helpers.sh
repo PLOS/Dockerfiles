@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 BUILDDIR="/build"
 
@@ -23,8 +23,6 @@ function java_compile_finish {
   grep ^version= $PROPERTIES_FILE | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
 
   ls -lh $BUILDDIR
-
-  # cat $BUILDDIR/version.txt
 
   rm -rf target
 }

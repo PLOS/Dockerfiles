@@ -1,19 +1,10 @@
 #!/bin/bash
 
-BUILDDIR="/build"
+source /shared/compile-helpers.sh
 
-rm $BUILDDIR/*
+java_compile_prepare
 
-echo Compiling
-
-cd /src
 mvn clean package
-
 cp target/*.war $BUILDDIR
 
-cp /scripts/* $BUILDDIR
-cp /shared/run-helpers.sh $BUILDDIR
-
-grep ^version= target/maven-archiver/pom.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
-
-rm -rf target
+java_compile_finish "target/maven-archiver/pom.properties"

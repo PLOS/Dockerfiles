@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
