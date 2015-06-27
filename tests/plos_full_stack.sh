@@ -9,6 +9,8 @@ AMBRA_TITLE=ambra
 
 source $SCRIPTDIR/test-helpers.sh
 
+ARTICLE=pone.0099781
+
 cp $SCRIPTDIR/test_data/pone.0099781.zip $HOME/datastores/ingest
 
 start_stack
@@ -26,24 +28,25 @@ wait_for_web_service $AMBRA_URL
 curl_test_ok $RHINO_URL/articles $RHINO_TITLE
 #curl_test_ok $WOMBAT_URL/DesktopPlosOne $WOMBAT_TITLE
 
+curl -X POST -F name="$ARTICLE.zip" $RHINO_URL/ingestibles
 
-curl -X POST -F name="pone.0099781.zip" $RHINO_URL/ingestibles
+# TODO: get config_rhino_1 via helper function
+docker exec -it configurations_rhino_1 sh -c "echo UPDATE article SET state=0 WHERE doi LIKE \'%$ARTICLE\'|mysql -N -h ambradb -P 3306 -uroot -proot ambra"
 
-echo "update article set state=0 where doi like '%pone.0099781'" | mysql -h $DOCKER_HOST -P 3306 -uroot -proot ambra
-curl_test_ok $RHINO_URL/articles/info:doi/10.1371/journal.pone.0099781 $RHINO_TITLE
+# echo "update article set state=0 where doi like '%$ARTICLE'" | mysql -h $DOCKER_HOST -P 3306 -uroot -proot ambra
+# curl_test_ok $RHINO_URL/articles/info:doi/10.1371/journal.pone.0099781 $RHINO_TITLE
+#
+# state=$(echo "select state from article where doi like '%pone.0099781'" | mysql -h $DOCKER_HOST -P \
+# 3306 -uroot -proot ambra | grep 0)
+#
+# if [ "$state" != "0" ]
+# then
+#   die "Article publish failed"
+# fi
 
-state=$(echo "select state from article where doi like '%pone.0099781'" | mysql -h $DOCKER_HOST -P \
-3306 -uroot -proot ambra | grep 0)
-
-if [ "$state" != "0" ]
-then
-  die "pone.0099781 is not published."
-fi
-
-
-curl_test_ok $AMBRA_URL/article/Authors/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
-curl_test_ok $AMBRA_URL/article/Comments/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
-curl_test_ok $AMBRA_URL/article/Related/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
+curl_test_ok $AMBRA_URL/article/Authors/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
+curl_test_ok $AMBRA_URL/article/Comments/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
+curl_test_ok $AMBRA_URL/article/Related/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
 
 # end tests
 echo "TESTS PASSED"
