@@ -56,7 +56,7 @@ function set_db_grants {
 	echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL_ROOT}
 	echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL_ROOT}
 	echo "Finished creating user."
-
+s
 }
 
 function setup_war_in_tomcat {
@@ -106,11 +106,6 @@ function setup_simple_tomcat_context {
 function process_template {
 	CONTEXT_TEMPALTE=$1
 
-<<<<<<< HEAD
-	# TODO: simplify bash template: http://stackoverflow.com/questions/2914220/bash-templating-how-to-build-configuration-files-from-templates-with-bash
-
-	echo "Updating database in context template"
-=======
 	echo "Processing template"
 
   eval "cat <<EOF
@@ -119,6 +114,5 @@ EOF
 " 2> /dev/null > $CONTEXT_TEMPALTE
 
   cat $CONTEXT_TEMPALTE
->>>>>>> Changing template processing from sed to heredoc
 
 }
