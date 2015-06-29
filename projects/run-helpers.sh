@@ -90,7 +90,7 @@ function check_db_exists {
 }
 
 function setup_simple_tomcat_context {
-	
+
 	CONTEXT_TEMPALTE=$1
 
 	if [ ! -f "$CONTEXT_TEMPALTE" ]; then
@@ -98,20 +98,27 @@ function setup_simple_tomcat_context {
 	   exit 1
 	fi
 
-	setup_db_in_tomcat_context_template $CONTEXT_TEMPALTE
+	process_template $CONTEXT_TEMPALTE
 
 	cp $CONTEXT_TEMPALTE ${CATALINA_HOME}/conf/context.xml
 }
 
-function setup_db_in_tomcat_context_template {
+function process_template {
 	CONTEXT_TEMPALTE=$1
 
+<<<<<<< HEAD
 	# TODO: simplify bash template: http://stackoverflow.com/questions/2914220/bash-templating-how-to-build-configuration-files-from-templates-with-bash
 
 	echo "Updating database in context template"
+=======
+	echo "Processing template"
 
-	sed -i "s/\${db.username}/${MYSQL_USER}/" $CONTEXT_TEMPALTE
-	sed -i "s/\${db.password}/${MYSQL_USER_PASSWORD}/" $CONTEXT_TEMPALTE
-	sed -i "s/\${db.driver}/com.mysql.jdbc.Driver/" $CONTEXT_TEMPALTE
-	sed -i "s/\${db.url}/jdbc:mysql:\/\/${MYSQL_HOSTNAME}:3306\/${MYSQL_DATABASE}/" $CONTEXT_TEMPALTE
+  eval "cat <<EOF
+$(<$CONTEXT_TEMPALTE)
+EOF
+" 2> /dev/null > $CONTEXT_TEMPALTE
+
+  cat $CONTEXT_TEMPALTE
+>>>>>>> Changing template processing from sed to heredoc
+
 }

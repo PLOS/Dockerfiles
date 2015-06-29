@@ -8,7 +8,7 @@ source $BUILD_DIR/run-helpers.sh
 
 CONTEXTTEMPLATE=${BUILD_DIR}/context-template.xml
 
-setup_db_in_tomcat_context_template $CONTEXTTEMPLATE
+process_template $CONTEXTTEMPLATE
 
 # sed -i "s/\${objstore.type}/InMemoryStore/" $CONTEXTTEMPLATE
 
