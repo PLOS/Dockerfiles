@@ -37,7 +37,7 @@ RUN ./node_modules/.bin/ember build --environment=development
 # setup application
 
 RUN mkdir /var/log/akita && chmod 777 /var/log/akita && \
-		mv /src/docker/akita-nginx.conf /etc/nginx/sites-available/ && \
+		mv /root/akita-nginx.conf /etc/nginx/sites-available/ && \
 		ln -s /etc/nginx/sites-available/akita-nginx.conf /etc/nginx/conf.d/akita-nginx.conf && \
 		rm -f /etc/nginx/sites-enabled/default
 
