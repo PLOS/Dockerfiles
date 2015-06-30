@@ -56,7 +56,7 @@ function set_db_grants {
 	echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL_ROOT}
 	echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL_ROOT}
 	echo "Finished creating user."
-s
+
 }
 
 function setup_war_in_tomcat {

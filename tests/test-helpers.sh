@@ -4,6 +4,8 @@ source $SCRIPTDIR/../projects/run-helpers.sh
 
 COMPOSE_FILE=$SCRIPTDIR/../configurations/$COMPOSE_FILE
 
+# TODO: build image if not found
+
 function die {
   echo "$@" 1>&2
   stop_stack
