@@ -4,6 +4,8 @@
 
 BUILDDIR="/build"
 
+# TODO: run tests in build
+
 function java_compile_prepare {
 
   rm $BUILDDIR/*
@@ -11,6 +13,12 @@ function java_compile_prepare {
   echo Compiling
 
   cd /src
+  mkdir /root/src
+  cp -r `ls -A | grep -Ev ".git|target"` /root/src
+  cd /root/src
+  pwd
+  du -sh
+  ls -la
 }
 
 function java_compile_finish {
@@ -24,5 +32,4 @@ function java_compile_finish {
 
   ls -lh $BUILDDIR
 
-  rm -rf target
 }
