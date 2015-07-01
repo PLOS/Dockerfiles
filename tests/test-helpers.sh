@@ -26,20 +26,9 @@ function get_docker_host {
 
 function parse_json {
   INPUT=$1
-  LOOK_FOR=$2
+  LOOK_FOR="\[$2\]"
 
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep '\[$LOOK_FOR\]' | awk '{print $2}')"
-
-
-  # working
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep '\[state\]')"
-
-
-
-  LOOK_FOR_2=\'\[$LOOK_FOR\]\'
-
-  # not working
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR_2)"
+  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
 }
 
 function get_container_name {
