@@ -33,9 +33,7 @@ docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state
 
 # docker exec -it $(get_container_name rhino) sh -c "echo select state from article|mysql -h ambradb -P 3306 -uroot -proot ambra"
 
-
 PUBLISHED_STATE=$(parse_json "curl $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE" "state")
-
 
 if [[ "$PUBLISHED_STATE" != "published" ]]; then
 	die "Article publish failed"
