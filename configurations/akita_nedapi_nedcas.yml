@@ -20,7 +20,7 @@ mailcatcher:
 neddb:
   image: percona:5.6
   # volumes:
-  #   - /var/lib/mysql    # if you want to persist data between starts
+  #   - /var/lib/mysql    # if you want to persist data
   environment:
     - MYSQL_ROOT_PASSWORD=root
 

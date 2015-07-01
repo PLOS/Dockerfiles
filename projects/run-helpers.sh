@@ -86,7 +86,7 @@ function setup_war_in_tomcat {
 
 function check_db_exists {
 	# this function exists because we dont want to recreated a DB if we are pointing to a service that already has a running schema on it
-	$MYSQL_ROOT -e 'use ${MYSQL_DATABASE}'
+	$MYSQL_ROOT -e "use ${MYSQL_DATABASE}"
 }
 
 function setup_simple_tomcat_context {
