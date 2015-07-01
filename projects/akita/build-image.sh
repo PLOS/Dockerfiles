@@ -18,15 +18,12 @@ time docker build -t $PROJECT_NAME:current .
 cd $DOCKER_SETUP_DIR
 rm $SRC/Dockerfile
 
-# VERSION=$(docker run --rm $PROJECT_NAME:current cat /root/version.txt)
-
 VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
 						--volume $DOCKER_SETUP_DIR/..:/shared \
 						--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
-							'cp /shared/run-helpers.sh /scripts/* /root/; 
+							'cp /shared/run-helpers.sh /scripts/* /root/;
 					     cat /root/version.txt')
 
-# docker commit $TMP_BUILD_CONTAINER $PROJECT_NAME:current
 docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current
 
 # tag docker image with asset version number

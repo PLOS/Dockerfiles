@@ -31,7 +31,7 @@ curl_test_ok $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE $SVC_TITLE
 
 docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state=0 WHERE doi LIKE \'%$ARTICLE\'|mysql -N -h ambradb -P 3306 -uroot -proot ambra"
 
-PUBLISHED_TEST=$(curl $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE | bash JSON.sh -b | grep '\[\"state\"\]' | awk '{print $2}' | grep \"published\" | wc -l)
+PUBLISHED_TEST=$(curl $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE | bash $SCRIPTDIR/JSON.sh -b | grep '\[\"state\"\]' | awk '{print $2}' | grep \"published\" | wc -l)
 
 if [[ "$PUBLISHED_TEST" != "1" ]]; then
 	die "Article publish failed"
