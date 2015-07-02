@@ -17,6 +17,8 @@ fi
 
 set_db_grants
 
+# TODO: templateize configs
+
 cp /usr/local/tomcat/conf/* /etc/ambra
 rm -rf /usr/local/tomcat/conf
 ln -s /etc/ambra /usr/local/tomcat/conf

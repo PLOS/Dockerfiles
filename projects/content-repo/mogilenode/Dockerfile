@@ -7,8 +7,9 @@ RUN mkdir -p /node/device/dev1
 WORKDIR /node
 ADD ./mogstored.conf /node/mogstored.conf
 
-# hack to deal with Docker/DeviceMapper issue since Mogile will only use local filesystems
-RUN echo "$(which df) \$(echo \$@ | sed s/-l//)" > /root/df; chmod 755 /root/df
+# workaround to deal with Docker/DeviceMapper issue since Mogile will only use local filesystems
+# TODO: get this working across systems again
+# RUN echo "$(which df) \$(echo \$@ | sed s/-l//)" > /root/df; chmod 755 /root/df
 ENV PATH /root:$PATH
 RUN which df
 

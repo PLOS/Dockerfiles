@@ -10,7 +10,7 @@ cp $BUILD_DIR/log4j.xml $CATALINA_HOME/lib
 SVC_WAR=solr.war
 source $BUILD_DIR/run-helpers.sh
 
-unzip $BUILD_DIR/solr.war -d  $BUILD_DIR/temp/
+unzip $BUILD_DIR/solr.war -d $BUILD_DIR/temp/
 cp -r $BUILD_DIR/temp/collection1 $CATALINA_HOME/solr/home/
 rm -rf  $BUILD_DIR/temp/
 
