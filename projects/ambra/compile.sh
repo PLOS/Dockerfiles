@@ -4,8 +4,7 @@ source /shared/compile-helpers.sh
 
 java_compile_prepare
 
-# TODO: run tests in build
-
+# mvn clean dependency:purge-local-repository install
 mvn -Dmaven.test.skip=true clean package
 cp webapp/target/*.war $BUILDDIR
 

@@ -2,7 +2,7 @@
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-COMPOSE_FILE=plos.yml
+COMPOSE_FILE=web_delivery.yml
 RHINO_TITLE=rhino
 WOMBAT_TITLE=wombat
 AMBRA_TITLE=ambra
@@ -26,7 +26,7 @@ wait_for_web_service $AMBRA_URL
 
 # begin tests
 curl_test_ok $RHINO_URL/articles $RHINO_TITLE
-curl_test_ok $WOMBAT_URL/DesktopPlosOne $WOMBAT_TITLE
+# curl_test_ok $WOMBAT_URL/DesktopPlosOne $WOMBAT_TITLE
 
 curl -X POST -F name="$ARTICLE.zip" $RHINO_URL/ingestibles
 
@@ -43,6 +43,8 @@ docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state
 # then
 #   die "Article publish failed"
 # fi
+
+# curl $AMBRA_URL/article/Authors/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
 
 curl_test_ok $AMBRA_URL/article/Authors/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
 curl_test_ok $AMBRA_URL/article/Comments/info:doi/10.1371/journal.$ARTICLE $AMBRA_TITLE
