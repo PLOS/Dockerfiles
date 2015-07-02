@@ -40,7 +40,7 @@ then
   die "pone.0099781 is not published."
 fi
 
-
+curl_test_ok $WOMBAT_URL/DesktopPlosOne/article?id=10.1371/journal.pone.0099781 $WOMBAT_TITLE
 curl_test_ok $AMBRA_URL/article/Authors/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
 curl_test_ok $AMBRA_URL/article/Comments/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
 curl_test_ok $AMBRA_URL/article/Related/info:doi/10.1371/journal.pone.0099781 $AMBRA_TITLE
