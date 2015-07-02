@@ -3,8 +3,8 @@ PLOS Dockerfiles
 
 Requirements
 ------------
-* docker >= 1.6 (www.docker.com)
-* docker-compose >= 1.2.0 (docs.docker.com/compose/)
+* docker >= 1.6
+* docker-compose >= 1.3
 * curl (optional, for running the tests)
 * git  (optional, for checking out missing project sources if they are not found)
 
@@ -81,6 +81,6 @@ Some of our projects make use of PLOS's maven repository, and there is a differe
 To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
 
-and comment out this line: 
+and comment out this line:
 
     dns=dnsmasq

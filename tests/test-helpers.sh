@@ -43,7 +43,7 @@ function get_container_name {
 }
 
 function start_stack {
-  docker-compose -f $COMPOSE_FILE up -d #--x-smart-recreate
+  docker-compose -f $COMPOSE_FILE up -d --x-smart-recreate
 }
 
 function stop_stack {
