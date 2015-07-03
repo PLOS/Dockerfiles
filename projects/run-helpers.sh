@@ -29,16 +29,17 @@ function wait_until_db_service_up {
 function wait_for_web_service {
 
   URL=$1
+  NAME=$2
   TEST_CMD="curl -sI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
   MAX_TRIES=50
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do
-    sleep 2;
+    sleep 3
     $TEST_CMD
     TEST_RETURN_CODE=$?
-    echo "Service ($URL) not ready ... waiting"
+    echo "Service $NAME ($URL) not ready ... waiting"
 
     ((TRY_COUNT++))
     if [ $TRY_COUNT -gt $MAX_TRIES ]; then
@@ -47,7 +48,7 @@ function wait_for_web_service {
 
   done;
 
-  echo "Service ($URL) is up and ready for tests"
+  echo "Service $NAME ($URL) is up and ready for tests"
 }
 
 function set_db_grants {

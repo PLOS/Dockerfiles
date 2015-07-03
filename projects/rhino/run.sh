@@ -30,7 +30,7 @@ cp -r /root/ingest/* /root/datastores/ingest/
 
 setup_war_in_tomcat
 
-wait_for_web_service $REPO_SERVICE/config
+wait_for_web_service $REPO_SERVICE/config "contentrepo"
 
 curl -X POST $REPO_SERVICE/buckets --data name=corpus
 

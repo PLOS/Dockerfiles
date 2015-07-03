@@ -15,7 +15,7 @@ start_stack
 
 SVC_URL=$(get_docker_host):8080
 
-wait_for_web_service $SVC_URL
+wait_for_web_service $SVC_URL "rhino"
 
 # begin tests
 
@@ -23,7 +23,7 @@ curl_test_ok $SVC_URL/articles $SVC_TITLE
 
 # ingest and article
 
-curl -X POST -F name="$ARTICLE.zip" $SVC_URL/ingestibles > /dev/null
+curl -X POST -s -F name="$ARTICLE.zip" $SVC_URL/ingestibles > /dev/null
 
 curl_test_ok $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE "$SVC_TITLE ingested"
 
@@ -36,11 +36,9 @@ docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state
 PUBLISHED_STATE=$(parse_json "curl $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE" "state")
 
 if [[ "$PUBLISHED_STATE" != "published" ]]; then
-	die "Article publish failed"
+	tests_failed "Article publish failed"
 fi
 
-# end tests
-
-echo "TESTS PASSED"
+tests_passed
 
 stop_stack

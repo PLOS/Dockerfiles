@@ -15,6 +15,6 @@ cp ${BUILD_DIR}/wombat.yaml /etc/ambra
 
 setup_war_in_tomcat
 
-wait_for_web_service $RHINO_SERVICE/config
+wait_for_web_service $RHINO_SERVICE/config "rhino"
 
 start_tomcat

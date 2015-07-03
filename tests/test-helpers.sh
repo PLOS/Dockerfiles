@@ -55,11 +55,18 @@ function curl_test_ok {
 
   URL=$1
   TITLE=$2
-  echo "Testing $URL   $TITLE"
+  echo "Testing $TITLE -> $URL"
 
   HTTP_CODE=$(curl -w "%{http_code}\\n" -s -o /dev/null $URL)
   if [[ "$HTTP_CODE" -ne "200" ]]; then
-    echo "status code = $HTTP_CODE"
-    die "TEST FAILED"
+    tests_failed "status code = $HTTP_CODE"
   fi
+}
+
+function tests_passed {
+  echo "TESTS PASSED"
+}
+
+function tests_failed {
+  die "TEST FAILED   $1"
 }
