@@ -28,4 +28,6 @@ cp /etc/ambra/ehcache.xml $CATALINA_HOME/lib
 
 setup_war_in_tomcat
 
+wait_for_web_service $REPO_SERVICE/config
+
 start_tomcat
