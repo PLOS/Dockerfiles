@@ -24,6 +24,8 @@ echo "db_pass = $MYSQL_USER_PASSWORD" >> mogilefsd.conf
 echo "CREATE USER '${MYSQL_USER}' IDENTIFIED BY '${MYSQL_USER_PASSWORD}'" | ${MYSQL_ROOT}
 echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES" | ${MYSQL_ROOT}
 
+# NOTE: we should wait for the node to start but it seems fast enough
+
 # TODO: only do dbsetup if the database is not setup already
 mogdbsetup --yes --dbhost=$MYSQL_HOSTNAME --dbname=mogilefs --dbuser=$MYSQL_USER --dbpassword=$MYSQL_USER_PASSWORD --dbrootpassword=$MYSQL_ROOT_PASSWORD
 

@@ -14,7 +14,6 @@ process_template $CONTEXTTEMPLATE
 
 cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
 
-
 wait_until_db_service_up
 
 if ! check_db_exists; then
@@ -25,6 +24,14 @@ if ! check_db_exists; then
 fi
 
 set_db_grants
+
+# wait until tracker is up
+
+while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
+  echo -e "\nMogile tracker not ready ... waiting"
+done;
+
+echo "Mogile is ready"
 
 setup_war_in_tomcat
 

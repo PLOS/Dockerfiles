@@ -25,7 +25,7 @@ curl_test_ok $SVC_URL/articles $SVC_TITLE
 
 curl -X POST -F name="$ARTICLE.zip" $SVC_URL/ingestibles > /dev/null
 
-curl_test_ok $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE $SVC_TITLE
+curl_test_ok $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE "$SVC_TITLE ingested"
 
 # publish the article
 

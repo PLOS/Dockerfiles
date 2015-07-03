@@ -11,7 +11,7 @@ ADD ./mogstored.conf /node/mogstored.conf
 
 # workaround to deal with Docker/DeviceMapper issue since Mogile will only use local filesystems
 # TODO: get this working across systems again
-# RUN echo "$(which df) \$(echo \$@ | sed s/-l//)" > /root/df; chmod 755 /root/df
+RUN echo "$(which df) \$(echo \$@ | sed s/-l//)" > /root/df; chmod 755 /root/df
 ENV PATH /root:$PATH
 RUN which df
 
