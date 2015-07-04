@@ -6,7 +6,7 @@ SVC_WAR=wombat-*.war
 
 source $BUILD_DIR/run-helpers.sh
 
-# TODO: templateize configs
+process_template ${BUILD_DIR}/wombat.yaml
 
 cp /usr/local/tomcat/conf/* /etc/ambra
 rm -rf /usr/local/tomcat/conf

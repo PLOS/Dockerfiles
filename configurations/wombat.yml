@@ -7,6 +7,9 @@ wombat:
     - $HOME/Projects/themes:/root/themes
   ports:
     - "8081:8080"
+  environment:
+    - RHINO_SERVICE=http://rhino:8080/
+    # - CAS_SERVER=https://register.plos.org/cas
 
 rhino:
   image: rhino:current
