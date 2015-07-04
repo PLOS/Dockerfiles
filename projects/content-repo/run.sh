@@ -6,13 +6,11 @@ SVC_WAR=*.war
 
 source $BUILD_DIR/run-helpers.sh
 
-CONTEXTTEMPLATE=${BUILD_DIR}/context-template.xml
+CONTEXTTEMPLATE=${BUILD_DIR}/context.xml
 
 process_template $CONTEXTTEMPLATE
 
-# sed -i "s/\${objstore.type}/InMemoryStore/" $CONTEXTTEMPLATE
-
-cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/context.xml
+cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/
 
 wait_until_db_service_up
 

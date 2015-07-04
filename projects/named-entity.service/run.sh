@@ -6,7 +6,7 @@ SVC_WAR=named-entity-service-*.war
 
 source $BUILD_DIR/run-helpers.sh
 
-setup_simple_tomcat_context ${BUILD_DIR}/context-template.xml
+setup_simple_tomcat_context ${BUILD_DIR}/context.xml
 
 wait_until_db_service_up
 

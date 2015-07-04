@@ -18,14 +18,15 @@ fi
 
 set_db_grants
 
-# TODO: templateize configs
+process_template ${BUILD_DIR}/context.xml
+process_template ${BUILD_DIR}/rhino.yaml
 
 cp /usr/local/tomcat/conf/* /etc/ambra
 rm -rf /usr/local/tomcat/conf
 ln -s /etc/ambra /usr/local/tomcat/conf
 cp ${BUILD_DIR}/*.xml /etc/ambra
 cp ${BUILD_DIR}/rhino.yaml /etc/ambra
-# TODO: remove this after DPRO-1205 is resolved
+# TODO: remove this once DPRO-1205 is resolved
 cp -r /root/ingest/* /root/datastores/ingest/
 
 setup_war_in_tomcat
