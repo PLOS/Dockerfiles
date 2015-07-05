@@ -6,7 +6,7 @@ SVC_WAR=named-entity-service-*.war
 
 source $BUILD_DIR/run-helpers.sh
 
-setup_simple_tomcat_context ${BUILD_DIR}/context.xml
+# setup_simple_tomcat_context ${BUILD_DIR}/context.xml
 
 wait_until_db_service_up
 
@@ -17,7 +17,7 @@ fi
 
 set_db_grants
 
-setup_war_in_tomcat
+# setup_war_in_tomcat
 
 # insert dev:dev user for userapp authentication
 unzip -q $BUILD_DIR/$SVC_WAR -d $BUILD_DIR/ned
@@ -25,5 +25,7 @@ cd $BUILD_DIR/ned/WEB-INF
 PASSWORD=$(java -cp classes:$(ls lib/spring-security-crypto-*.RELEASE.jar | head -1) org.plos.namedentity.spring.security.BCrypt dev)
 echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','${PASSWORD}');" | $MYSQL_ROOT
 echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
+
+process_template ${CATALINA_HOME}/conf/context.xml
 
 start_tomcat
