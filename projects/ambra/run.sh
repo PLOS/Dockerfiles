@@ -26,7 +26,7 @@ set_db_grants
 #
 # setup_war_in_tomcat
 
-process_template $CATALINA_HOME/conf/context.xml
+process_template $AMBRA_CONF/context.xml
 process_template $AMBRA_CONF/ambra.xml
 
 wait_for_web_service $REPO_SERVICE/config "contentrepo"

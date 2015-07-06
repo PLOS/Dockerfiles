@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+set -x
 
 BUILDDIR="/build"
 MVN_REPO="/root/.m2/repository"
@@ -27,11 +27,9 @@ function fetch_local_library {
   SUBDIR=$1
   NAME=$2
 
-  # cp $(find $MVN_REPO/org/apache/tomcat/tomcat-jdbc -name tomcat-jdbc-7*.jar| head -n1) $BUILDDIR
+  # ls -R /root/.m2/repository/$SUBDIR
 
-  fetch_local_library org/apache/tomcat/tomcat-jdbc tomcat-jdbc-7*.jar
-
-  cp $(find $MVN_REPO/$SUBDIR -name $NAME| head -n1) $BUILDDIR
+  cp $(find /root/.m2/repository/$SUBDIR -name $NAME| head -n1) $BUILDDIR
 }
 
 function java_compile_finish {

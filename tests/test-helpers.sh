@@ -44,6 +44,7 @@ function get_container_name {
 
 function start_stack {
   docker-compose -f $COMPOSE_FILE up -d --x-smart-recreate
+  docker-compose -f $COMPOSE_FILE logs --no-color > $SCRIPTDIR/lasttest.log &
 }
 
 function stop_stack {
@@ -68,5 +69,6 @@ function tests_passed {
 }
 
 function tests_failed {
+  cp $SCRIPTDIR/lasttest.log $SCRIPTDIR/lasttest_failure.log
   die "TEST FAILED   $1"
 }
