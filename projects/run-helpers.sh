@@ -68,12 +68,17 @@ function check_db_exists {
 function process_template {
 	CONTEXT_TEMPALTE=$1
 
-	echo "Processing template"
+  ls -lh $CONTEXT_TEMPALTE
+  head $CONTEXT_TEMPALTE
+
+	echo "Processing template $CONTEXT_TEMPALTE"
 
   eval "cat <<EOF
 $(<$CONTEXT_TEMPALTE)
 EOF
-" 2> /dev/null > $CONTEXT_TEMPALTE
+" > $CONTEXT_TEMPALTE
 
   cat $CONTEXT_TEMPALTE
+
+  # TODO: figure out how to ignore bad substitution errors. For example, false positive $ characters in ambra.xml'
 }
