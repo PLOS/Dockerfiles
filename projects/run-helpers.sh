@@ -60,48 +60,9 @@ function set_db_grants {
 
 }
 
-function setup_war_in_tomcat {
-
-	# allow optional renaming of war to support urls with subdirectories
-	TO_WAR=$1
-	if [ -z $1 ]; then TO_WAR="ROOT.war"; fi
-
-	echo Deploying war to $TO_WAR
-
-	echo Deleting contents of webapps/
-	rm -rf ${CATALINA_HOME}/webapps/*
-
-	echo Checking that WAR exists
-
-	WARCOUNT=$(ls ${BUILD_DIR}/${SVC_WAR} 2> /dev/null | wc -l)
-
-	if [ $WARCOUNT -ne 0 ] ; then
-	  echo Copying WAR to webapps
-	  cp `ls -t ${BUILD_DIR}/${SVC_WAR} | head -1` ${CATALINA_HOME}/webapps/$TO_WAR
-	else
-	  echo "WAR file not found in ${BUILD_DIR}. Exiting..."
-	  exit 1
-	fi
-
-}
-
 function check_db_exists {
 	# this function exists because we dont want to recreated a DB if we are pointing to a service that already has a running schema on it
 	$MYSQL_ROOT -e "use ${MYSQL_DATABASE}"
-}
-
-function setup_simple_tomcat_context {
-
-	CONTEXT_TEMPALTE=$1
-
-	if [ ! -f "$CONTEXT_TEMPALTE" ]; then
-	   echo context template not found
-	   exit 1
-	fi
-
-	process_template $CONTEXT_TEMPALTE
-
-	cp $CONTEXT_TEMPALTE ${CATALINA_HOME}/conf/context.xml
 }
 
 function process_template {
@@ -115,5 +76,4 @@ EOF
 " 2> /dev/null > $CONTEXT_TEMPALTE
 
   cat $CONTEXT_TEMPALTE
-
 }

@@ -39,15 +39,14 @@
     validationQuery="SELECT 1"
     testOnBorrow="true"
     driverClassName="com.mysql.jdbc.Driver"
-    username="ambra"
-    password="ambra"
-    url="jdbc:mysql://ambradb:3306/ambra" />
+    username="${MYSQL_USER}"
+    password="${MYSQL_USER_PASSWORD}"
+    url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}" />
 
   <Resource name="ambra/FileStore"
     type="org.ambraproject.filestore.FileStoreService"
     factory="org.ambraproject.filestore.impl.ContentRepoFactory"
-    repoServer="http://repo:8080/"
+    repoServer="${REPO_SERVICE}"
     bucketName="corpus"/>
 
 </Context>
-

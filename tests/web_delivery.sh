@@ -32,11 +32,11 @@ curl -X POST -s -F name="$ARTICLE.zip" $RHINO_URL/ingestibles >/dev/null #2>&1
 
 docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state=0 WHERE doi LIKE \'%$ARTICLE\'|mysql -N -h ambradb -P 3306 -uroot -proot ambra"
 
+curl_test_ok $WOMBAT_URL/DesktopPlosOne/article?id=10.1371/journal.$ARTICLE "$WOMBAT_TITLE article"
+
 curl_test_ok $AMBRA_URL/article/Authors/info:doi/10.1371/journal.$ARTICLE "$AMBRA_TITLE article authors"
 curl_test_ok $AMBRA_URL/article/Comments/info:doi/10.1371/journal.$ARTICLE "$AMBRA_TITLE article comments"
 curl_test_ok $AMBRA_URL/article/Related/info:doi/10.1371/journal.$ARTICLE "$AMBRA_TITLE article related"
-
-curl_test_ok $WOMBAT_URL/DesktopPlosOne/article?id=10.1371/journal.$ARTICLE "$WOMBAT_TITLE article"
 
 tests_passed
 

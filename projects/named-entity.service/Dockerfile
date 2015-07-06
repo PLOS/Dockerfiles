@@ -8,6 +8,6 @@ RUN rm -rf $CATALINA_HOME/webapps/ROOT
 COPY . /root
 
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/ROOT.war
-COPY context.xml $CATALINA_HOME/conf/context.xml
+COPY context.xml $CATALINA_HOME/conf/
 
 CMD bash /root/run.sh

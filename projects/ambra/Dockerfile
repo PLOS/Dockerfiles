@@ -15,8 +15,21 @@ RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-conn
   wget -O  $CATALINA_HOME/lib/jcl-over-slf4j-1.6.1.jar \
     https://search.maven.org/remotecontent?filepath=org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar
 
-RUN mkdir /etc/ambra
+ENV AMBRA_CONF /etc/ambra/
+
+RUN mkdir $AMBRA_CONF
+
+RUN rm -rf $CATALINA_HOME/webapps/ROOT
 
 COPY . /root
+
+RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
+  rm -rf $CATALINA_HOME/conf && \
+  ln -s $AMBRA_CONF $CATALINA_HOME/conf
+
+COPY ambra.war $CATALINA_HOME/webapps/ROOT.war
+COPY *.xml $AMBRA_CONF
+COPY log4j.xml $CATALINA_HOME/lib/
+COPY ehcache.xml $CATALINA_HOME/lib/
 
 CMD bash /root/run.sh

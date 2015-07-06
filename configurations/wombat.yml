@@ -4,7 +4,7 @@ wombat:
     - rhino:rhino
     - contentrepo:repo
   volumes:
-    - $HOME/Projects/themes:/root/themes
+    - $HOME/Projects/plos-themes:/root/themes
   ports:
     - "8081:8080"
   environment:
@@ -57,6 +57,7 @@ contentrepo:
     - MYSQL_USER_PASSWORD=
     - MYSQL_HOSTNAME=repodb
     - MYSQL_DATABASE=repo
+    - MOGILE_TRACKERS=mogiletracker:7001
 
 repodb:
   image: percona:5.6

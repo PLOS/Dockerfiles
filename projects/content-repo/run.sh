@@ -2,15 +2,7 @@
 
 BUILD_DIR=/root
 
-SVC_WAR=*.war
-
 source $BUILD_DIR/run-helpers.sh
-
-CONTEXTTEMPLATE=${BUILD_DIR}/context.xml
-
-process_template $CONTEXTTEMPLATE
-
-cp $CONTEXTTEMPLATE ${CATALINA_HOME}/conf/
 
 wait_until_db_service_up
 
@@ -23,14 +15,15 @@ fi
 
 set_db_grants
 
-# wait until tracker is up
+# wait until Mogile tracker is up
 
 while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
   echo -e "\nMogile tracker not ready ... waiting"
+  sleep 3
 done;
 
 echo "Mogile is ready"
 
-setup_war_in_tomcat
+process_template $CATALINA_HOME/conf/context.xml
 
 start_tomcat

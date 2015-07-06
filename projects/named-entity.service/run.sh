@@ -6,8 +6,6 @@ SVC_WAR=named-entity-service-*.war
 
 source $BUILD_DIR/run-helpers.sh
 
-# setup_simple_tomcat_context ${BUILD_DIR}/context.xml
-
 wait_until_db_service_up
 
 if ! check_db_exists; then
@@ -16,8 +14,6 @@ if ! check_db_exists; then
 fi
 
 set_db_grants
-
-# setup_war_in_tomcat
 
 # insert dev:dev user for userapp authentication
 unzip -q $BUILD_DIR/$SVC_WAR -d $BUILD_DIR/ned
