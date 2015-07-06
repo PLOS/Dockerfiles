@@ -5,8 +5,8 @@ LABEL vendor="Public Library of Science"
 RUN apt-get update && apt-get install -y mysql-client
 RUN rm -rf $CATALINA_HOME/webapps/ROOT
 
-RUN wget -P /usr/local/tomcat/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar && \
-  wget -P /usr/local/tomcat/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar
+# RUN wget -P /usr/local/tomcat/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar && \
+#   wget -P /usr/local/tomcat/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar
 
 ENV AMBRA_CONF /etc/ambra/
 
@@ -21,5 +21,8 @@ RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
 COPY *.xml $AMBRA_CONF
 COPY rhino.yaml $AMBRA_CONF
+
+COPY tomcat-jdbc-*.jar $CATALINA_HOME/lib/
+COPY mysql-connector-java-*.jar $CATALINA_HOME/lib/
 
 CMD bash /root/run.sh

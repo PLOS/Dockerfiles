@@ -25,7 +25,7 @@ function build_java_service_images() {
 	BUILD_RESULT_DIR=${PROJECT_NAME}_build
 	# TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
 
-     # checkout the project from git if it doesn't exist on the local machine
+  # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];
 	  then
 	  echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
