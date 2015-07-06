@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is the Ambra template for the Public Library of Science site. 
+-->
+<config>
+  <ambra>
+    <!-- virtual journal config -->
+    <virtualJournals>
+      <PLoSGenetics>
+        <journal>PLoSGenetics</journal>
+        <eIssn>1553-7404</eIssn>
+        <description>PLOS Genetics</description>
+        <rules>
+          <host>.*genetics.*</host>
+        </rules>
+        <url>http://www.plosgenetics.org</url>
+        <ambra>
+          <services>
+            <feed>
+              <title>PLOS Genetics</title>
+              <id>info:doi/10.1371/feed.pgen</id>
+            </feed>
+          </services>
+        </ambra>
+        <!-- Configuration keys for displaying recent articles tab widget on home page -->
+        <recentArticles>
+          <numDaysInPast>7</numDaysInPast>
+          <numArticlesToShow>5</numArticlesToShow>
+          <typeUriArticlesToShow>
+            <articleTypeUri>http://rdf.plos.org/RDF/articleType/Research%20Article</articleTypeUri>
+          </typeUriArticlesToShow>
+        </recentArticles>
+        <mostViewedArticles>
+          <limit>5</limit>
+          <timeFrame>30</timeFrame>
+          <message>These articles are updated daily\, based on usage data from the previous 30 days.</message>
+        </mostViewedArticles>
+      </PLoSGenetics>
+    </virtualJournals>
+
+    <freemarker>
+      <!--
+        # This section defines the various journals and the css and javascript files which should be
+        # included on each page as well as the page title.  The values within the <default> tag are used
+        # if any of the values are missing in the <page> definitions.  Note, that the title, css, and
+        # javascript level values are entirely replaced, they are not additive.  Override config files
+        # may define values for each of those three variables and they will supsercede values present
+        # in subsequent config values.  The lookup for values is as follows:
+        # 1. Page defined in journal
+        # 2. Default value defined in journal
+        # 3. Page defined in default journal
+        # 4. Default value in default journal
+        # To define an empty value for a certain page so that it doesn't use defaults, just put the
+        # element tag with no value, e.g. <javascript></javascript>
+      -->
+      <!--PLOSGenetics-->
+      <journal>
+        <name>PLoSGenetics</name>
+        <metaKeywords>
+          plos genetics, plosgenetics, plos genetic, public library of science genetics, plos genet, plos, public library of science, open access, open-access, online science journal, plos journal, genetics, genetic, genomics, genomic, gene, genes, human, analysis, expression, association mapping, mouse, mice, genome, arabidopsis, dna, drosophila, cell, mapping, population, disease, chromosome, yeast, heritability
+        </metaKeywords>
+        <metaDescription>
+          PLOS Genetics is an open-access, peer-reviewed journal that reflects the full breadth and interdisciplinary nature of genetics and genomics research by publishing outstanding original contributions in all areas of biology.
+        </metaDescription>
+        <articleTitlePrefix>PLOS Genetics:</articleTitlePrefix>
+        <displayName>PLOS Genetics</displayName>
+        <hashTag>#PLOSGenetics</hashTag>
+        <default>
+          <title>PLOS Genetics: A Peer-Reviewed Open-Access Journal</title>
+        </default>
+      </journal>
+    </freemarker>
+  </ambra>
+</config>

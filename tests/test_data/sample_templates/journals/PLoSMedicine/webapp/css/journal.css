@@ -1,0 +1,211 @@
+/*
+ * Copyright (c) 2006-2013 by Public Library of Science
+ *
+ *   http://plos.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
+
+Journal CSS Override Rules
+--------------------------
+
+The CSS rules in this file override certain color properties of key elements 
+to style a page in a specific color scheme. This color scheme is intended 
+for the following journals:
+
+ * Medicine
+ * Pathogens
+ * NTDs
+
+Colors:
+
+ * primary/background color : #891FB1 - purple (magenta)
+ * text/foreground color    : #FFFFFF - white
+
+NOTE: The colors are originally sourced from the PLOS style guide, but have 
+been tweaked by DP for web use.
+
+*/
+
+#pagehdr-wrap,
+#responses .response.original .info {
+  border-color: #891FB1;
+}
+
+/* accenting */
+#pagehdr-wrap {
+  border-top: 6px solid #891FB1;
+  background: #efefef;
+  min-width: 960px;
+}
+
+#user .btn-style a {
+  background: #891FB1;
+  border-radius: 0 0 4px 4px;
+  color: #FFFFFF
+}
+
+.article-meta {
+  position: relative;
+}
+
+/* background color change for primary buttons only */
+.btn.primary,
+  /* pagination styles */
+.pagination strong,
+  /* journal archive */
+.journal_issues ul#journal_years li.selected,
+.journal_issues ul#journal_years li a:hover,
+.journal_issues ul#journal_years li.btn.primary:hover,
+  /* figure icons */
+.figure-inline-download ul li div.icon,
+  /* related content lists */
+#related_collections div ul li a:hover,
+#user .btn-style a,
+  /* advanced search primary btn */
+form.advSearch input[type="button"].primary,
+form.advSearch input[type="submit"].primary,
+  /* tabs */
+.tab-nav .active a,
+.tab-nav .active a:hover,
+#related_collections div ul li a:hover,
+#uniform-sortPicklist span,
+#uniform-pageSizePicklist span,
+#uniform-pageSizePicklistFig span,
+#nav-article li span.active,
+#nav-article li a.active,
+#title-banner .btn-g a.btn-close,
+.reply .close_confirm,
+  /* Advanded Search */
+#search-facets .menu .item.active:hover,
+#search-facets .menu .active,
+/* filter by button */
+#searchStripForm .toggle.btn,
+  /* active search results buttons */
+#fig-search-block span.figs,
+#search-results-block span.list,
+  /* figshare dialog close button*/
+.ui-dialog.tooltip-like .ui-dialog-titlebar-close {
+  background-color: #891FB1;
+  color: #FFF;
+}
+
+  /* Figure Viewer */
+#fig-viewer.abst .nav .abst,
+#fig-viewer.figs .nav .figs,
+#fig-viewer.refs .nav .refs,
+#fig-viewer-controls,
+#fig-viewer-thmbs .btn-thmb-close,
+#fig-viewer-slides .txt .toggle.less,
+#fig-viewer .close:hover {
+  background-color: #891FB1;
+  color: #FFF;
+}
+#fig-viewer-thmbs .thmb.active img {
+  border-color: #891FB1;
+}
+.fig-btn.next .icn {
+  background-position: -140px -20px;
+}
+.fig-btn.prev .icn {
+  background-position: -130px -20px;
+}
+#fig-viewer-slides .txt .toggle.less {
+  background-position: -20px -20px;
+}
+#fig-viewer-thmbs .btn-thmb-close {
+  background-position: 0 -20px;
+}
+
+/* search results button cursor when active */
+/* active search results buttons */
+#fig-search-block span.figs,
+#search-results-block span.list {
+  cursor: text;
+}
+
+/*filter-by hover colors*/
+#searchStripForm .toggle.btn:hover{
+  background-color: #3C63AF;
+  color: #FFF;
+}
+
+/* headline div min spacing */
+/* also, see ticket FEND-585 for something that might make the below obsolete */
+#headlines {
+  min-height: 278px
+}
+
+#toc-block .cover h2 a:hover {
+  color: #891FB1;
+}
+
+/* down arrows on active article tab : these are white on non plos one pages */
+#nav-article li span.active,
+#nav-article li a.active,
+#nav-article li span.active:hover {
+  background: #891FB1 url(../images/icon.nav.active.white.png) no-repeat 10px 62px;
+}
+
+#search-facets .menu .active {
+  background-position: 50% 0;
+}
+
+/* informal corrections */
+.informal {
+  color: #891FB1;
+}
+
+#title-banner .btn-g a.btn-close,
+.reply .close_confirm {
+  background-position: 0 -24px;
+}
+
+/* advanced search highlighting changes */
+form.advSearch input[type="button"]:hover {
+  background: #891FB1 !important;
+  color: #fff !important;
+}
+
+div.inlinePopup input[type="button"].primary {
+  background: #891FB1;
+}
+
+#responses .response .toolbar .btn:hover {
+  background: #891FB1;
+  color: #333;
+}
+
+#subject-area-sidebar-list li div.flagText {
+  background: #891FB1;
+  color: #FFF;
+}
+
+#subject-area-sidebar-list li div.flagText:hover {
+  background-color: #3C63AF;
+}
+
+/* figshare dialog close button */
+.ui-dialog.tooltip-like .ui-dialog-titlebar-close span {
+    background-position: 2px -13px;
+}
+
+
+form.standard input[type="button"].primary,
+form.standard input[type="submit"].primary,
+form.standard .button.primary,
+.button.brand{
+    background: #891FB1;
+    color: #fff;
+}
