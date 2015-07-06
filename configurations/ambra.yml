@@ -7,7 +7,7 @@ ambra:
   ports:
     - "80:8080"
   volumes:
-    - $HOME/Projects/templates:/root/templates
+    - ../../templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra

@@ -9,18 +9,16 @@ RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomca
   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
 
 ENV AMBRA_CONF /etc/ambra/
-RUN echo $AMBRA_CONF
 
 RUN mkdir -p $AMBRA_CONF /root/datastores/ingested /root/datastores/ingest
-
-COPY . /root
 
 RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
+COPY run*.sh *.sql /root/
+
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
-COPY *.xml $AMBRA_CONF
-COPY rhino.yaml $AMBRA_CONF
+COPY rhino.yaml context.xml ambra.xml $AMBRA_CONF
 
 CMD bash /root/run.sh

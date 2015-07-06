@@ -23,7 +23,6 @@ function build_java_service_images() {
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
 	BUILD_RESULT_DIR=${PROJECT_NAME}_build
-	# TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
 
   # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];

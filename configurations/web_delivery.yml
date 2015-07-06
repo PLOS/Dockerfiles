@@ -7,7 +7,8 @@ ambra:
   ports:
     - "80:8080"
   volumes:
-    - $HOME/Projects/templates:/root/templates
+    - ../../templates:/root/templates
+    # - ../tests/test_data/sample_templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
@@ -22,7 +23,7 @@ wombat:
     - rhino:rhino
     - contentrepo:repo
   volumes:
-    - $HOME/Projects/plos-themes:/root/themes
+    - ../../plos-themes:/root/themes
   ports:
     - "8081:8080"
   environment:

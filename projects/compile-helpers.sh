@@ -1,9 +1,8 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 BUILDDIR="/build"
-MVN_REPO="/root/.m2/repository"
 
 # TODO: run tests in build
 
