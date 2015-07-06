@@ -15,21 +15,11 @@ function java_compile_prepare {
 
   cd /src
   mkdir /root/src
-  cp -r `ls -A | grep -Ev ".git|target"` /root/src
+  cp -r `ls -A | grep -Ev ".git|.idea|target"` /root/src
   cd /root/src
   pwd
   du -sh
   ls -la
-}
-
-# WIP
-function fetch_local_library {
-  SUBDIR=$1
-  NAME=$2
-
-  # ls -R /root/.m2/repository/$SUBDIR
-
-  cp $(find /root/.m2/repository/$SUBDIR -name $NAME| head -n1) $BUILDDIR
 }
 
 function java_compile_finish {
