@@ -2,7 +2,7 @@ FROM tomcat:6-jre7
 
 LABEL vendor="Public Library of Science"
 
-RUN rm -rf $CATALINA_HOME/webapps/ROOT
+RUN rm -rf $CATALINA_HOME/webapps/*
 
 ENV AMBRA_CONF /etc/ambra/
 

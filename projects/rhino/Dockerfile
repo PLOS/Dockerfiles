@@ -3,7 +3,7 @@ FROM tomcat:6-jre7
 LABEL vendor="Public Library of Science"
 
 RUN apt-get update && apt-get install -y mysql-client
-RUN rm -rf $CATALINA_HOME/webapps/ROOT
+RUN rm -rf $CATALINA_HOME/webapps/*
 
 RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
