@@ -16,6 +16,8 @@ wait_for_web_service $SVC_URL $SVC_NAME
 
 curl_test_ok $SVC_URL/service/config $SVC_NAME
 
+curl_test_ok $SVC_URL/typeclasses "Authenticated request" "-u dev:dev"
+
 # end tests
 
 tests_passed
