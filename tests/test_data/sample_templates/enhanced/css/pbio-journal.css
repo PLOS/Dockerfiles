@@ -1,0 +1,131 @@
+/*
+ * $HeadURL:: http://ambraproject.org/svn/plos/templates/head/enhanced/css/pbio-journal.#$
+ * $Id: pbio-journal.css 10685 2012-07-13 18:14:02Z josowski $
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* 	-------------------------------------------------------------
+
+	OVERRIDES FOR : PLoS Biology
+	CREATED ON  : 07-06-2009
+	CREATED BY	: SEBASTIAN TOOMEY
+
+   	------------------------------------------------------------- */
+
+a:link { color:#0033cc; }
+a:visited { color:#0029a5; }
+a:hover { color:#0066ff; }
+th { background-color:#ABC6FF; }
+td { background-color:#bfd4ff; }
+table#mini col.emph { background-color:#80aaff; } /*ALM cumulative graph rollover*/
+
+/* Global : Icons and Links
+----------------------------------------------------------
+*/
+a.tooltip:visited,
+a.discuss:visited,
+a.commentary:visited,
+a.trackback:visited,
+a.rating:visited,
+a.annotation:visited,	
+a.user:visited,
+a.instructions:visited,
+a.addannotation:visited,
+a.corrections:visited { color:#0033cc; }
+
+/* 	Navigation : Elements
+----------------------------------------------------------
+    Original dropdown structure and CSS was produced by CSSplay
+    http://www.cssplay.co.uk/menus/final_drop.html
+----------------------------------------------------------
+*/
+/* fist line style for IE7 and non-IE browsers and the second line for IE5.5 and IE6 */
+/* Note that class li.over is dynamically written into html from init_navigation.js -SWT */
+#nav li.over a,
+#nav li:hover a,
+#nav li a:hover { background-color:#0033cc; }
+#nav li.over ul,
+#nav li:hover ul,
+#nav li a:hover ul { border-color:#0033cc; }
+#nav li.over li a,
+#nav li:hover ul li a,
+#nav li a:hover ul li a { color:#0033cc!important; }
+
+#nav li.over ul li a:hover,
+#nav li:hover ul li a:hover,
+#nav li a:hover ul li a:hover { color:#0033cc!important; }
+
+/*  user wraps logged in user controls */
+#user a:link,
+#user a:visited { color:#0033cc!important; }
+
+/* Search Results */
+span.almSearchWidget span.data { color:#0033cc; }
+.dijitTooltipContainer,
+div#search-results div.filter-block,
+div#search-results div.filter-block div.wrap { background-color:#bfd4ff; }
+
+/* Research Article : Elements
+----------------------------------------------------------=
+*/
+div#content #section1 { border-top-color:#003399; }
+div.pageerror h1 { background-color:#003399; }
+div#contentHeader { background-color:#003399; }
+div#publisher { border-bottom-color:#0033cc; }
+p.oa-banner { border-bottom-color:#0033cc; }
+div.abstract,
+div.editorsAbstract,
+div.articleinfo	{ border-left-color:#bfd4ff;  }
+div.articleinfo	{ border-top-color:#003399; border-bottom-color:#003399; }
+div.static h2,
+div.content h3	{ /* article main body heading */  border-bottom-color:#003399; }
+div.box { background-color:#bfd4ff; }
+
+/* Menu next to article title containing download links, print link, etc. */
+div.content div#articleMenu { background-color:#bfd4ff; }
+div.content div#articleMenu div.wrap { background-color:#bfd4ff; }
+
+/* Right column on article pages */
+#rhc div.rhcBox_type1 { background-color:#bfd4ff; }
+#rhc div.rhcBox_type1 div.wrap { background-color:#bfd4ff; }
+#rhc div.rhcBox_type2 h6 { background-color:#003399; }
+
+/* Figure boxes on article pages */
+div.figure { background-color:#bfd4ff; }
+div.figure a:hover img { border-color:#0033cc; }
+
+/* ------ Metrics Page Styles ------- */
+#infoBox, /*wraps rollover table on cumulative graph*/
+div#cumulativeData span.highlight { background-color:#bfd4ff; } /*for total article views*/
+
+/* ------ User Profile Page Styles ------*/
+div#content.profile { border-color:#003399; background-color:#bfd4ff; }
+div.profile ol li { border-bottom-color:#bfd4ff; }
+div.profile ol li input { border-color:#80aaff; }
+div.profile ol li select { border-color:#80aaff; }
+div.profile textarea { border-color:#80aaff; }
+
+/* ------ EdBoard Styles ----*/
+.edboard dd { background-color:#bfd4ff; border-top-color:#bfd4ff; }
+
+/* ------ Link back to article ----*/
+div.source a:visited { color:#0033cc; }
+div.source a:hover { color:#0066ff; }
+
+/*--- Browse by TOC and Journal Archive ---*/
+div.toc h2,
+div.archive h2 { border-bottom-color:#0033cc; }

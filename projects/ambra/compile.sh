@@ -1,19 +1,11 @@
 #!/bin/bash
 
-BUILDDIR="/build"
+source /shared/compile-helpers.sh
 
-rm $BUILDDIR/*
+java_compile_prepare
 
-echo Compiling
-
-cd /src
-
-# TODO: run tests in build
+# mvn clean dependency:purge-local-repository install
 mvn -Dmaven.test.skip=true clean package
-
 cp webapp/target/*.war $BUILDDIR
-cp /scripts/* $BUILDDIR
 
-grep ^version= webapp/target/maven-archiver/pom.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
-
-rm -rf target
+java_compile_finish "webapp/target/maven-archiver/pom.properties"

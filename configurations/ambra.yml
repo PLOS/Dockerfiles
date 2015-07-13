@@ -7,13 +7,14 @@ ambra:
   ports:
     - "80:8080"
   volumes:
-    - $HOME/Projects/templates:/root/templates
+    - ../../templates:/root/templates
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ambra
     - MYSQL_USER_PASSWORD=ambra
     - MYSQL_HOSTNAME=ambradb
     - MYSQL_DATABASE=ambra
+    - REPO_SERVICE=http://repo:8080
 
 ambradb:
   image: percona:5.6
@@ -43,6 +44,7 @@ contentrepo:
     - MYSQL_USER_PASSWORD=
     - MYSQL_HOSTNAME=repodb
     - MYSQL_DATABASE=repo
+    - MOGILE_TRACKERS=mogiletracker:7001
 
 repodb:
   image: percona:5.6

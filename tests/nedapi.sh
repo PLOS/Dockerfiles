@@ -7,17 +7,19 @@ source $SCRIPTDIR/test-helpers.sh
 
 start_stack
 
-# SVC_URL=$(get_service_ip nedapi):8080
 SVC_URL=$(get_docker_host):8081
+SVC_NAME="NED"
 
-wait_for_web_service $SVC_URL
+wait_for_web_service $SVC_URL $SVC_NAME
 
 # begin tests
 
-curl_test_ok $SVC_URL/service/config "NED API"
+curl_test_ok $SVC_URL/service/config $SVC_NAME
+
+curl_test_ok $SVC_URL/typeclasses "Authenticated request" "-u dev:dev"
 
 # end tests
 
-echo "TESTS PASSED"
+tests_passed
 
 stop_stack

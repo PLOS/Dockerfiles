@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is the Ambra template for the Public Library of Science site. 
+-->
+<config>
+  <ambra>
+    <!-- virtual journal config -->
+    <virtualJournals>
+      <PLoSMedicine>
+        <journal>PLoSMedicine</journal>
+        <eIssn>1549-1676</eIssn>
+        <description>PLOS Medicine</description>
+        <rules>
+          <host>.*medicine.*</host>
+        </rules>
+        <url>http://www.plosmedicine.org</url>
+        <ambra>
+          <services>
+            <feed>
+              <title>PLOS Medicine</title>
+              <id>info:doi/10.1371/feed.pmed</id>
+            </feed>
+          </services>
+        </ambra>
+        <mostViewedArticles>
+          <limit>5</limit>
+          <timeFrame>30</timeFrame>
+          <message>These articles are updated daily\, based on usage data from the previous 30 days.</message>
+        </mostViewedArticles>
+      </PLoSMedicine>
+    </virtualJournals>
+
+    <freemarker>
+      <!--
+        # This section defines the various journals and the css and javascript files which should be
+        # included on each page as well as the page title.  The values within the <default> tag are used
+        # if any of the values are missing in the <page> definitions.  Note, that the title, css, and
+        # javascript level values are entirely replaced, they are not additive.  Override config files
+        # may define values for each of those three variables and they will supsercede values present
+        # in subsequent config values.  The lookup for values is as follows:
+        # 1. Page defined in journal
+        # 2. Default value defined in journal
+        # 3. Page defined in default journal
+        # 4. Default value in default journal
+        # To define an empty value for a certain page so that it doesn't use defaults, just put the
+        # element tag with no value, e.g. <javascript></javascript>
+      -->
+      <!--PLOSMedicine-->
+      <journal>
+        <name>PLoSMedicine</name>
+        <metaKeywords>
+          plos medicine\, plos\, public library of science\, open access\, open-access\, medical journal\, medicine\, medical\, journal\, research\, article
+        </metaKeywords>
+        <metaDescription>
+          PLOS Medicine is an open-access\, peer-reviewed medical journal that publishes outstanding human studies that substantially enhance the understanding of human health and disease.
+        </metaDescription>
+        <articleTitlePrefix>PLOS Medicine:</articleTitlePrefix>
+        <displayName>PLOS Medicine</displayName>
+        <hashTag>#PLOSMedicine</hashTag>
+        <default>
+          <title>PLOS Medicine: A Peer-Reviewed Open-Access Journal</title>
+        </default>
+      </journal>
+    </freemarker>
+  </ambra>
+</config>

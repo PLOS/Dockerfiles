@@ -2,15 +2,10 @@
 
 BUILD_DIR=/root
 
-SVC_WAR=wombat-*.war
-
 source $BUILD_DIR/run-helpers.sh
 
-cp /usr/local/tomcat/conf/* /etc/ambra
-rm -rf /usr/local/tomcat/conf
-ln -s /etc/ambra /usr/local/tomcat/conf
-cp ${BUILD_DIR}/wombat.yaml /etc/ambra
+wait_for_web_service $RHINO_SERVICE/config "rhino"
 
-setup_war_in_tomcat
+process_template $AMBRA_CONF/wombat.yaml
 
 start_tomcat

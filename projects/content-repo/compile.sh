@@ -1,21 +1,11 @@
 #!/bin/bash
 
-BUILDDIR="/build"
+source /shared/compile-helpers.sh
 
-rm $BUILDDIR/*
+java_compile_prepare
 
-echo Compiling
-
-cd /src
 mvn -Dmaven.test.skip=true clean package
-
-ls -l target
-
 cp target/*.war $BUILDDIR
+cp src/main/resources/setup.mysql $BUILDDIR
 
-cp /src/src/main/resources/setup.mysql $BUILDDIR
-cp /scripts/context-template.xml $BUILDDIR
-
-grep ^version= target/maven-archiver/pom.properties | head -1 | sed 's/^version=//' > $BUILDDIR/version.txt
-
-rm -rf target
+java_compile_finish "target/maven-archiver/pom.properties"
