@@ -1,7 +1,7 @@
 akita:
   image: akita:current
   ports:
-    - "80:80"
+    - 80:80
     - 443:443
   links:
     - nedapi:nedapi
@@ -11,9 +11,9 @@ akita:
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
-  volumes:
-    - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
-    - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
+  # volumes:    # to enable HTTPS
+  #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
+  #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
 
 mailcatcher:
   image: mailcatcher
@@ -24,6 +24,8 @@ neddb:
   image: percona:5.6
   environment:
     - MYSQL_ROOT_PASSWORD=root
+  # volumes:    # to persist database between runs
+  #   - /var/lib/mysql
 
 nedapi:
   image: nedapi:current

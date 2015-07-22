@@ -2,6 +2,8 @@ neddb:
   image: percona:5.6
   environment:
     - MYSQL_ROOT_PASSWORD=root
+  # volumes:    # enable to persist database between runs
+  #   - /var/lib/mysql
 
 nedapi:
   image: nedapi:current
