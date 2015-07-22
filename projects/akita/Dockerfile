@@ -36,12 +36,10 @@ RUN ./node_modules/.bin/ember build --environment=development
 
 # setup application
 
-RUN mkdir /var/log/akita && chmod 777 /var/log/akita && \
-		mv /src/docker/akita-nginx.conf /etc/nginx/sites-available/ && \
-		ln -s /etc/nginx/sites-available/akita-nginx.conf /etc/nginx/conf.d/akita-nginx.conf && \
+RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
 		rm -f /etc/nginx/sites-enabled/default
 
-# cleanup (does not recude image size, but does reduce attack service)
+# cleanup (does not reduce image size, but does reduce attack service)
 
 RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
 		mv /src/frontend/dist /src/ember && \

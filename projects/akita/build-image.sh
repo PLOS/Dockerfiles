@@ -23,7 +23,7 @@ rm $SRC/Dockerfile
 VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
 						--volume $DOCKER_SETUP_DIR/..:/shared \
 						--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
-							'cp /shared/run-helpers.sh /scripts/run.sh /root/; 
+							'cp /shared/run-helpers.sh /scripts/* /root/; 
 					     cat /root/version.txt')
 
 # docker commit $TMP_BUILD_CONTAINER $PROJECT_NAME:current

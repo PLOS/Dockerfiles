@@ -2,6 +2,7 @@ akita:
   image: akita:current
   ports:
     - "80:80"
+    - 443:443
   links:
     - nedapi:nedapi
     - mailcatcher:mailcatcher
@@ -10,6 +11,9 @@ akita:
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
+  volumes:
+    - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
+    - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
 
 mailcatcher:
   image: mailcatcher
