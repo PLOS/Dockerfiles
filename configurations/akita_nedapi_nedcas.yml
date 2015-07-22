@@ -12,7 +12,8 @@ akita:
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
     - SECRET_KEY_BASE=secretgoeshere
-  # volumes:    # to enable HTTPS
+    - SSL=generatekeys  # options = none, existingkeys, generatekeys
+  # volumes:    # when using SSL=existingkeys
   #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
   #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
 

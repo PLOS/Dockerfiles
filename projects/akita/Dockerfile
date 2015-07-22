@@ -38,6 +38,12 @@ RUN ./node_modules/.bin/ember build --environment=development
 RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
 		rm -f /etc/nginx/sites-enabled/default
 
+# generate self signed keys if needed for testing
+
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -subj "/C=US/ST=California/L=SanFran/O=Here/CN=plos" \
+    -keyout /root/nginx.key -out /root/nginx.crt
+
 # cleanup (does not reduce image size, but does reduce attack service)
 
 RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \

@@ -1,13 +1,23 @@
 #!/bin/bash
 
+NGINX_DIR=/etc/nginx
+
 NGINX_CONF=akita-nginx.conf
 
-if [ -f /etc/nginx/ssl/nginx.crt ]; then
+if [ "$SSL" == "existingkeys" ]; then
   NGINX_CONF=akita-nginx-ssl.conf
+  # assumes you have placed/mountd a cert and key in $NGINX_DIR/ssl/
 fi
 
-ln -s /root/$NGINX_CONF /etc/nginx/sites-available/
-ln -s /root/$NGINX_CONF /etc/nginx/conf.d/
+if [ "$SSL" == "generatekeys" ]; then
+  NGINX_CONF=akita-nginx-ssl.conf
+
+  ln -s /root/nginx.crt $NGINX_DIR/ssl/
+  ln -s /root/nginx.key $NGINX_DIR/ssl/
+fi
+
+ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
+ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
 
 service nginx start
 bundle exec puma -C /root/puma.rb --daemon
