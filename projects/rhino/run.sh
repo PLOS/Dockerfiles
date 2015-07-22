@@ -18,18 +18,14 @@ fi
 
 set_db_grants
 
-cp /usr/local/tomcat/conf/* /etc/ambra
-rm -rf /usr/local/tomcat/conf
-ln -s /etc/ambra /usr/local/tomcat/conf
-cp ${BUILD_DIR}/*.xml /etc/ambra
-cp ${BUILD_DIR}/rhino.yaml /etc/ambra
-# TODO: remove this after DPRO-1205 is resolved
+# TODO: remove this once DPRO-1205 is resolved
 cp -r /root/ingest/* /root/datastores/ingest/
 
-setup_war_in_tomcat
-
-wait_for_web_service $REPO_SERVICE/config
+wait_for_web_service $REPO_SERVICE/config "contentrepo"
 
 curl -X POST $REPO_SERVICE/buckets --data name=corpus
+
+process_template $AMBRA_CONF/context.xml
+process_template $AMBRA_CONF/rhino.yaml
 
 start_tomcat

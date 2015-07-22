@@ -1,6 +1,6 @@
 ################################ System Config ################################
 
-server: http://rhino:8080/
+server: $RHINO_SERVICE
 # URL of the server for the service API ("Rhino")
 
 compiledAssetDir: null
@@ -431,4 +431,3 @@ sites:
 # <http://creativecommons.org/licenses/by/2.0/deed.en>
 #
 # ASCII-fied by <http://www.glassgiant.com/ascii/>
-

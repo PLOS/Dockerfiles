@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  This file is the Ambra template for the Public Library of Science site. 
+-->
+<config>
+  <ambra>
+    <!-- virtual journal config -->
+    <virtualJournals>
+      <PLoSClinicalTrials>
+        <journal>PLoSClinicalTrials</journal>
+        <eIssn>1555-5887</eIssn>
+        <description>PLOS Clinical Trials</description>
+        <rules>
+          <host>.*clinicaltrials.*</host>
+        </rules>
+        <url>http://clinicaltrials.ploshubs.org</url>
+        <ambra>
+          <services>
+            <feed>
+              <title>PLOS Clinical Trials</title>
+              <id>info:doi/10.1371/feed.phct</id>
+            </feed>
+          </services>
+        </ambra>
+        <!-- Configuration keys for displaying recent articles tab widget on home page -->
+        <recentArticles>
+          <numDaysInPast>14</numDaysInPast>
+          <numArticlesToShow>5</numArticlesToShow>
+        </recentArticles>
+      </PLoSClinicalTrials>
+    </virtualJournals>
+
+    <freemarker>
+      <!--
+        # This section defines the various journals and the css and javascript files which should be
+        # included on each page as well as the page title.  The values within the <default> tag are used
+        # if any of the values are missing in the <page> definitions.  Note, that the title, css, and
+        # javascript level values are entirely replaced, they are not additive.  Override config files
+        # may define values for each of those three variables and they will supsercede values present
+        # in subsequent config values.  The lookup for values is as follows:
+        # 1. Page defined in journal
+        # 2. Default value defined in journal
+        # 3. Page defined in default journal
+        # 4. Default value in default journal
+        # To define an empty value for a certain page so that it doesn't use defaults, just put the
+        # element tag with no value, e.g. <javascript></javascript>
+      -->
+      <!--PLOSClinicalTrials-->
+      <journal>
+        <name>PLoSClinicalTrials</name>
+        <metaKeywords>
+          clinical trials\, clinical trial\, trial results\, medical publishing\, plos\, public library of science\, open access\, open-access\, science\, medical research\, clinical research\, human studies\, experimental treatment\, disease\, drug\, drugs\, device\, devices\, vaccine\, vaccines\, phase I\, phase II\, phase III\, phase IV\, journal\, portal\, gateway\, resource
+        </metaKeywords>
+        <metaDescription>
+          PLOS Hub for Clinical Trials: Connecting the community with open-access\, peer-reviewed clinical trials research.
+        </metaDescription>
+        <articleTitlePrefix>PLOS Hub for Clinical Trials:</articleTitlePrefix>
+        <displayName>PLOS Hub for Clinical Trials</displayName>
+        <default>
+          <title>
+            PLOS Hub for Clinical Trials: Connecting communities with open-access research
+          </title>
+        </default>
+      </journal>
+    </freemarker>
+  </ambra>
+</config>

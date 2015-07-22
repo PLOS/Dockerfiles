@@ -33,7 +33,6 @@ RUN bin/setup
 WORKDIR /src/frontend
 RUN ./node_modules/.bin/ember build --environment=development
 
-
 # setup application
 
 RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \

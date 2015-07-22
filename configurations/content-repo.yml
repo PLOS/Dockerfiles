@@ -12,6 +12,7 @@ repoapi:
     - MYSQL_USER_PASSWORD=
     - MYSQL_HOSTNAME=repodb
     - MYSQL_DATABASE=repo
+    - MOGILE_TRACKERS=mogiletracker:7001
 
 repodb:
   image: percona:5.6

@@ -2,8 +2,6 @@
 
 BUILD_DIR=/root
 
-SVC_WAR=ambra.war
-
 source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
@@ -17,13 +15,11 @@ fi
 
 set_db_grants
 
-cp /usr/local/tomcat/conf/* /etc/ambra
-rm -rf /usr/local/tomcat/conf
-ln -s /etc/ambra /usr/local/tomcat/conf
-cp ${BUILD_DIR}/*.xml /etc/ambra
-cp /etc/ambra/log4j.xml $CATALINA_HOME/lib
-cp /etc/ambra/ehcache.xml $CATALINA_HOME/lib
+ls -ln $AMBRA_CONF
 
-setup_war_in_tomcat
+process_template $AMBRA_CONF/context.xml
+# process_template $AMBRA_CONF/ambra.xml  # TODO: ignore bad substitution errors
+
+wait_for_web_service $REPO_SERVICE/config "contentrepo"
 
 start_tomcat

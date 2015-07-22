@@ -1,9 +1,11 @@
 #!/bin/bash
 
+# set -x
+
 MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
 
-function die () {
+function die() {
   echo "$@" 1>&2
   exit 1
 }
@@ -21,9 +23,8 @@ function build_java_service_images() {
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
 	BUILD_RESULT_DIR=${PROJECT_NAME}_build
-	TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
 
-     # checkout the project from git if it doesn't exist on the local machine
+  # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];
 	  then
 	  echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
@@ -41,42 +42,28 @@ function build_java_service_images() {
 	docker inspect $MAVEN_LOCAL_REPO > /dev/null
 	[ $? -eq 1 ] && docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
 
-	# build API war
+	# build java assets (ie - API war)
 	echo "Building and Loading Java Assets on Base Image (maven)..."
 
-	docker run -it \
+	docker run --rm \
 	   --volumes-from $MAVEN_LOCAL_REPO \
 	   --volumes-from $BUILD_RESULT_DIR \
 	   --volume $PROJECT_LOCAL_REPO:/src \
 	   --volume $DOCKER_SETUP_DIR:/scripts \
+	   --volume $DOCKER_SETUP_DIR/..:/shared \
 	   $BASE_IMAGE bash /scripts/compile.sh
 
-	# TODO: run tests in build
+	echo "Building runnable docker image ..."
 
-	echo "Building base image ..."
-
-	docker build -t $PROJECT_NAME:current $DOCKER_SETUP_DIR
-
-	# copy assets and scripts into image
-
-	echo "Copying Java Assets into Tomcat Image..."
-
-	VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-							--volume $DOCKER_SETUP_DIR/..:/shared \
-							--volumes-from $BUILD_RESULT_DIR \
-							--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
-								'cp -r /build/*  /root;
-								 cp /shared/run-helpers.sh /scripts/run.sh /root/;
-								 cat /root/version.txt')
-
-	docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $PROJECT_NAME:current -
 
 	# tag docker image with asset version number
+	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
+
 	echo "tagging container with version : $VERSION"
 
 	docker tag -f $PROJECT_NAME:current $PROJECT_NAME:$VERSION
 
-	docker rm $TMP_BUILD_CONTAINER
 }
 
 "$@"

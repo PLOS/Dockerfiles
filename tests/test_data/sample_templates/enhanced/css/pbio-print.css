@@ -1,0 +1,92 @@
+/*
+ * $HeadURL:: http://ambraproject.org/svn/plos/templates/head/enhanced/css/pbio-print.cs#$
+ * $Id: pbio-print.css 10685 2012-07-13 18:14:02Z josowski $
+ *
+ * Copyright (c) 2006-2010 by Public Library of Science
+ * http://plos.org
+ * http://ambraproject.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* 	-------------------------------------------------------------
+
+	PRINT STYLE SHEET FOR : all ambra journals
+	CREATED ON 	: 08-26-2006
+	CREATED BY	: MARGARET SHEAR
+	MODIFIED BY	: SEBASTIAN TOOMEY
+
+   	------------------------------------------------------------- */
+
+html { color: #000!important; width: 100%!important; font-size: 100%; background-image:none; }
+
+#topBanner,
+#hdr,
+div.beta,
+#nav,
+#ftr ul,
+div.powered,
+#rhc,
+ol.references a.find,
+div#ftr ul,
+span#oa,
+a.bug,
+a:visited.bug,
+#articleMenu,
+div.horizontalTabs,
+div#articleContainer h2 a:link,
+div#articleContainer h3 a:link,
+div#search-facets,
+div#search-related,
+div#search-results div#searchMore div div input,
+div#search-results div#searchMore div div { display:none !important; }
+
+a,
+a:link,
+a:visited { text-decoration:none; color:#000;}
+
+body,
+div#content,
+div.content 	{ width:auto!important; margin:0!important; padding:0!important; border:none!important; }
+* html body,
+* html div#content,
+* html div.content,
+div#content.search div#search-results { width:6.75in!important; }
+p.intro							{ border:1px dotted #000 !important; }
+.edboard dl,
+.edboard dt,
+.edboard dd	{ background:none!important; border:none; }
+div.fch p.fch { text-indent:0; background:none; }
+
+div#contentHeader,
+div#contentHeader p#articleType,
+div#publisher,
+div#publisher p { font-size:.9em!important; text-indent:0 !important; display:inline !important; border-bottom:0 !important; }
+div#contentHeader p#articleType { padding-right:.5em !important; }
+#researchArticle h1 { margin-top:0; font-size:18pt;}
+div.static h2,
+div.abstract h2,
+div.content h3 { border-bottom-color:#000; }
+div.static h3,
+div.abstract h3,
+div.content h4 { font-size:1.2em; }
+div#search-results label,
+#researchArticle span.authors { display:block; }
+div#search-results div#searchMore { border-bottom:0;; }
+div#searchMore textarea, div#search-results select { border:1px solid #ccc; }
+div.articleinfo { border:2px solid #ccc; padding:10px; }
+div.static ul li,
+div.content ul li { list-style-type:disc; list-style-position:inside; }
+body, p { font-size: 10pt !important; }
+body div.articleinfo p,
+body #ftr p { font-size:8pt!important; color:#000; border-bottom:none;}
+div#ftr { background:#FFF; font-size:.85em; width:100%; border-top:1px solid #ccc; }
