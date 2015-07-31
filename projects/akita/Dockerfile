@@ -28,10 +28,12 @@ COPY . /src
 
 RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > /root/version.txt
 
-RUN bin/setup
+# only run the setup if the dependencies are missing
+RUN ls frontend/node_modules || bin/setup
 
 WORKDIR /src/frontend
 RUN ./node_modules/.bin/ember build --environment=development
+# TODO: make the ember environment configurable or change to prod
 
 # setup application
 
@@ -46,8 +48,8 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 # cleanup (does not reduce image size, but does reduce attack service)
 
-RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
-		mv /src/frontend/dist /src/ember && \
-		rm -rf /src/frontend
+# RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
+# 		mv /src/frontend/dist /src/ember && \
+# 		rm -rf /src/frontend
 
 # CMD bash /root/run.sh

@@ -13,10 +13,20 @@ SRC=$DOCKER_SETUP_DIR/$SRC
 docker build -t mailcatcher -f Dockerfile.mailcatcher .
 
 cp Dockerfile $SRC      # this is a hack to allow the Dockerfile to exist in this subfolder
+cp akita.dockerignore $SRC/.dockerignore
+
+# if you pass the "clean" argument, the build will ignore the frontend dependencies that are on your host machine, and pull them down fresh in the container
+if [ "$1" == "clean" ]; then
+	echo -e "frontend/dist\nfrontend/node_modules\nfrontend/bower_components\n" >> $SRC/.dockerignore
+fi
+
+cat $SRC/.dockerignore
+
 cd $SRC
 time docker build -t $PROJECT_NAME:current .
-cd $DOCKER_SETUP_DIR
+# cd $DOCKER_SETUP_DIR
 rm $SRC/Dockerfile
+rm $SRC/.dockerignore
 
 VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
 						--volume $DOCKER_SETUP_DIR/..:/shared \
