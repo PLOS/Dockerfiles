@@ -7,7 +7,7 @@ neddb:
     - MYSQL_ROOT_PASSWORD=root
 
 nedapi:
-  image: nedapi:current
+  image: nedapi:develop
   command: /start.sh
   links:
     - neddb:neddb
@@ -19,7 +19,7 @@ nedapi:
     - MYSQL_DATABASE=namedEntities
 
 nedetl:
-  image: nedetl:current
+  image: nedetl:develop
   command: tail -f /dev/null
 
 nedetltester:

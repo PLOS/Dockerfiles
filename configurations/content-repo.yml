@@ -1,5 +1,5 @@
 repoapi:
-  image: contentrepo:current
+  image: contentrepo:master
   links:
     - repodb
     - mogilenode

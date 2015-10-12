@@ -1,5 +1,5 @@
 nedcas:
-  image: nedcas:current
+  image: nedcas:develop
   links:
     - neddb:neddb
     - nedapi:nedapi
@@ -14,7 +14,7 @@ nedcas:
     - NED_SERVICE=http://nedapi:8080
 
 nedapi:
-  image: nedapi:current
+  image: nedapi:develop
   links:
     - neddb:neddb
   ports:

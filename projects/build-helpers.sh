@@ -18,6 +18,8 @@ function build_java_service_images() {
 	PROJECT_DIR=$2
 	PROJECT_NAME=$3
 
+  BASE_TAG=current
+
 	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_DIR
 	# assumes the project is locally in the same directory as the Dockerfiles project
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
@@ -42,6 +44,8 @@ function build_java_service_images() {
 	docker inspect $MAVEN_LOCAL_REPO > /dev/null
 	[ $? -eq 1 ] && docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
 
+  BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+
 	# build java assets (ie - API war)
 	echo "Building and Loading Java Assets on Base Image (maven)..."
 
@@ -55,14 +59,14 @@ function build_java_service_images() {
 
 	echo "Building runnable docker image ..."
 
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $PROJECT_NAME:current -
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $PROJECT_NAME:$BASE_TAG -
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
 
 	echo "tagging container with version : $VERSION"
 
-	docker tag -f $PROJECT_NAME:current $PROJECT_NAME:$VERSION
+	docker tag -f $PROJECT_NAME:$BASE_TAG $PROJECT_NAME:$VERSION
 
 }
 

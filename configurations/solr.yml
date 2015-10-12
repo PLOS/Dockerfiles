@@ -1,5 +1,5 @@
 solr:
-  image: solr:current
+  image: solr:master
   ports:
     - "8983:8080"
   volumes:

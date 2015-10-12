@@ -1,5 +1,5 @@
 ambra:
-  image: ambra:current
+  image: ambra:master
   links:
     - ambradb:ambradb
     - solr:solr
@@ -18,7 +18,7 @@ ambra:
     - REPO_SERVICE=http://repo:8080
 
 wombat:
-  image: wombat:current
+  image: wombat:master
   links:
     - rhino:rhino
     - contentrepo:repo
@@ -30,7 +30,7 @@ wombat:
     - RHINO_SERVICE=http://rhino:8080
 
 rhino:
-  image: rhino:current
+  image: rhino:master
   links:
     - ambradb:ambradb
     - contentrepo:repo
@@ -55,14 +55,14 @@ ambradb:
     - "3306:3306"
 
 solr:
-  image: solr:current
+  image: solr:master
   ports:
     - "8983:8080"
   volumes:
     - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
 contentrepo:
-  image: contentrepo:current
+  image: contentrepo:master
   links:
     - repodb
     - mogilenode

@@ -1,5 +1,5 @@
 ambra:
-  image: ambra:current
+  image: ambra:master
   links:
     - ambradb:ambradb
     - solr:solr
@@ -24,14 +24,14 @@ ambradb:
     - "3306:3306"
 
 solr:
-  image: solr:current
+  image: solr:master
   ports:
     - "8983:8080"
   volumes:
     - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
 contentrepo:
-  image: contentrepo:current
+  image: contentrepo:master
   links:
     - repodb
     - mogilenode

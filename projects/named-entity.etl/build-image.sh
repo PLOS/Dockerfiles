@@ -12,6 +12,7 @@ BUILD_CACHE=nedetlbuild
 # HOST_CACHE=$DIR/build_cache
 TMP_BUILD_CONTAINER=nedetl_temp_container
 OUTPUTIMAGE=nedetl
+BASE_TAG=current
 
 if [ "$1" == "clean" ]; then
    echo Removing cache
@@ -20,6 +21,8 @@ if [ "$1" == "clean" ]; then
 fi
 
 # TODO: run tests in build
+
+BASE_TAG=$(git --git-dir=$src/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
 
 # create the cache for mavan
 docker create -v /build --name $BUILD_CACHE $BASEIMAGE /bin/true
@@ -35,19 +38,19 @@ docker run --rm \
    --volume $DIR:/scripts $BASEIMAGE \
    bash /scripts/compile.sh
 
-docker build -t $OUTPUTIMAGE:current .
+docker build -t $OUTPUTIMAGE:$BASE_TAG .
 
 
 echo Copying java assets into image
 
-VERSION=$(docker run --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current sh -c 'cp /build/* /root; cat /root/version.txt')
+VERSION=$(docker run --volumes-from $BUILD_CACHE --name $TMP_BUILD_CONTAINER $OUTPUTIMAGE:$BASE_TAG sh -c 'cp /build/* /root; cat /root/version.txt')
 
-docker commit $TMP_BUILD_CONTAINER $OUTPUTIMAGE:current
+docker commit $TMP_BUILD_CONTAINER $OUTPUTIMAGE:$BASE_TAG
 
 # build docker images and tag them
 
 echo tagging container with version : $VERSION
 
-docker tag -f $OUTPUTIMAGE:current $OUTPUTIMAGE:$VERSION
+docker tag -f $OUTPUTIMAGE:$BASE_TAG $OUTPUTIMAGE:$VERSION
 
 docker rm $TMP_BUILD_CONTAINER

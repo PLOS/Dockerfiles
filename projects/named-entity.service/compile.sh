@@ -4,7 +4,7 @@ source /shared/compile-helpers.sh
 
 java_compile_prepare
 
-./ned.sh install
+mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install
 cp target/*.?ar $BUILDDIR
 cp src/main/resources/ned-*.mysql.sql $BUILDDIR
 

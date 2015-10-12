@@ -1,5 +1,5 @@
 akita:
-  image: akita:current
+  image: akita:develop
   ports:
     - 80:80
     - 443:443
@@ -30,7 +30,7 @@ neddb:
   #   - /var/lib/mysql
 
 nedapi:
-  image: nedapi:current
+  image: nedapi:develop
   ports:
     - "8081:8080"
   links:
@@ -43,7 +43,7 @@ nedapi:
     - MYSQL_DATABASE=namedEntities
 
 nedcas:
-  image: nedcas:current
+  image: nedcas:develop
   links:
     - neddb:neddb
     - nedapi:nedapi

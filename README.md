@@ -52,9 +52,9 @@ Now, in the case above you can visit some pages to see they are up:
 Development/Conventions
 -----------------------
 
-For each project the images created for it should be tagged with a version number and with "current". Current represents the last docker build you ran. It should be noted that "current" does not mean latest.
+For each project the images created for it should be tagged with a version number and with the name of the git branch.
 
-In each image, create a file at /root/version.txt that contains the version number representing the built artificats. For example, "0.5.0-SNAPSHOT".
+In each image, create a file at /root/version.txt that contains the version number representing the built artifacts. For example, "0.5.0-SNAPSHOT".
 
 
 Docker Registry

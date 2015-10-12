@@ -6,7 +6,7 @@ neddb:
   #   - /var/lib/mysql
 
 nedapi:
-  image: nedapi:current
+  image: nedapi:develop
   links:
     - neddb:neddb
   ports:

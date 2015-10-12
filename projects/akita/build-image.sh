@@ -6,6 +6,8 @@ PROJECT_NAME=akita
 
 TMP_BUILD_CONTAINER=${PROJECT_NAME}_temp_container
 
+BASE_TAG=current
+
 DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DOCKER_SETUP_DIR
 SRC=$DOCKER_SETUP_DIR/$SRC
@@ -23,23 +25,26 @@ fi
 cat $SRC/.dockerignore
 
 cd $SRC
-time docker build -t $PROJECT_NAME:current .
+
+BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+
+time docker build -t $PROJECT_NAME:$BASE_TAG .
 # cd $DOCKER_SETUP_DIR
 rm $SRC/Dockerfile
 rm $SRC/.dockerignore
 
 VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
 						--volume $DOCKER_SETUP_DIR/..:/shared \
-						--name $TMP_BUILD_CONTAINER $PROJECT_NAME:current sh -c \
+						--name $TMP_BUILD_CONTAINER $PROJECT_NAME:$BASE_TAG sh -c \
 							'cp /shared/run-helpers.sh /scripts/* /root/;
 					     cat /root/version.txt')
 
-docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:current
+docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $PROJECT_NAME:$BASE_TAG
 
 # tag docker image with asset version number
 
 echo tagging container with version : $VERSION
 
-docker tag -f $PROJECT_NAME:current $PROJECT_NAME:$VERSION
+docker tag -f $PROJECT_NAME:$BASE_TAG $PROJECT_NAME:$VERSION
 
 docker rm $TMP_BUILD_CONTAINER

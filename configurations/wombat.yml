@@ -1,5 +1,5 @@
 wombat:
-  image: wombat:current
+  image: wombat:master
   links:
     - rhino:rhino
     - contentrepo:repo
@@ -12,7 +12,7 @@ wombat:
     # - CAS_SERVER=https://register.plos.org/cas
 
 rhino:
-  image: rhino:current
+  image: rhino:master
   links:
     - ambradb:ambradb
     - contentrepo:repo
@@ -37,14 +37,14 @@ ambradb:
     - "3306:3306"
 
 solr:
-  image: solr:current
+  image: solr:master
   ports:
     - "8983:8080"
   volumes:
     - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
 contentrepo:
-  image: contentrepo:current
+  image: contentrepo:master
   links:
     - repodb
     - mogilenode
