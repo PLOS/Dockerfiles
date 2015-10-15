@@ -7,8 +7,10 @@ source $BUILD_DIR/run-helpers.sh
 wait_until_db_service_up
 
 if ! check_db_exists; then
-  $MYSQL_ROOT < ${BUILD_DIR}/ned-schema.mysql.sql
-  $MYSQL_ROOT < ${BUILD_DIR}/ned-data.mysql.sql
+  ls migrations
+  cd flyway-*
+  # $MYSQL_ROOT < ${BUILD_DIR}/ned-schema.mysql.sql
+  # $MYSQL_ROOT < ${BUILD_DIR}/ned-data.mysql.sql
 fi
 
 set_db_grants
