@@ -16,7 +16,9 @@ function build_java_service_images() {
 
 	BASE_IMAGE=$1
 	PROJECT_DIR=$2
-	PROJECT_NAME=$3
+	IMAGE_NAME=$3
+
+  PROJECT_NAME=basename $PROJECT_DIR      # this will return false positives????
 
   BASE_TAG=current
 
@@ -24,7 +26,7 @@ function build_java_service_images() {
 	# assumes the project is locally in the same directory as the Dockerfiles project
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
-	BUILD_RESULT_DIR=${PROJECT_NAME}_build
+	BUILD_RESULT_DIR=${IMAGE_NAME}_build
 
   # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];
@@ -59,14 +61,14 @@ function build_java_service_images() {
 
 	echo "Building runnable docker image ..."
 
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $PROJECT_NAME:$BASE_TAG -
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $IMAGE_NAME:$BASE_TAG -
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
 
 	echo "tagging container with version : $VERSION"
 
-	docker tag -f $PROJECT_NAME:$BASE_TAG $PROJECT_NAME:$VERSION
+	docker tag -f $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
 }
 
