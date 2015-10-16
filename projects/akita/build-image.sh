@@ -13,7 +13,7 @@ BASE_TAG=current
 DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # perhaps they supplied an absolute path to an existing project directory
-if [ -d $1 ]; then
+if [ -d "$1" ]; then
 	PROJECT_LOCAL_REPO=$1/
 else
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
