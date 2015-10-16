@@ -7,11 +7,11 @@ source $BUILD_DIR/run-helpers.sh
 wait_until_db_service_up
 
 if ! check_db_exists; then
-  ls migrations
-  cd flyway-*
-  # $MYSQL_ROOT < ${BUILD_DIR}/ned-schema.mysql.sql
-  # $MYSQL_ROOT < ${BUILD_DIR}/ned-data.mysql.sql
+  create_db
 fi
+
+bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
+    -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
 
 set_db_grants
 

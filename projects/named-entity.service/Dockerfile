@@ -9,9 +9,8 @@ ADD https://bintray.com/artifact/download/business/maven/flyway-commandline-3.2.
 
 WORKDIR /root
 RUN tar xvfz flyway-commandline-*.tar.gz
-MOVE flyway-* to flyway/
 
-COPY run*.sh *.sql /root/
+COPY run*.sh *.sql migrations/ /root/
 
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/ROOT.war
 COPY context.xml $CATALINA_HOME/conf/

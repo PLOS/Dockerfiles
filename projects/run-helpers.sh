@@ -65,6 +65,10 @@ function check_db_exists {
 	$MYSQL_ROOT -e "use ${MYSQL_DATABASE}"
 }
 
+function create_db {
+  echo "CREATE DATABASE ${MYSQL_DATABASE}" | ${MYSQL_ROOT}
+}
+
 function process_template {
 	CONTEXT_TEMPALTE=$1
 

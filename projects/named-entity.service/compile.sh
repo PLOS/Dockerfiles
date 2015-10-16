@@ -10,8 +10,6 @@ cd ../..
 
 mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install
 cp target/*.?ar $BUILDDIR
-cp src/main/resources/ned-*.mysql.sql $BUILDDIR
-
-cp -r database/migrations migrations
+cp -r database/migrations $BUILDDIR/migrations
 
 java_compile_finish "target/classes/version.properties"
