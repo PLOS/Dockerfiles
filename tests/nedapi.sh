@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set -x
+ 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 COMPOSE_FILE=nedapi.yml
 
