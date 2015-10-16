@@ -18,15 +18,20 @@ function build_java_service_images() {
 	PROJECT_DIR=$2
 	IMAGE_NAME=$3
 
-  PROJECT_NAME=basename $PROJECT_DIR      # this will return false positives????
+  PROJECT_NAME=$(basename $PROJECT_DIR)
 
   BASE_TAG=current
 
-	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_DIR
+	BUILD_RESULT_DIR=${IMAGE_NAME}_build
+
+	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_NAME
 	# assumes the project is locally in the same directory as the Dockerfiles project
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
-	BUILD_RESULT_DIR=${IMAGE_NAME}_build
+  # perhaps they supplied an absolute path to an existing project directory
+  if [ -d ${PROJECT_DIR} ]; then
+    PROJECT_LOCAL_REPO=${PROJECT_DIR}/
+  fi
 
   # checkout the project from git if it doesn't exist on the local machine
 	if [ ! -d $PROJECT_LOCAL_REPO ];
@@ -34,7 +39,7 @@ function build_java_service_images() {
 	  echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
 	  git --version > /dev/null || die "git is not installed"
 
-	  git clone ${GITHUB_REPO_BASE}/${PROJECT_DIR} $PROJECT_LOCAL_REPO
+	  git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
 
 	  if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
 	fi
