@@ -14,23 +14,24 @@ Setup
 
 All the directories in the projects/ directory correspond to a PLOS project in github. The folder should have the same name as their github project. And those projects should be checked out at the same level as this Dockerfiles project. For example, lets assume you have your git projects checked out like so:
 
-    (workspace)/named-entity.service
-    (workspace)/ned-cas
+    (workspace)/wombat
+    (workspace)/rhino
     (workspace)/Dockerfiles
 
-This way (workspace)/Dockerfiles/projects/named-entity.service/ knows where to find the source code.
+This way (workspace)/Dockerfiles/projects/wombat/ knows where to find the source code.
 
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
 
 
-Use
----
+Building images
+---------------
 
 To build a docker image for a project, run the build script. For example:
 
-    projects/akita/build-image.sh
-    projects/named-entity.service/build-image.sh
-    projects/ned-cas/build-image.sh
+    projects/wombat/build-image.sh
+    projects/rhino/build-image.sh
+    projects/content-repo/build-image.sh
+    projects/plos-solr/build-image.sh
 
 Or build them all with:
 
@@ -38,15 +39,27 @@ Or build them all with:
 
 This will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
 
+
+Running
+-------
+
 To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
 
-    docker-compose -f configurations/akita_nedapi_nedcas.yml up
+    docker-compose -f configurations/wombat.yml up
 
 Now, in the case above you can visit some pages to see they are up:
 
-    http://localhost/registration/new     # Akita registration page:
-    http://localhost:1080                 # mailcatcher
-    http://localhost:8090/cas/login       # CAS login page
+    http://localhost:8001/DesktopPlosOne  # wombat
+    http://localhost:8080                 # rhino
+    http://localhost:8085                 # content repo
+
+Note, that before running one of these docker-compose files you need to make sure you have built the images it depends on (see above).
+
+
+Testing
+-------
+
+See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything.
 
 
 Development/Conventions
