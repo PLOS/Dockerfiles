@@ -1,4 +1,4 @@
-FROM tomcat:6-jre7
+FROM tomcat:6-jre8
 
 LABEL vendor="Public Library of Science"
 

@@ -66,12 +66,15 @@ function build_java_service_images() {
 
 	echo "Building runnable docker image ..."
 
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $IMAGE_NAME:$BASE_TAG -
+  # NOTE: the sudo below is a temp workaround for a bug that might not be fixed until docker 1.10
+  # https://github.com/docker/docker/issues/15785
+
+	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | sudo docker build -t $IMAGE_NAME:$BASE_TAG -
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
 
-	echo "tagging container with version : $VERSION"
+	echo "tagging image $IMAGE_NAME:$VERSION"
 
 	docker tag -f $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 

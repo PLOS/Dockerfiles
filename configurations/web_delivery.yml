@@ -51,8 +51,8 @@ ambradb:
   image: percona:5.6
   environment:
     - MYSQL_ROOT_PASSWORD=root
-  ports:
-    - "3306:3306"
+  # ports:
+  #   - "3306:3306"
 
 solr:
   image: solr:master
