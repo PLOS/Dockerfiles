@@ -16,7 +16,7 @@ bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}
 set_db_grants
 
 # insert dev:dev user for userapp authentication
-unzip -q $CATALINA_HOME/webapps/ROOT.war -d $BUILD_DIR/ned
+unzip -q $CATALINA_HOME/webapps/v0.war -d $BUILD_DIR/ned
 cd $BUILD_DIR/ned/WEB-INF
 PASSWORD=$(java -cp classes:$(ls lib/spring-security-crypto-*.RELEASE.jar | head -1) org.plos.namedentity.spring.security.BCrypt dev)
 echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','${PASSWORD}');" | $MYSQL_ROOT

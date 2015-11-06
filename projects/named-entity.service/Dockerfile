@@ -12,7 +12,7 @@ RUN tar xvfz flyway-commandline-*.tar.gz
 
 COPY run*.sh *.sql migrations/ /root/
 
-COPY named-entity-service-*.war $CATALINA_HOME/webapps/ROOT.war
+COPY named-entity-service-*.war $CATALINA_HOME/webapps/v0.war
 COPY context.xml $CATALINA_HOME/conf/
 
 RUN keytool -genkey -noprompt -alias tomcat -keyalg RSA \

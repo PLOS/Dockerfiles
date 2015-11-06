@@ -74,7 +74,7 @@ function build_java_service_images() {
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
 
-	echo "tagging image $IMAGE_NAME:$VERSION"
+	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
 
 	docker tag -f $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
