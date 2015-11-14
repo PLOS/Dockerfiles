@@ -30,4 +30,17 @@
             username="${MYSQL_USER}"
             password="${MYSQL_USER_PASSWORD}"
             url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}" />
+
+  <Resource name="jdbc/AmbraDS"
+          auth="Container"
+          type="javax.sql.DataSource"
+          factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+          validationQuery="SELECT 1"
+          testOnBorrow="true"
+          driverClassName="com.mysql.jdbc.Driver"
+          username="${MYSQL_USER}"
+          password="${MYSQL_USER_PASSWORD}"
+          url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${AMBRA_DATABASE}"
+          closeMethod="close" />
+
 </Context>

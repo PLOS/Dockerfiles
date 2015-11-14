@@ -25,6 +25,7 @@ nedapi:
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
+    - AMBRA_DATABASE=ambra
 
 neddb:
   image: percona:5.6

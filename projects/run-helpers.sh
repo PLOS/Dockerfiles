@@ -16,10 +16,10 @@ function wait_until_db_service_up {
 	$MYSQL_ROOT -e 'exit'
 	MYSQL_NOT_CONNECTING=$?
 	while [ $MYSQL_NOT_CONNECTING -ne 0 ] ; do
-	    sleep 1;
-	    $MYSQL_ROOT -e 'exit'
-	    MYSQL_NOT_CONNECTING=$?
-	    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready ... waiting"
+    sleep 1;
+    $MYSQL_ROOT -e 'exit'
+    MYSQL_NOT_CONNECTING=$?
+    echo -e "\nDatabase (${MYSQL_HOSTNAME}) not ready ... waiting"
 	done;
 
 	echo -e "\nDatabase (${MYSQL_HOSTNAME}) ready!"
@@ -61,12 +61,16 @@ function set_db_grants {
 }
 
 function check_db_exists {
+
+  DB=${1:-${MYSQL_DATABASE}}
+
 	# this function exists because we dont want to recreated a DB if we are pointing to a service that already has a running schema on it
-	$MYSQL_ROOT -e "use ${MYSQL_DATABASE}"
+	$MYSQL_ROOT -e "use ${DB}"
 }
 
 function create_db {
-  echo "CREATE DATABASE ${MYSQL_DATABASE}" | ${MYSQL_ROOT}
+  DB=${1:-${MYSQL_DATABASE}}
+  echo "CREATE DATABASE ${DB}" | ${MYSQL_ROOT}
 }
 
 function process_template {

@@ -41,6 +41,7 @@ nedapi:
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
+    - AMBRA_DATABASE=ambra
 
 nedcas:
   image: nedcas:develop

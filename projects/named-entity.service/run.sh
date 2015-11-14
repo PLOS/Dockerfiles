@@ -13,6 +13,13 @@ fi
 bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
     -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
 
+# ambra DB
+
+if ! check_db_exists ${AMBRA_DATABASE}; then
+  create_db ${AMBRA_DATABASE}
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
+fi
+
 set_db_grants
 
 # insert dev:dev user for userapp authentication
