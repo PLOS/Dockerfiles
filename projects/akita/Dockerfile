@@ -32,7 +32,7 @@ RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"
 RUN ls frontend/node_modules || bin/setup
 
 WORKDIR /src/frontend
-RUN ./node_modules/.bin/ember build --environment=development && mv /src/frontend/dist /src/ember
+RUN ./node_modules/.bin/ember build --environment=production && mv /src/frontend/dist /src/ember
 # TODO: make the ember environment configurable or change to prod
 
 # setup application
