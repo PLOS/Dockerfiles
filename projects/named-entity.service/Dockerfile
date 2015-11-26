@@ -14,6 +14,7 @@ COPY run*.sh *.sql migrations/ /root/
 
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/v0.war
 COPY context.xml $CATALINA_HOME/conf/
+# TODO: finish setting ssl here and perhaps web.xml   https://developer.plos.org/confluence/pages/viewpage.action?pageId=35883597   :  COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
 
 RUN keytool -genkey -noprompt -alias tomcat -keyalg RSA \
   -dname "CN=plos, OU=, O=, L=SF, S=CA, C=US" \

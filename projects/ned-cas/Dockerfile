@@ -17,8 +17,4 @@ WORKDIR /root
 
 RUN keytool -genkey -alias tomcat -keyalg RSA -noprompt -dname "CN=cas-local, C=US, ST=CA, L=SanFran, O=plos" -keystore cas.jks -storepass changeit -keypass changeit
 
-# RUN keytool -export -alias tomcat -keypass changeit -storepass changeit -keystore cas.jks -file localhost.crt
-
-# RUN keytool -importcert -file localhost.crt -alias tomcat -keypass changeit -storepass changeit -keystore /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/security/cacerts -noprompt
-
 CMD bash /root/run.sh
