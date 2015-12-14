@@ -1,16 +1,10 @@
-neddb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-  # volumes:    # enable to persist database between runs
-  #   - /var/lib/mysql
-
 nedapi:
   image: nedapi:develop
   links:
     - neddb:neddb
   ports:
-    - "8081:8080"
+    - 8081:8080
+    - 8444:8443
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ned
@@ -18,3 +12,10 @@ nedapi:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
     - AMBRA_DATABASE=ambra
+
+neddb:
+  image: percona:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  # volumes:    # enable to persist database between runs
+  #   - /var/lib/mysql
