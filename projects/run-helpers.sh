@@ -30,7 +30,7 @@ function wait_for_web_service {
 
   URL=$1
   NAME=$2
-  TEST_CMD="curl -sI $URL -o /dev/null"
+  TEST_CMD="curl -skI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
   MAX_TRIES=50
