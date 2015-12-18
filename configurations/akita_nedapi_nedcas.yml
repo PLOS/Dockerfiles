@@ -6,12 +6,13 @@ akita:
   links:
     - nedapi:nedapi
     - mailcatcher:mailcatcher
+    - nedcas:nedcas
   environment:
     - NED_SERVICE=http://nedapi:8443/v0
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
-    - CAS_HOST=localhost   # TODO: split into two variables ?
+    - CAS_HOST=172.17.0.1   # TODO: split into two variables ?
     - CAS_PORT=8443
     - SECRET_KEY_BASE=secretgoeshere
     - SSL=generatekeys  # options = none, existingkeys, generatekeys
