@@ -12,8 +12,8 @@ akita:
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
-    - CAS_HOST=172.17.0.1   # TODO: split into two variables ?
-    - CAS_PORT=8443
+    - CAS_HOST=https://localhost:8443
+    - CAS_HOST_INTERNAL=https://nedcas:8443
     - SECRET_KEY_BASE=secretgoeshere
     - SSL=generatekeys  # options = none, existingkeys, generatekeys
   # volumes:    # when using SSL=existingkeys
