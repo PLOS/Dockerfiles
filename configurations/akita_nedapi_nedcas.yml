@@ -8,7 +8,7 @@ akita:
     - mailcatcher:mailcatcher
     - nedcas:nedcas
   environment:
-    - NED_SERVICE=http://nedapi:8443/v0
+    - NED_SERVICE=http://nedapi:8080/v0
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev

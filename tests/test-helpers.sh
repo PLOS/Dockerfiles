@@ -43,13 +43,23 @@ function get_container_name {
 }
 
 function start_stack {
-  docker-compose -f $COMPOSE_FILE up -d 
+  docker-compose -f $COMPOSE_FILE up -d
   docker-compose -f $COMPOSE_FILE logs --no-color > $SCRIPTDIR/lasttest.log &
 }
 
 function stop_stack {
   docker-compose -f $COMPOSE_FILE kill
   docker-compose -f $COMPOSE_FILE rm -f
+}
+
+function wait_and_curl {
+  BASEURL=$1
+  ROUTE=$2
+  TITLE=$3
+  # CREDS=$4
+
+  wait_for_web_service $BASEURL $TITLE
+  curl_test_ok ${BASEURL}${ROUTE} $TITLE $4
 }
 
 function curl_test_ok {
