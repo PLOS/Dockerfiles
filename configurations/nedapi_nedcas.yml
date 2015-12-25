@@ -28,6 +28,7 @@ nedapi:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
     - AMBRA_DATABASE=ambra
+    - RINGGOLD_DATABASE=ringgold
 
 neddb:
   image: percona:5.6

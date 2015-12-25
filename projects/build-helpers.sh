@@ -68,8 +68,14 @@ function build_java_service_images() {
 
   # NOTE: the sudo below is a temp workaround for a bug that might not be fixed until docker 1.10
   # https://github.com/docker/docker/issues/15785
+	# docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | sudo docker build -t $IMAGE_NAME:$BASE_TAG -
 
-	docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | sudo docker build -t $IMAGE_NAME:$BASE_TAG -
+  # NOTE: another workaround without sudo: https://github.com/docker/docker/issues/15785#issuecomment-164030356
+  TEMP_BUILD_DIR=`mktemp -d`
+  docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
+  tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
+  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR
+
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)

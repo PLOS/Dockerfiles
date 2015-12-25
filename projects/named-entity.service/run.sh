@@ -20,6 +20,13 @@ if ! check_db_exists ${AMBRA_DATABASE}; then
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
 fi
 
+# ringgold DB
+
+if ! check_db_exists ${RINGGOLD_DATABASE}; then
+  create_db ${RINGGOLD_DATABASE}
+  # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
+fi
+
 set_db_grants
 
 # insert dev:dev user for userapp authentication

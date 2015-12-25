@@ -12,13 +12,23 @@ akita:
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
-    - CAS_HOST=https://localhost:8443
-    - CAS_HOST_INTERNAL=https://nedcas:8443
+    - CAS_URL=https://localhost:8443
+    - CAS_URL_INTERNAL=https://nedcas:8443
     - SECRET_KEY_BASE=secretgoeshere
     - SSL=generatekeys  # options = none, existingkeys, generatekeys
   # volumes:    # when using SSL=existingkeys
   #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
   #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
+    - EXACTTARGET_ID=
+    - EXACTTARGET_SECRET=
+    - SALESFORCE_HOST=
+    - SALESFORCE_CLIENT_ID=
+    - SALESFORCE_CLIENT_SECRET=
+    - SALESFORCE_USERNAME=
+    - SALESFORCE_PASSWORD=
+    - SALESFORCE_CONSUMER_APP=
+    - SALESFORCE_CONSUMER_PASSWORD=
+    - MOODLE_TOKEN=
 
 mailcatcher:
   image: mailcatcher
@@ -55,6 +65,7 @@ nedapi:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
     - AMBRA_DATABASE=ambra
+    - RINGGOLD_DATABASE=ringgold
 
 neddb:
   image: percona:5.6
