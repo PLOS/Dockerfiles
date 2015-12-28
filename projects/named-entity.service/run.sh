@@ -6,9 +6,15 @@ source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
 
+# ned DB
+
 if ! check_db_exists; then
   create_db
+else
+  echo "Skipping creating DB since it already exists"
 fi
+
+set_db_grants
 
 bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
     -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
@@ -27,7 +33,6 @@ if ! check_db_exists ${RINGGOLD_DATABASE}; then
   # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
 fi
 
-set_db_grants
 
 # insert dev:dev user for userapp authentication
 unzip -q $CATALINA_HOME/webapps/v0.war -d $BUILD_DIR/ned
