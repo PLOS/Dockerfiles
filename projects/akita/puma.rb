@@ -2,7 +2,7 @@
 
 directory '/src/'
 rackup '/src/config.ru'
-environment 'production'
+environment 'integration'  # because it is production with mailcatcher
 
 pidfile '/var/log/akita/puma.pid'
 state_path '/var/log/akita/puma.state'

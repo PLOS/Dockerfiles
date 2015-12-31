@@ -1,4 +1,4 @@
-FROM tomcat:6-jre7
+FROM tomcat:6-jre8
 
 LABEL vendor="Public Library of Science"
 
@@ -10,6 +10,11 @@ ADD http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.35/mysql-conn
 COPY run*.sh /root/
 
 COPY ned-cas-*.war $CATALINA_HOME/webapps/cas.war
-COPY context.xml $CATALINA_HOME/conf/context.xml
+COPY context.xml $CATALINA_HOME/conf/
+COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
+
+WORKDIR /root
+
+RUN keytool -genkey -alias tomcat -keyalg RSA -noprompt -dname "CN=cas-local, C=US, ST=CA, L=SanFran, O=plos" -keystore web.jks -storepass changeit -keypass changeit
 
 CMD bash /root/run.sh

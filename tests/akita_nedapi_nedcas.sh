@@ -8,21 +8,15 @@ source $SCRIPTDIR/test-helpers.sh
 start_stack
 
 DOCKER_HOST=$(get_docker_host)
-AKITA=$DOCKER_HOST:80
-AKITA_NAME="akita"
-
-wait_for_web_service $AKITA $AKITA_NAME
-
-CAS=$DOCKER_HOST:8090
-
-wait_for_web_service $CAS "CAS"
 
 # begin tests
 
-curl_test_ok $AKITA/registration/new $AKITA_NAME
-curl_test_ok $DOCKER_HOST:8081/service/config "NED API"
-curl_test_ok $CAS/cas/login "CAS"
-curl_test_ok $DOCKER_HOST:1080 "Mailcatcher"
+wait_and_curl $DOCKER_HOST:8081 /v0/service/config "NED API"
+# wait_and_curl https://$DOCKER_HOST:8444 "/v0/service/config" "NED API ssl"
+wait_and_curl https://$DOCKER_HOST:8443 /cas/login "CAS"
+wait_and_curl https://$DOCKER_HOST /registration/new "Akita"
+wait_and_curl $DOCKER_HOST:1080 / "Mailcatcher"
+curl_test_ok https://$DOCKER_HOST/flanders/v1/types/countries "Rails_to_NED"
 
 # end tests
 

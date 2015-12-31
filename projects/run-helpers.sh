@@ -30,7 +30,7 @@ function wait_for_web_service {
 
   URL=$1
   NAME=$2
-  TEST_CMD="curl -sI $URL -o /dev/null"
+  TEST_CMD="curl -skI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
   MAX_TRIES=50
@@ -64,12 +64,13 @@ function check_db_exists {
 
   DB=${1:-${MYSQL_DATABASE}}
 
-	# this function exists because we dont want to recreated a DB if we are pointing to a service that already has a running schema on it
+	# this function exists because we dont want to recreate a DB if we are pointing to a service that already has a running schema on it
 	$MYSQL_ROOT -e "use ${DB}"
 }
 
 function create_db {
   DB=${1:-${MYSQL_DATABASE}}
+  # echo "CREATE DATABASE ${DB}"
   echo "CREATE DATABASE ${DB}" | ${MYSQL_ROOT}
 }
 
@@ -86,7 +87,7 @@ $(<$CONTEXT_TEMPALTE)
 EOF
 " > $CONTEXT_TEMPALTE
 
-  cat $CONTEXT_TEMPALTE
+  # cat $CONTEXT_TEMPALTE
 
   # TODO: figure out how to ignore bad substitution errors. For example, false positive $ characters in ambra.xml'
 }

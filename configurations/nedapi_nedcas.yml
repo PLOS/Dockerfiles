@@ -4,21 +4,23 @@ nedcas:
     - neddb:neddb
     - nedapi:nedapi
   ports:
-    - "8090:8080"
+    - 8443:8443
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ned
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
-    - NED_SERVICE=http://nedapi:8080
+    - NED_SERVICE=https://nedapi:8443/v0
+    - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
 
 nedapi:
   image: nedapi:develop
   links:
     - neddb:neddb
   ports:
-    - "8081:8080"
+    - 8081:8080
+    - 8444:8443
   environment:
     - MYSQL_ROOT_PASSWORD=root
     - MYSQL_USER=ned
@@ -26,6 +28,7 @@ nedapi:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
     - AMBRA_DATABASE=ambra
+    - RINGGOLD_DATABASE=ringgold
 
 neddb:
   image: percona:5.6
