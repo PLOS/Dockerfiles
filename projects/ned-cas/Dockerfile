@@ -1,8 +1,10 @@
 FROM tomcat:6-jre8
 
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apt-get update && apt-get install -y mysql-client
+RUN apt-get update && apt-get install -y --no-install-recommends mysql-client-5.5 \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN rm -rf $CATALINA_HOME/webapps/*
 
 ADD http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.35/mysql-connector-java-5.1.35.jar $CATALINA_HOME/lib/

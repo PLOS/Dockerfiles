@@ -1,9 +1,12 @@
 FROM tomcat:6-jre8
 
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apt-get update && apt-get install -y mysql-client # xmlstarlet
-RUN rm -rf $CATALINA_HOME/webapps/*
+RUN apt-get update && apt-get install -y --no-install-recommends mysql-client-5.5 \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN rm -rf "$CATALINA_HOME/webapps/*"
 
 ADD https://bintray.com/artifact/download/business/maven/flyway-commandline-3.2.1-linux-x64.tar.gz /root/
 

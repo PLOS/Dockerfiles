@@ -1,17 +1,19 @@
 FROM ruby:2.2-slim
 
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
 # install system dependencies
 
 RUN apt-get update -qq && \
-    apt-get install -y build-essential \
+    apt-get install -y --no-install-recommends build-essential \
             libpq-dev libsqlite3-dev libssl-dev curl git \
             nginx && \
     curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
     apt-get install -y nodejs && \
-    gem install bundler
-
+    gem install bundler && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+    
 # build assets
 
 RUN mkdir /src
