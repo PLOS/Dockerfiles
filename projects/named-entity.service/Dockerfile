@@ -15,7 +15,7 @@ RUN tar xvfz flyway-commandline-*.tar.gz
 
 COPY run*.sh *.sql migrations/ /root/
 
-COPY named-entity-service-*.war $CATALINA_HOME/webapps/v0.war
+COPY named-entity-service-*.war $CATALINA_HOME/webapps/v1.war
 COPY context.xml $CATALINA_HOME/conf/
 COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
 

@@ -8,7 +8,7 @@ akita:
     - mailcatcher:mailcatcher
     - nedcas:nedcas
   environment:
-    - NED_SERVICE=http://nedapi:8080/v0
+    - NED_SERVICE=http://nedapi:8080/v1
     - MAILER_ADDRESS=mailcatcher
     - NED_USERAPP=dev
     - NED_PASSWORD=dev
@@ -48,7 +48,7 @@ nedcas:
     - MYSQL_USER_PASSWORD=ned
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
-    - NED_SERVICE=https://nedapi:8443/v0
+    - NED_SERVICE=https://nedapi:8443/v1
     - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
 
 nedapi:

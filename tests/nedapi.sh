@@ -9,7 +9,7 @@ source $SCRIPTDIR/test-helpers.sh
 
 start_stack
 
-SVC_URL=$(get_docker_host):8081/v0
+SVC_URL=$(get_docker_host):8081/v1
 SVC_NAME="NED"
 
 wait_for_web_service $SVC_URL $SVC_NAME
