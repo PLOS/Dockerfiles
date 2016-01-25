@@ -4,7 +4,7 @@
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-COMPOSE_FILE=web_delivery.yml
+COMPOSE_FILE=dipro.yml
 RHINO_TITLE=rhino
 WOMBAT_TITLE=wombat
 AMBRA_TITLE=ambra

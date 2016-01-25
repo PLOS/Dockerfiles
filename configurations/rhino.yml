@@ -5,7 +5,7 @@ rhino:
     - contentrepo:repo
     - solr:solr
   ports:
-    - "8080:8080"
+    - 8080:8080
   volumes:
     - $HOME/datastores/ingest:/root/ingest
   environment:
@@ -21,12 +21,12 @@ ambradb:
   environment:
     - MYSQL_ROOT_PASSWORD=root
   ports:
-    - "3306:3306"
+    - 3307:3306
 
 solr:
   image: solr:master
   ports:
-    - "8983:8080"
+    - 8983:8080
   volumes:
     - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
@@ -51,7 +51,7 @@ repodb:
   environment:
     - MYSQL_ROOT_PASSWORD=root
   ports:
-    - "3305:3306"
+    - 3305:3306
 
 mogiletracker:
   image: mogiletracker

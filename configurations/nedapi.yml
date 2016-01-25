@@ -1,3 +1,22 @@
+nedcas:
+  image: nedcas:develop
+  links:
+    - neddb:neddb
+    - nedapi:nedapi
+  ports:
+    - 8443:8443
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_USER=ned
+    - MYSQL_USER_PASSWORD=ned
+    - MYSQL_HOSTNAME=neddb
+    - MYSQL_DATABASE=namedEntities
+    - CAS_DATABASE=cas
+    - NED_SERVICE=https://nedapi:8443/v1
+    - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
+  volumes:
+    - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+
 nedapi:
   image: nedapi:develop
   links:

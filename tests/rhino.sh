@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# set -x
+set -x
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -23,7 +23,7 @@ wait_for_web_service $SVC_URL "rhino"
 
 curl_test_ok $SVC_URL/articles $SVC_TITLE
 
-# ingest and article
+# ingest an article
 
 curl -X POST -s -F name="$ARTICLE.zip" $SVC_URL/ingestibles > /dev/null
 
