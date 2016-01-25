@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-COMPOSE_FILE=akita_nedapi_nedcas.yml
+COMPOSE_FILE=akita.yml
 
 source $SCRIPTDIR/test-helpers.sh
 
