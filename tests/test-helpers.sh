@@ -4,6 +4,8 @@ source $SCRIPTDIR/../projects/run-helpers.sh
 
 COMPOSE_FILE=$SCRIPTDIR/../configurations/$COMPOSE_FILE
 
+export DOCKERFILES=$SCRIPTDIR/..
+
 # TODO: build images if not found
 
 function die {

@@ -25,10 +25,10 @@ akita:
     - SALESFORCE_CONSUMER_APP=
     - SALESFORCE_CONSUMER_PASSWORD=
     - MOODLE_TOKEN=
-    - SSL=generatekeys  # options = none, existingkeys, generatekeys
-  # volumes:    # when using SSL=existingkeys
-  #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
-  #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
+    - SSL=existingkeys  # options = none, existingkeys, generatekeys
+  volumes:    # when using SSL=existingkeys
+    - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+    - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
 mailcatcher:
   image: schickling/mailcatcher
@@ -51,6 +51,9 @@ nedcas:
     - NED_SERVICE=https://nedapi:8443/v1
     - CAS_DATABASE=cas
     - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
+  volumes:
+    - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+
 
 nedapi:
   image: nedapi:develop
@@ -67,6 +70,8 @@ nedapi:
     - MYSQL_DATABASE=namedEntities
     - AMBRA_DATABASE=ambra
     - RINGGOLD_DATABASE=ringgold
+  volumes:
+    - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
 neddb:
   image: percona:5.6
