@@ -23,8 +23,6 @@ fi
 
 cd $DOCKER_SETUP_DIR
 
-docker build -t mailcatcher -f Dockerfile.mailcatcher .
-
 cp Dockerfile $PROJECT_LOCAL_REPO      # this is a hack to allow the Dockerfile to exist in this subfolder
 cp akita.dockerignore $PROJECT_LOCAL_REPO/.dockerignore
 

@@ -15,10 +15,6 @@ akita:
     - CAS_URL=https://localhost:8443
     - CAS_URL_INTERNAL=https://nedcas:8443
     - SECRET_KEY_BASE=secretgoeshere
-    - SSL=generatekeys  # options = none, existingkeys, generatekeys
-  # volumes:    # when using SSL=existingkeys
-  #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
-  #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
     - EXACTTARGET_ID=
     - EXACTTARGET_SECRET=
     - SALESFORCE_HOST=
@@ -29,9 +25,13 @@ akita:
     - SALESFORCE_CONSUMER_APP=
     - SALESFORCE_CONSUMER_PASSWORD=
     - MOODLE_TOKEN=
+    - SSL=generatekeys  # options = none, existingkeys, generatekeys
+  # volumes:    # when using SSL=existingkeys
+  #   - /etc/nginx/ssl/nginx.key:/etc/nginx/ssl/nginx.key:ro
+  #   - /etc/nginx/ssl/nginx.crt:/etc/nginx/ssl/nginx.crt:ro
 
 mailcatcher:
-  image: mailcatcher
+  image: schickling/mailcatcher
   ports:
     - 1080:1080
 
@@ -49,6 +49,7 @@ nedcas:
     - MYSQL_HOSTNAME=neddb
     - MYSQL_DATABASE=namedEntities
     - NED_SERVICE=https://nedapi:8443/v1
+    - CAS_DATABASE=cas
     - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
 
 nedapi:
