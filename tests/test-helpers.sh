@@ -1,4 +1,3 @@
-#!/bin/bash
 
 source $SCRIPTDIR/../projects/run-helpers.sh
 

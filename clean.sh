@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function delete_untagged_images {
   echo Deleting untagged images
@@ -7,12 +7,17 @@ function delete_untagged_images {
 
 function delete_stopped_containers {
   echo Deleting stopped containers
-  docker rm $(docker ps -a -q) 
+  docker rm $(docker ps -a -q)
 }
 
 function delete_all_images {
-  echo Deleteding all images
+  echo Deleting all images
   docker rmi $(docker images -q)
+}
+
+function delete_unused_volumes {
+  echo Deleting old volumes
+  docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
 }
 
 function kill_all_containers {

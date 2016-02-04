@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # so this script can be run from any directory
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )

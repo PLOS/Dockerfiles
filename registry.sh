@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -z $DOCKER_REPO_HOST ]; then
   DOCKER_REPO_HOST=sfo-namedparty-devbox01.int.plos.org
