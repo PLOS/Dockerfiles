@@ -3,8 +3,8 @@ PLOS Dockerfiles
 
 Requirements
 ------------
-* docker >= 1.9
-* docker-compose >= 1.5
+* docker >= 1.10
+* docker-compose >= 1.6
 * curl (optional, for running the tests)
 * git  (optional, for checking out missing project sources if they are not found)
 

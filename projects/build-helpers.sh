@@ -82,7 +82,7 @@ function build_java_service_images() {
 
 	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
 
-	docker tag -f $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
 }
 
