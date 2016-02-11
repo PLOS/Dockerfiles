@@ -54,6 +54,6 @@ docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:
 
 echo tagging container with version : $VERSION
 
-docker tag -f $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
 docker rm $TMP_BUILD_CONTAINER

@@ -8,6 +8,11 @@ Requirements
 * curl (optional, for running the tests)
 * git  (optional, for checking out missing project sources if they are not found)
 
+Status
+------
+* Article ingestion might be broken due to schema updates
+* Some registry functionality might not work due to compose schema
+
 
 Setup
 -----

@@ -1,74 +1,67 @@
-rhino:
-  image: rhino:master
-  links:
-    - ambradb:ambradb
-    - contentrepo:repo
-    - solr:solr
-  ports:
-    - 8080:8080
-  volumes:
-    - $HOME/datastores/ingest:/root/ingest
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=ambra
-    - MYSQL_USER_PASSWORD=ambra
-    - MYSQL_HOSTNAME=ambradb
-    - MYSQL_DATABASE=ambra
-    - REPO_SERVICE=http://repo:8080
+version: '2'
 
-ambradb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-  ports:
-    - 3307:3306
+services:
 
-solr:
-  image: solr:master
-  ports:
-    - 8983:8080
-  volumes:
-    - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+  rhino:
+    image: rhino:master
+    ports:
+      - 8080:8080
+    volumes:
+      - $HOME/datastores/ingest:/root/ingest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ambra
+      - MYSQL_USER_PASSWORD=ambra
+      - MYSQL_HOSTNAME=ambradb
+      - MYSQL_DATABASE=ambra
+      - REPO_SERVICE=http://contentrepo:8080
 
-contentrepo:
-  image: contentrepo:master
-  links:
-    - repodb
-    - mogilenode
-    - mogiletracker
-  ports:
-    - "8085:8080"
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=repouser
-    - MYSQL_USER_PASSWORD=
-    - MYSQL_HOSTNAME=repodb
-    - MYSQL_DATABASE=repo
-    - MOGILE_TRACKERS=mogiletracker:7001
+  ambradb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3307:3306
 
-repodb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-  ports:
-    - 3305:3306
+  solr:
+    image: solr:master
+    ports:
+      - 8983:8080
+    volumes:
+      - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
-mogiletracker:
-  image: mogiletracker
-  links:
-    - mogiledb
-    - mogilenode
-  environment:
-    - MYSQL_HOSTNAME=mogiledb
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=mogile
-    - MYSQL_USER_PASSWORD=mogile
-    - MOG_NODE_HOST=mogilenode
+  contentrepo:
+    image: contentrepo:master
+    ports:
+      - "8085:8080"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=repouser
+      - MYSQL_USER_PASSWORD=
+      - MYSQL_HOSTNAME=repodb
+      - MYSQL_DATABASE=repo
+      - MOGILE_TRACKERS=mogiletracker:7001
 
-mogilenode:
-  image: mogilenode
+  repodb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3305:3306
 
-mogiledb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
+  mogiletracker:
+    image: mogiletracker
+    environment:
+      - MYSQL_HOSTNAME=mogiledb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=mogile
+      - MYSQL_USER_PASSWORD=mogile
+      - MOG_NODE_HOST=mogilenode
+
+  mogilenode:
+    image: mogilenode
+
+  mogiledb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root

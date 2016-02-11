@@ -1,81 +1,72 @@
-akita:
-  image: akita:develop
-  ports:
-    - 80:80
-    - 443:443
-  links:
-    - nedapi:nedapi
-    - mailcatcher:mailcatcher
-    - nedcas:nedcas
-  environment:
-    - NED_SERVICE=http://nedapi:8080/v1
-    - MAILER_ADDRESS=mailcatcher
-    - NED_USERAPP=dev
-    - NED_PASSWORD=dev
-    - CAS_URL=https://localhost:8443
-    - CAS_URL_INTERNAL=https://nedcas:8443
-    - SECRET_KEY_BASE=secretgoeshere
-    - EXACTTARGET_ID=
-    - EXACTTARGET_SECRET=
-    - SALESFORCE_HOST=
-    - SALESFORCE_CLIENT_ID=
-    - SALESFORCE_CLIENT_SECRET=
-    - SALESFORCE_USERNAME=
-    - SALESFORCE_PASSWORD=
-    - SALESFORCE_CONSUMER_APP=
-    - SALESFORCE_CONSUMER_PASSWORD=
-    - MOODLE_TOKEN=
-    - SSL=existingkeys  # options = none, existingkeys, generatekeys
-  volumes:    # when using SSL=existingkeys
-    - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-    - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+version: '2'
 
-mailcatcher:
-  image: schickling/mailcatcher
-  ports:
-    - 1080:1080
+services:
+  akita:
+    image: akita:develop
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NED_SERVICE=http://nedapi:8080/v1
+      - MAILER_ADDRESS=mailcatcher
+      - NED_USERAPP=dev
+      - NED_PASSWORD=dev
+      - CAS_URL=https://localhost:8443
+      - CAS_URL_INTERNAL=https://nedcas:8443
+      - SECRET_KEY_BASE=secretgoeshere
+      - EXACTTARGET_ID=
+      - EXACTTARGET_SECRET=
+      - SALESFORCE_HOST=
+      - SALESFORCE_CLIENT_ID=
+      - SALESFORCE_CLIENT_SECRET=
+      - SALESFORCE_USERNAME=
+      - SALESFORCE_PASSWORD=
+      - SALESFORCE_CONSUMER_APP=
+      - SALESFORCE_CONSUMER_PASSWORD=
+      - MOODLE_TOKEN=
+      - SSL=existingkeys  # options = none, existingkeys, generatekeys
+    volumes:    # when using SSL=existingkeys
+      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-nedcas:
-  image: nedcas:develop
-  links:
-    - neddb:neddb
-    - nedapi:nedapi
-  ports:
-    - 8443:8443
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=ned
-    - MYSQL_USER_PASSWORD=ned
-    - MYSQL_HOSTNAME=neddb
-    - MYSQL_DATABASE=namedEntities
-    - NED_SERVICE=https://nedapi:8443/v1
-    - CAS_DATABASE=cas
-    - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
-  volumes:
-    - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1080:1080
 
+  nedcas:
+    image: nedcas:develop
+    ports:
+      - 8443:8443
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ned
+      - MYSQL_USER_PASSWORD=ned
+      - MYSQL_HOSTNAME=neddb
+      - MYSQL_DATABASE=namedEntities
+      - NED_SERVICE=https://nedapi:8443/v1
+      - CAS_DATABASE=cas
+      - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
-nedapi:
-  image: nedapi:develop
-  ports:
-    - 8081:8080
-    - 8444:8443
-  links:
-    - neddb:neddb
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=ned
-    - MYSQL_USER_PASSWORD=ned
-    - MYSQL_HOSTNAME=neddb
-    - MYSQL_DATABASE=namedEntities
-    - AMBRA_DATABASE=ambra
-    - RINGGOLD_DATABASE=ringgold
-  volumes:
-    - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+  nedapi:
+    image: nedapi:develop
+    ports:
+      - 8081:8080
+      - 8444:8443
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ned
+      - MYSQL_USER_PASSWORD=ned
+      - MYSQL_HOSTNAME=neddb
+      - MYSQL_DATABASE=namedEntities
+      - AMBRA_DATABASE=ambra
+      - RINGGOLD_DATABASE=ringgold
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
-neddb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-  # volumes:    # to persist database between runs
-  #   - /var/lib/mysql
+  neddb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root

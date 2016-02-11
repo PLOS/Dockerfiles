@@ -1,40 +1,36 @@
-repoapi:
-  image: contentrepo:master
-  links:
-    - repodb
-    - mogilenode
-    - mogiletracker
-  ports:
-    - "8085:8080"
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=repouser
-    - MYSQL_USER_PASSWORD=
-    - MYSQL_HOSTNAME=repodb
-    - MYSQL_DATABASE=repo
-    - MOGILE_TRACKERS=mogiletracker:7001
+version: '2'
 
-repodb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
+services:
+  repoapi:
+    image: contentrepo:master
+    ports:
+      - 8085:8080
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=repouser
+      - MYSQL_USER_PASSWORD=
+      - MYSQL_HOSTNAME=repodb
+      - MYSQL_DATABASE=repo
+      - MOGILE_TRACKERS=mogiletracker:7001
 
-mogiletracker:
-  image: mogiletracker
-  links:
-    - mogiledb
-    - mogilenode
-  environment:
-    - MYSQL_HOSTNAME=mogiledb
-    - MYSQL_ROOT_PASSWORD=root
-    - MYSQL_USER=mogile
-    - MYSQL_USER_PASSWORD=mogile
-    - MOG_NODE_HOST=mogilenode
+  repodb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
 
-mogilenode:
-  image: mogilenode
+  mogiletracker:
+    image: mogiletracker
+    environment:
+      - MYSQL_HOSTNAME=mogiledb
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=mogile
+      - MYSQL_USER_PASSWORD=mogile
+      - MOG_NODE_HOST=mogilenode
 
-mogiledb:
-  image: percona:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=root
+  mogilenode:
+    image: mogilenode
+
+  mogiledb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
