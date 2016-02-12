@@ -3,65 +3,41 @@ version: '2'
 services:
 
   ambra:
-    image: ambra:master
-    ports:
-      - 80:8080
-    volumes:
-      - ../../templates:/root/templates
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=ambra
-      - MYSQL_USER_PASSWORD=ambra
-      - MYSQL_HOSTNAME=ambradb
-      - MYSQL_DATABASE=ambra
-      - REPO_SERVICE=http://contentrepo:8080
+    extends:
+      file: common.yml
+      service: ambra
 
   ambradb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - "3306:3306"
+    extends:
+      file: common.yml
+      service: ambradb
 
   solr:
-    image: solr:master
-    ports:
-      - "8983:8080"
-    volumes:
-      - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+    extends:
+      file: common.yml
+      service: solr
 
   contentrepo:
-    image: contentrepo:master
-    ports:
-      - "8085:8080"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=repouser
-      - MYSQL_USER_PASSWORD=
-      - MYSQL_HOSTNAME=repodb
-      - MYSQL_DATABASE=repo
-      - MOGILE_TRACKERS=mogiletracker:7001
+    extends:
+      file: common.yml
+      service: contentrepo
 
   repodb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - "3305:3306"
+    extends:
+      file: common.yml
+      service: repodb
 
   mogiletracker:
-    image: mogiletracker
-    environment:
-      - MYSQL_HOSTNAME=mogiledb
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=mogile
-      - MYSQL_USER_PASSWORD=mogile
-      - MOG_NODE_HOST=mogilenode
+    extends:
+      file: common.yml
+      service: mogiletracker
 
   mogilenode:
-    image: mogilenode
+    extends:
+      file: common.yml
+      service: mogilenode
 
   mogiledb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends:
+      file: common.yml
+      service: mogiledb
