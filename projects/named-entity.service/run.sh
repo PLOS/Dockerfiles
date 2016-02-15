@@ -43,4 +43,5 @@ echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 process_template ${CATALINA_HOME}/conf/context.xml
 
+/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consul-server &
 start_tomcat
