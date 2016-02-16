@@ -9,21 +9,45 @@ services:
   #   # ports:
   #   #   - 8082:8080
 
-  # consul-server:
-  #   image: progrium/consul
-  #   command: -server
-  #   ports:
-  #     - "8400:8400"
-  #     - "8500:8500"
-  #     - "8600:53/udp"
-
-  nedproxy:
-    image: nedproxy
+  consul-server:
+    image: progrium/consul
+    command: -server
     ports:
-      - "8080:8080"
       - "8400:8400"
       - "8500:8500"
       - "8600:53/udp"
+
+  registrator:
+    image: gliderlabs/registrator
+    command: consul://consul-server:8500
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+
+  nginx:
+    image: nginx
+    ports:
+      - "8080:8080"
+    volumes:
+      - /etc/nginx/sites-available
+
+  consul-template:
+    image: avthart/consul-template
+    command: -consul=consul-server:8500 -wait=5s -template="/tmp/nginx.ctmpl:/etc/nginx/sites-available/default:/bin/docker kill -s HUP nginx"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      # - nginx.ctml:/tmp/nginx.ctmpl
+    volumes_from:
+      - nginx
+    environment:
+      - CONSUL_TEMPLATE_LOG=debug
+
+  # nedproxy:
+  #   image: nedproxy
+  #   ports:
+  #     - "8080:8080"
+  #     - "8400:8400"
+  #     - "8500:8500"
+  #     - "8600:53/udp"
 
   nedapi-one:
     image: nedapi:develop
@@ -35,6 +59,7 @@ services:
       - MYSQL_DATABASE=namedEntities
       - AMBRA_DATABASE=ambra
       - RINGGOLD_DATABASE=ringgold
+      - SERVICE_NAME=ned
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
