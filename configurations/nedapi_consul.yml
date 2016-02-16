@@ -9,19 +9,24 @@ services:
   #   # ports:
   #   #   - 8082:8080
 
-  consul-server:
-    image: progrium/consul
-    command: -server
+  # consul-server:
+  #   image: progrium/consul
+  #   command: -server
+  #   ports:
+  #     - "8400:8400"
+  #     - "8500:8500"
+  #     - "8600:53/udp"
+
+  nedproxy:
+    image: nedproxy
     ports:
+      - "8080:8080"
       - "8400:8400"
       - "8500:8500"
       - "8600:53/udp"
 
   nedapi-one:
     image: nedapi:develop
-    # ports:
-    #   - 8081:8080
-    #   - 8444:8443
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned

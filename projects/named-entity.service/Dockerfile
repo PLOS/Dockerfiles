@@ -16,7 +16,7 @@ WORKDIR /root
 RUN tar xvfz flyway-commandline-*.tar.gz
 RUN unzip consul*.zip
 
-RUN mkdir /etc/consul.d && echo '{"service": {"name": "ned", "tags": ["api"], "port": 8080}}' > /etc/consul.d/web.json
+RUN mkdir /etc/consul.d && echo '{"service": {"name": "ned", "port": 8080}}' > /etc/consul.d/web.json
 
 COPY run*.sh *.sql migrations/ /root/
 
