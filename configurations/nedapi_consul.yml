@@ -9,7 +9,7 @@ services:
   #   # ports:
   #   #   - 8082:8080
 
-  consul-server:
+  consulserver:
     # image: progrium/consul
     image: gliderlabs/consul-server
     # command: -server

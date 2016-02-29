@@ -45,6 +45,7 @@ process_template ${CATALINA_HOME}/conf/context.xml
 
 mkdir /tmp/consul
 
-ls -l /root/
-#/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
+# ls -l /root/
+# /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
+/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
 start_tomcat
