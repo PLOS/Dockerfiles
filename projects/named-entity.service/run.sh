@@ -43,5 +43,8 @@ echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 process_template ${CATALINA_HOME}/conf/context.xml
 
-# /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
+mkdir /tmp/consul
+
+ls -l /root/
+#/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
 start_tomcat
