@@ -30,7 +30,6 @@ fi
 
 if ! check_db_exists ${RINGGOLD_DATABASE}; then
   create_db ${RINGGOLD_DATABASE}
-  # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
 fi
 
 
@@ -43,10 +42,8 @@ echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 process_template ${CATALINA_HOME}/conf/context.xml
 
-mkdir /tmp/consul
+wait_for_web_service consulserver:8500/v1/agent/self "consulserver"
 
-# sleep to give time for the consul server to start before the clients
-# TODO: wait for server instead of sleeping
-# /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
-sleep 4 && /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+
 start_tomcat

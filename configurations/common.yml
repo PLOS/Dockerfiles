@@ -52,10 +52,27 @@ services:
       - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
   nedapi:
-    image: nedapi:develop
+    extends: ned-proxyable
+    # image: nedapi:develop
     ports:
       - 8081:8080
       - 8444:8443
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
+    #   - MYSQL_USER=ned
+    #   - MYSQL_USER_PASSWORD=ned
+    #   - MYSQL_HOSTNAME=neddb
+    #   - MYSQL_DATABASE=namedEntities
+    #   - AMBRA_DATABASE=ambra
+    #   - RINGGOLD_DATABASE=ringgold
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+
+  ned-proxyable:
+    image: nedapi:develop
+    # ports:
+    #   - 8081:8080
+    #   - 8444:8443
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -64,8 +81,9 @@ services:
       - MYSQL_DATABASE=namedEntities
       - AMBRA_DATABASE=ambra
       - RINGGOLD_DATABASE=ringgold
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+
 
   neddb:
     image: percona:5.6
