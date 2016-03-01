@@ -24,26 +24,16 @@ services:
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/nginx.ctmpl:/etc/nginx/conf.d/default.conf:docker restart configurations_nginx_1"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-      - ${DOCKERFILES}/projects/named-entity.service/nginx.ctmpl:/tmp/nginx.ctmpl
+      - ${DOCKERFILES}/projects/named-entity.service/nginx.ctmpl:/tmp/nginx.ctmpl:ro
     volumes_from:
       - nginx
-    environment:
-      - CONSUL_TEMPLATE_LOG=debug
+    # environment:
+    #   - CONSUL_TEMPLATE_LOG=debug
 
   nedapi:
     extends:
       file: common.yml
       service: ned-proxyable
-    # image: nedapi:develop
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
-    #   - MYSQL_USER=ned
-    #   - MYSQL_USER_PASSWORD=ned
-    #   - MYSQL_HOSTNAME=neddb
-    #   - MYSQL_DATABASE=namedEntities
-    #   - AMBRA_DATABASE=ambra
-    #   - RINGGOLD_DATABASE=ringgold
-    #   - SERVICE_NAME=ned
 
   nedcas:
     extends:

@@ -51,6 +51,11 @@ function wait_for_web_service {
   echo "Service $NAME ($URL) is up and ready for tests"
 }
 
+function check_host_up {
+  HOST=$1
+  ping -c2 $HOST &> /dev/null # && echo "up" || echo "down"
+}
+
 function set_db_grants {
 
 	echo -e "\nCreating DB User (${MYSQL_USER})"
