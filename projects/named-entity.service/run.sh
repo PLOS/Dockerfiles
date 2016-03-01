@@ -30,9 +30,7 @@ fi
 
 if ! check_db_exists ${RINGGOLD_DATABASE}; then
   create_db ${RINGGOLD_DATABASE}
-  # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
 fi
-
 
 # insert dev:dev user for userapp authentication
 unzip -q $CATALINA_HOME/webapps/v?.war -d $BUILD_DIR/ned
@@ -42,5 +40,12 @@ echo "REPLACE INTO namedEntities.consumers (name, password) VALUES ('dev','${PAS
 echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 process_template ${CATALINA_HOME}/conf/context.xml
+
+# if the consul server is present, attach to it
+if check_host_up consulserver ; then
+  wait_for_web_service consulserver:8500/v1/agent/self "consulserver"
+
+  /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+fi
 
 start_tomcat

@@ -10,8 +10,14 @@ RUN rm -rf "$CATALINA_HOME/webapps/*"
 
 ADD https://bintray.com/artifact/download/business/maven/flyway-commandline-3.2.1-linux-x64.tar.gz /root/
 
+ADD https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip /root/
+
 WORKDIR /root
 RUN tar xvfz flyway-commandline-*.tar.gz
+RUN unzip consul*.zip
+
+RUN mkdir /etc/consul.d && echo '{"service": {"name": "ned", "port": 8080, "check": {"name":"basic request", "http": "http://localhost:8080/v1/service/config", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
+# TODO: insert a test that goes though API to get a value from the DB
 
 COPY run*.sh *.sql migrations/ /root/
 

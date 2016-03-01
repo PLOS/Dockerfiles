@@ -50,7 +50,9 @@ Running
 
 To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
 
-    docker-compose -f configurations/wombat.yml up
+    DOCKERFILES=$(pwd) docker-compose -f configurations/wombat.yml up
+or
+    ./app.sh wombat
 
 Now, in the case above you can visit some pages to see they are up:
 
@@ -73,6 +75,19 @@ Development/Conventions
 For each project the images created for it should be tagged with a version number and with the name of the git branch.
 
 In each image, create a file at /root/version.txt that contains the version number representing the built artifacts. For example, "0.5.0-SNAPSHOT".
+
+
+Scaling/Load Balancing
+----------------------
+
+There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
+
+* Start stack: `./app nedapi_consul`
+* See the consul UI: http://localhost:8500/ui
+* Run more NED instances: `./app nedapi_consul scale nedapi=4`
+* Refresh the consul UI to see the added services
+* `./app.sh nedapi_consul logs nginx` to watch nginx log to see its spanning requests to different containers
+* Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
 
 
 Docker Registry
