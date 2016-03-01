@@ -13,7 +13,7 @@ services:
     # image: progrium/consul
     image: gliderlabs/consul-server
     # command: -server
-    command: -bootstrap
+    command: -bootstrap -ui
     ports:
       - "8300:8300"
       - "8400:8400"
@@ -26,24 +26,28 @@ services:
   #   volumes:
   #     - /var/run/docker.sock:/tmp/docker.sock
 
-  # nginx:
-  #   image: nginx
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - /etc/nginx/sites-available
-  #
-  # consul-template:
-  #   image: avthart/consul-template
-  #   command: -consul=consul-server:8500 -wait=5s -template="/tmp/nginx.ctmpl:/etc/nginx/sites-available/default:/bin/docker kill -s HUP nginx"
-  #   volumes:
-  #     - /var/run/docker.sock:/tmp/docker.sock
-  #     - /home/jono/Dropbox/consul-test/nginx.ctml:/tmp/nginx.ctmpl
-  #     # - nginx.ctml:/tmp/nginx.ctmpl
-  #   volumes_from:
-  #     - nginx
-  #   environment:
-  #     - CONSUL_TEMPLATE_LOG=debug
+  nginx:
+    image: nginx
+    ports:
+      # - "8080:8080"
+      - "8080:80"
+      # - "80:80"
+    volumes:
+      - /etc/nginx/conf.d
+      # - /etc/nginx/sites-available
+
+  consul-template:
+    image: avthart/consul-template
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/nginx.ctmpl:/etc/nginx/conf.d/default.conf:docker restart configurations_nginx_1"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+      # - /home/jono/Dropbox/consul-test/nginx.ctml:/tmp/nginx.ctmpl
+      # - nginx.ctml:/tmp/nginx.ctmpl
+      - ${DOCKERFILES}/projects/named-entity.service/nginx.ctmpl:/tmp/nginx.ctmpl
+    volumes_from:
+      - nginx
+    environment:
+      - CONSUL_TEMPLATE_LOG=debug
 
   # nedproxy:
   #   image: nedproxy
@@ -55,9 +59,9 @@ services:
 
   nedapi:
     image: nedapi:develop
-    ports:
-      - 8081:8080
-      - 8444:8443
+    # ports:
+    #   - 8081:8080
+    #   - 8444:8443
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -70,21 +74,21 @@ services:
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
-  # nedapi-two:
-  #   image: nedapi:develop
-  #   # ports:
-  #   #   - 8081:8080
-  #   #   - 8444:8443
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=root
-  #     - MYSQL_USER=ned
-  #     - MYSQL_USER_PASSWORD=ned
-  #     - MYSQL_HOSTNAME=neddb
-  #     - MYSQL_DATABASE=namedEntities
-  #     - AMBRA_DATABASE=ambra
-  #     - RINGGOLD_DATABASE=ringgold
-  #   volumes:
-  #     - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+  nedapi-two:
+    image: nedapi:develop
+    # ports:
+    #   - 8081:8080
+    #   - 8444:8443
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ned
+      - MYSQL_USER_PASSWORD=ned
+      - MYSQL_HOSTNAME=neddb
+      - MYSQL_DATABASE=namedEntities
+      - AMBRA_DATABASE=ambra
+      - RINGGOLD_DATABASE=ringgold
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
   nedcas:
     extends:

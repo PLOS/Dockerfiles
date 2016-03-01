@@ -45,7 +45,8 @@ process_template ${CATALINA_HOME}/conf/context.xml
 
 mkdir /tmp/consul
 
-# ls -l /root/
+# sleep to give time for the consul server to start before the clients
+# TODO: wait for server instead of sleeping
 # /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join nedproxy &
-/root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+sleep 4 && /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
 start_tomcat

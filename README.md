@@ -50,7 +50,7 @@ Running
 
 To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
 
-    docker-compose -f configurations/wombat.yml up
+    DOCKERFILES=$(pwd) docker-compose -f configurations/wombat.yml up
 
 Now, in the case above you can visit some pages to see they are up:
 
