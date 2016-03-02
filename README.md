@@ -82,9 +82,9 @@ Scaling/Load Balancing
 
 There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
 
-* Start stack: `./app nedapi_consul`
+* Start stack: `./app.sh nedapi_consul`
 * See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./app nedapi_consul scale nedapi=4`
+* Run more NED instances: `./app.sh nedapi_consul scale nedapi=4`
 * Refresh the consul UI to see the added services
 * `./app.sh nedapi_consul logs nginx` to watch nginx log to see its spanning requests to different containers
 * Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests

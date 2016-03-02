@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 if [ -z $DOCKER_REPO_HOST ]; then
   DOCKER_REPO_HOST=sfo-namedparty-devbox01.int.plos.org
 fi
@@ -14,7 +16,7 @@ echo Using repository: $REPO
 
 function _get_images_from_config {
   CONFIG_FILE=$1
-  echo $(grep '^ *image:' $CONFIG_FILE | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
+  echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
 # function delete_image {
@@ -121,7 +123,7 @@ function images {
 }
 
 if [ "$#" -eq 0 ]; then
-  echo "EXAMPLE USE: $0 pull_stack configurations/akita_nedapi_nedcas.yml"
+  echo "EXAMPLE USE: $0 pull_stack configurations/akita.yml"
 else
   "$@"
 fi
