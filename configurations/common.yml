@@ -10,10 +10,10 @@ services:
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
+      - MAILER_PORT=1025
       - NED_USERAPP=dev
       - NED_PASSWORD=dev
-      - CAS_URL=https://localhost:8443
-      - CAS_URL_INTERNAL=https://nedcas:8443
+      - CAS_URL=https://nedcas:8443
       - SECRET_KEY_BASE=secretgoeshere
       - EXACTTARGET_ID=
       - EXACTTARGET_SECRET=
@@ -26,6 +26,7 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - SSL=existingkeys  # options = none, existingkeys, generatekeys
+      # TODO: remove generate keys. doesnt seem needed if existing keys works
     volumes:    # when using SSL=existingkeys
       - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
       - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
@@ -48,6 +49,7 @@ services:
       - CAS_DATABASE=cas
       - NED_SERVICE=https://nedapi:8443/v1
       - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
+      - COOKIE_DOMAIN=nedcas
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
