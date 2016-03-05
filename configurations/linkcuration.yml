@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+
+  linkcuration:
+    image: linkcuration:master
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      # - CAS_URL=https://nedcas:8443
+      - SSL=existingkeys  # options = none, existingkeys, generatekeys
+      # TODO: remove generate keys. doesnt seem needed if existing keys works
+    volumes:    # when using SSL=existingkeys
+      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+
+  nedcas:
+    extends:
+      file: common.yml
+      service: nedcas
+
+  nedapi:
+    extends:
+      file: common.yml
+      service: nedapi
+
+  neddb:
+    extends:
+      file: common.yml
+      service: neddb
