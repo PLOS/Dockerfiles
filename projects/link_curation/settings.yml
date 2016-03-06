@@ -5,3 +5,12 @@ defaults: &defaults
   cas_logout_url: https://localhost:8443/cas/logout
 
 # TODO: turn these values into environment vars
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

@@ -2,7 +2,7 @@
 
 directory '/src/'
 rackup '/src/config.ru'
-environment 'integration'
+environment 'production'
 
 pidfile '/var/log/app/puma.pid'
 state_path '/var/log/app/puma.state'

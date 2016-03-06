@@ -24,8 +24,6 @@ RUN bundle install
 
 COPY . /src
 
-# TODO: use dockerfile USER to isolate source files and runtime
-
 RUN echo current > /root/version.txt
 
 # setup application

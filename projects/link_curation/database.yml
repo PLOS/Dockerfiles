@@ -7,3 +7,5 @@ development:
   username: root
   password:
   socket: /var/run/mysqld/mysqld.sock
+
+# TODO: set these values to use a remote database?
