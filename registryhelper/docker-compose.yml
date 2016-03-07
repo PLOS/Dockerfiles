@@ -1,6 +1,0 @@
-web:
-  build: .
-  ports:
-    - "5001:5000"
-  volumes:
-    - /var/docker-registry/data/docker/registry/v2/repositories:/repositories

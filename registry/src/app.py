@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-  return "Hello World!"
+  return "Jono's Docker registry helper"
 
 @app.route("/ping")
 def ping():
