@@ -4,6 +4,19 @@ NGINX_DIR=/etc/nginx
 
 NGINX_CONF=nginx-ssl.conf
 
+source $BUILD_DIR/run-helpers.sh
+
+wait_until_db_service_up
+
+if ! check_db_exists; then
+  create_db
+else
+  echo "Skipping creating DB since it already exists"
+fi
+
+set_db_grants
+
+
 # if [ "$SSL" == "existingkeys" ]; then
 #   NGINX_CONF=nginx-ssl.conf
 #   # assumes you have placed/mountd a cert and key in $NGINX_DIR/ssl/
