@@ -4,6 +4,8 @@ NGINX_DIR=/etc/nginx
 
 NGINX_CONF=nginx-ssl.conf
 
+BUILD_DIR=/root
+
 source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
@@ -15,7 +17,6 @@ else
 fi
 
 set_db_grants
-
 
 # if [ "$SSL" == "existingkeys" ]; then
 #   NGINX_CONF=nginx-ssl.conf

@@ -8,7 +8,7 @@ LABEL vendor="Public Library of Science"
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends build-essential \
             libpq-dev libmysqlclient-dev libssl-dev curl git \
-            nginx && \
+            mysql-client-5.5 nginx && \
     gem install bundler && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 

@@ -1,12 +1,17 @@
-defaults: &defaults
+default: &default
   adapter: mysql2
   encoding: utf8
   reconnect: false
-  database: mediaTracker
-  host: curationdb
   pool: 5
-  username: tracker
-  password: tracker
-  # socket: /var/run/mysqld/mysqld.sock
+  database: <%= ENV["MYSQL_DATABASE"] %>
+  host: <%= ENV["MYSQL_HOSTNAME"] %>
+  username: <%= ENV["MYSQL_USER"] %>
+  password: <%= ENV["MYSQL_USER_PASSWORD"] %>
 
-# TODO: set these values to use a remote database?
+# TODO: set from environment vars
+
+development:
+  <<: *default
+
+production:
+  <<: *default

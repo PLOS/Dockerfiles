@@ -13,7 +13,7 @@ services:
       - MYSQL_USER_PASSWORD=tracker
       - MYSQL_HOSTNAME=curationdb
       - MYSQL_DATABASE=mediaTracker
-      - CAS_URL=https://nedcas:8443
+      - CAS_URL=https://localhost:8443
       - SSL=existingkeys  # options = none, existingkeys, generatekeys
       # TODO: remove generate keys. doesnt seem needed if existing keys works
     volumes:    # when using SSL=existingkeys
