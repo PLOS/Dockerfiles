@@ -1,0 +1,23 @@
+version: '2'
+
+services:
+
+  lemurcollections:
+    image: lemurcollections:develop
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - DATABASE_HOST=postgres
+      - LEMUR-COLLECTIONS_DATABASE_PASSWORD=root
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+
+  redis:
+    image: redis
+
+# https://github.com/PLOS/lemur-chef
+# nginx, cas?

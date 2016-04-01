@@ -1,0 +1,12 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: lemur
+  pool: 5
+
+production:
+  <<: *default
+  database: lemur_collections_production
+  username: lemur_collections
+  host: <%= ENV['DATABASE_HOST'] %>
+  password: <%= ENV['LEMUR-COLLECTIONS_DATABASE_PASSWORD'] %>

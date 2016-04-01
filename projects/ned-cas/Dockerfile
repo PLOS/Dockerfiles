@@ -12,6 +12,8 @@ ADD http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.35/mysql-conn
 COPY run*.sh /root/
 COPY *.sql /root/
 
+RUN mkdir $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=cas/login"/>' > $CATALINA_HOME/webapps/ROOT/index.html
+
 COPY ned-cas-*.war $CATALINA_HOME/webapps/cas.war
 COPY context.xml $CATALINA_HOME/conf/
 COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
