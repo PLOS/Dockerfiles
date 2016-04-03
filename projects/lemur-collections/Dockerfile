@@ -7,8 +7,8 @@ LABEL vendor="Public Library of Science"
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends build-essential \
-            libpg-dev libpq-dev libsqlite3-dev libssl-dev curl git \
-            nginx && \
+            libpq-dev libsqlite3-dev libssl-dev curl git \
+            postgresql-client nginx && \
     curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
     apt-get install -y nodejs && \
     gem install bundler && \
