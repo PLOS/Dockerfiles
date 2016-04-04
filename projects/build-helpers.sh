@@ -38,14 +38,16 @@ function build_rails_ember_images() {
   cp Dockerfile $PROJECT_LOCAL_REPO      # this is a hack to allow the Dockerfile to exist in this subfolder
   cp project.dockerignore $PROJECT_LOCAL_REPO/.dockerignore
 
+  # TODO: this overrides to base project. too sloppy
   cp *.yml $PROJECT_LOCAL_REPO/config
+  cp setup-*.sh $PROJECT_LOCAL_REPO/bin/ && chmod +x $PROJECT_LOCAL_REPO/bin/setup-*.sh
 
   # if you pass the "clean" argument, the build will ignore the frontend dependencies that are on your host machine, and pull them down fresh in the container
   # if [ "$2" == "clean" ]; then
   # 	echo -e "frontend/dist\nfrontend/node_modules\nfrontend/bower_components\n" >> $PROJECT_LOCAL_REPO/.dockerignore
   # fi
 
-  cat $PROJECT_LOCAL_REPO/.dockerignore
+  # cat $PROJECT_LOCAL_REPO/.dockerignore
 
   cd $PROJECT_LOCAL_REPO
 

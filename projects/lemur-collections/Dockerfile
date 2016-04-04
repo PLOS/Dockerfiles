@@ -26,11 +26,15 @@ RUN bundle install
 
 COPY . /src
 
+# RUN mv /src/setup-*.sh bin/ && chmod +x bin/setup-*.sh
+
 # TODO: fetch this from a file if there is one?
 RUN echo 'current' > /root/version.txt
 
 # only run the setup if the dependencies are missing
-RUN ls frontend/node_modules || bin/setup
+RUN echo data && ls -la bin
+
+RUN ls frontend/node_modules || bin/setup-app.sh
 
 WORKDIR /src/frontend
 RUN ./node_modules/.bin/ember build --environment=production && mv /src/frontend/dist /src/ember
@@ -38,7 +42,7 @@ RUN ./node_modules/.bin/ember build --environment=production && mv /src/frontend
 
 # setup application
 
-RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
+RUN mkdir /var/log/lemurcollections /etc/nginx/ssl && chmod 777 /var/log/lemurcollections && \
 		rm -f /etc/nginx/sites-enabled/default
 
 # generate self signed keys if needed for testing

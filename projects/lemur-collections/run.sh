@@ -13,7 +13,9 @@ source $BUILD_DIR/run-helpers.sh
 
 # TODO: figure out pg init
 
-
+cd /src
+bin/setup-db.sh || exit 1
+cd ..
 
 # wait_until_db_service_up
 #

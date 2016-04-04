@@ -107,6 +107,15 @@ To see the Wombat home page, visit:
 
 Note: The above example requires you to have ambra templates and plos-themes checked out locally.
 
+Status/Todo
+-----------
+
+* Akita and Lemur apps will have problems with CAS because of this bug:
+https://github.com/dlindahl/omniauth-cas/issues/41
+* Setup postgres helper method for lemur
+* Lemur needs to seperate app and db config
+* Figure out why lemur frontend needs specific npm and bower versions
+
 
 Tips
 ----
