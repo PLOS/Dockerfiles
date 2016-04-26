@@ -11,22 +11,23 @@ services:
       - "8500:8500"
       - "8600:53/udp"
 
-  nginx:
-    image: nginx
+  haproxy:
+    image: haproxy:alpine
     ports:
       - "8081:8080"
+      - "1936:1936"
     volumes:
-      - /etc/nginx/conf.d
-      - ${DOCKERFILES}/projects/named-entity.service/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /usr/local/etc/haproxy
+      - /dev/log:/dev/log
 
   consul-template:
     image: avthart/consul-template
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/nginx.ctmpl:/etc/nginx/conf.d/default.conf:docker restart configurations_nginx_1"
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_haproxy_1" # $$(docker ps -q -f name=haproxy)
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
-      - ${DOCKERFILES}/projects/named-entity.service/nginx.ctmpl:/tmp/nginx.ctmpl:ro
+      - ${DOCKERFILES}/projects/named-entity.service/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     volumes_from:
-      - nginx
+      - haproxy
     # environment:
     #   - CONSUL_TEMPLATE_LOG=debug
 
