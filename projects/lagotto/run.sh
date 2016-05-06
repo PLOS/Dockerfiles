@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 NGINX_DIR=/etc/nginx
 
@@ -25,11 +25,11 @@ else
   echo "Skipping creating DB since it already exists"
 fi
 
-rails server
+#rails server --binding=0.0.0.0
 
 ## ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
-# ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
-#
-# service nginx start
+ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
+
+service nginx start
 # bundle exec puma -C /root/puma.rb --daemon
-# tail -f /src/log/* /var/log/nginx/error.log
+tail -f /src/log/* /var/log/nginx/error.log
