@@ -1,38 +1,39 @@
-FROM ruby:2.2-slim
+FROM phusion/passenger-customizable
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-# install system dependencies
+ENV SRC /home/app/lagotto
+
+RUN /pd_build/ruby2.2.sh
+RUN /pd_build/nodejs.sh
 
 RUN apt-get update -qq && \
-    apt-get install -y --no-install-recommends build-essential \
-            libpq-dev libmysqlclient-dev libssl-dev curl git \
-            mysql-client nginx passenger && \
-    curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
-    apt-get install -y nodejs && \
-    gem install bundler && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends curl mysql-client
 
-RUN mkdir /src
-WORKDIR /src
+RUN gem install bundler
 
-# pre-bundle, as an optimization
-COPY Gemfile /src/
-COPY Gemfile.lock /src/
-RUN bundle install
+# Enable Nginx, Redis, Memcached
+RUN rm -f /etc/service/{nginx,redis,memcached}/down && \
+    rm /etc/nginx/sites-enabled/default
 
-COPY . /src
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# RUN echo $(git rev-parse HEAD|cut -c -8) > /root/version.txt
-# RUN echo 'current' > /root/version.txt
-RUN echo "require './config/initializers/version.rb'; puts Lagotto::VERSION" | ruby
- > /root/version.txt
+RUN mkdir $SRC
+RUN chown -R app:app $SRC && chmod -R 755 $SRC
+WORKDIR $SRC
 
-# only run the setup if the dependencies are missing
+COPY Gemfile $SRC
+COPY Gemfile.lock $SRC
+RUN sudo -u app bundle install --path vendor/bundle
+
+COPY . $SRC
+
+RUN chown -R app:app $SRC && chmod -R 755 $SRC
+
+# Make folders that hold data available as volumes
+# VOLUME ["$SRC/tmp", "$SRC/log", "$SRC/data"]
+
+RUN echo "require './config/initializers/version.rb'; puts Lagotto::VERSION" | ruby > /root/version.txt
+
 # RUN ls frontend/node_modules || npm install
-
-# RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
-# 		rm -rf /src/frontend
-
-# CMD bash /root/run.sh

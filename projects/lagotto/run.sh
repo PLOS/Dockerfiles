@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# set -x
+set -x
 
 NGINX_DIR=/etc/nginx
 
 NGINX_CONF=nginx.conf
 
 BUILD_DIR=/root
+
+SRC=/home/app/lagotto
 
 export MYSQL_USER=$DB_USERNAME
 export MYSQL_USER_PASSWORD=$DB_PASSWORD
@@ -15,21 +17,28 @@ export MYSQL_DATABASE=$DB_NAME
 
 source $BUILD_DIR/run-helpers.sh
 
+# set up services
+
 wait_until_db_service_up
 
 if ! check_db_exists; then
   set_db_grants
   rake db:setup
-  # create_db
+
+  check_db_exists || exit 1
 else
   echo "Skipping creating DB since it already exists"
 fi
 
-#rails server --binding=0.0.0.0
+# config application
 
-## ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
-ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
+cp $BUILD_DIR/lagotto.conf /etc/nginx/sites-enabled/lagotto.conf
+cp $BUILD_DIR/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
 
-service nginx start
-# bundle exec puma -C /root/puma.rb --daemon
-tail -f /src/log/* /var/log/nginx/error.log
+cp $BUILD_DIR/env.template $SRC/.env
+
+process_template $SRC/.env
+
+# run it
+
+/sbin/my_init

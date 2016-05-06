@@ -10,10 +10,9 @@ function die() {
   exit 1
 }
 
-function build_rails_image() {
+function build_rails_passenger_image() {
 
     IMAGE_NAME=$1
-    # PROJECT_NAME=$1
     PROJECT_DIR=$2
 
     PROJECT_NAME=$(basename $PROJECT_DIR)
@@ -36,14 +35,6 @@ function build_rails_image() {
     cd $DOCKER_SETUP_DIR
 
     cp Dockerfile $PROJECT_LOCAL_REPO      # this is a hack to allow the Dockerfile to exist in this subfolder
-    cp project.dockerignore $PROJECT_LOCAL_REPO/.dockerignore
-
-    # if you pass the "clean" argument, the build will ignore the frontend dependencies that are on your host machine, and pull them down fresh in the container
-    # if [ "$2" == "clean" ]; then
-    # 	echo -e "frontend/dist\nfrontend/node_modules\nfrontend/bower_components\n" >> $PROJECT_LOCAL_REPO/.dockerignore
-    # fi
-
-    # cat $PROJECT_LOCAL_REPO/.dockerignore
 
     cd $PROJECT_LOCAL_REPO
 
@@ -52,7 +43,6 @@ function build_rails_image() {
     time docker build -t $IMAGE_NAME:$BASE_TAG .
     # cd $DOCKER_SETUP_DIR
     rm $PROJECT_LOCAL_REPO/Dockerfile
-    rm $PROJECT_LOCAL_REPO/.dockerignore
 
     VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
     						--volume $DOCKER_SETUP_DIR/..:/shared \

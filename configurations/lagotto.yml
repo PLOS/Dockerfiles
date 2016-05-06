@@ -6,8 +6,6 @@ services:
     image: lagotto:plos_prod_fixes_jf
     ports:
       - 80:80
-      # - 80:3000
-      - 3000:3000
     environment:
       - CAS_URL=https://register.plos.org
       - MYSQL_ROOT_PASSWORD=root
@@ -15,19 +13,13 @@ services:
       - DB_USERNAME=lagotto
       - DB_PASSWORD=lagotto
       - DB_HOST=mysql
-      - DB_PORT=3306
-      - MEMCACHE_SERVERS=memcached
+      - MEMCACHE_SERVERS=localhost
+      # - MEMCACHE_SERVERS=memcached
 
   mysql:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
-
-  memcached:
-    image: memcached
-
-  redis:
-    image: redis:apline
 
   couch:
     image: couchdb
