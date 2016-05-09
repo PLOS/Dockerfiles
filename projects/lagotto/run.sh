@@ -23,7 +23,7 @@ wait_until_db_service_up
 
 if ! check_db_exists; then
   set_db_grants
-  rake db:setup
+  bundle exec rake db:setup
 
   check_db_exists || exit 1
 else

@@ -13,11 +13,11 @@ RUN apt-get update -qq && \
 
 RUN gem install bundler
 
-# Enable Nginx, Redis, Memcached
-RUN rm -f /etc/service/{nginx,redis,memcached}/down && \
-    rm /etc/nginx/sites-enabled/default
-
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Enable Nginx, Redis, Memcached
+RUN rm -f /etc/service/nginx/down /etc/service/redis/down /etc/service/memcached/down && \
+    rm /etc/nginx/sites-enabled/default
 
 RUN mkdir $SRC
 RUN chown -R app:app $SRC && chmod -R 755 $SRC
