@@ -26,6 +26,22 @@ function wait_until_db_service_up {
 
 }
 
+function wait_until_true {
+
+  TEST_CMD=$1
+  NAME=$2
+  TEST_RETURN_CODE=1
+
+  while [ $TEST_RETURN_CODE -ne 0 ] ; do
+    sleep 1
+    $TEST_CMD
+    TEST_RETURN_CODE=$?
+    echo "$NAME not ready ... waiting"
+  done;
+
+  echo "$NAME is up and ready"
+}
+
 function wait_for_web_service {
 
   URL=$1

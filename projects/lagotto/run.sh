@@ -17,7 +17,6 @@ export MYSQL_DATABASE=$DB_NAME
 
 source $BUILD_DIR/run-helpers.sh
 
-
 # config application
 
 cp $BUILD_DIR/lagotto.conf /etc/nginx/sites-enabled/lagotto.conf
@@ -30,17 +29,21 @@ process_template $SRC/.env
 
 wait_until_db_service_up
 
+# TODO: wait until redis is up
+# format of REDIS_URL redis://[:password@]host[:port][/db-number][?option=value]
+# wait_until_true "redis-cli INFO" "REDIS"
+
 if ! check_db_exists; then
   set_db_grants
-  bundle exec rake db:create
+  bundle exec rake db:setup || bundle exec rake db:drop
 else
   echo "Skipping creating DB since it already exists"
 fi
 
-bundle exec rake db:setup
-
-check_db_exists #|| exit 1
+check_db_exists || exit 1
 
 # run it
+
+bundle exec rake sidekiq:start
 
 /sbin/my_init

@@ -7,14 +7,15 @@ services:
     ports:
       - 80:80
     environment:
-      - CAS_URL=https://register.plos.org
       - MYSQL_ROOT_PASSWORD=root
       - DB_NAME=lagotto
       - DB_USERNAME=lagotto
       - DB_PASSWORD=lagotto
       - DB_HOST=mysql
-      - MEMCACHE_SERVERS=localhost
-      # - MEMCACHE_SERVERS=memcached
+      - CAS_URL=https://register.plos.org
+      - MEMCACHE_SERVERS=127.0.0.1
+      - REDIS_URL=redis://redis:6379
+      - COUCHDB_URL=http://couch:5984
 
   mysql:
     image: percona:5.6
@@ -24,4 +25,7 @@ services:
   couch:
     image: couchdb
 
-  # postfix, sidekick, etc.
+  redis:
+    image: redis:alpine
+
+  # postfix, etc.

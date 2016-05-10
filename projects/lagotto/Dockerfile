@@ -6,7 +6,7 @@ LABEL vendor="Public Library of Science"
 ENV SRC /home/app/lagotto
 
 RUN cd /pd_build && \
-      ./ruby2.2.sh && ./nodejs.sh && ./redis.sh && ./memcached.sh
+      ./ruby2.2.sh && ./nodejs.sh && ./memcached.sh
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends curl mysql-client
@@ -15,11 +15,10 @@ RUN gem install bundler
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN ls -l /etc/service/
+# Enable Nginx, Memcached
+RUN cd /etc/service && rm -f nginx/down && rm -rf memcached/down && rm /etc/nginx/sites-enabled/default
 
-# Enable Nginx, Redis, Memcached
-RUN rm -f /etc/service/{nginx,redis,memcached}/down && \
-    rm /etc/nginx/sites-enabled/default
+# NOTE: dont use internal redis because db migrations require it
 
 RUN mkdir $SRC
 RUN chown -R app:app $SRC && chmod -R 755 $SRC

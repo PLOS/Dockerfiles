@@ -10,6 +10,7 @@ start_stack
 DOCKER_HOST=$(get_docker_host)
 
 wait_and_curl http://$DOCKER_HOST:80 /status "Lagotto status"
+wait_and_curl http://$DOCKER_HOST:80 /works "Lagotto works"
 
 tests_passed
 
