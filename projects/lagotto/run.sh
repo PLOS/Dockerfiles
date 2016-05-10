@@ -17,27 +17,29 @@ export MYSQL_DATABASE=$DB_NAME
 
 source $BUILD_DIR/run-helpers.sh
 
+
+# config application
+
+cp $BUILD_DIR/lagotto.conf /etc/nginx/sites-enabled/lagotto.conf
+cp $BUILD_DIR/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
+cp $BUILD_DIR/env.template $SRC/.env
+
+process_template $SRC/.env
+
 # set up services
 
 wait_until_db_service_up
 
 if ! check_db_exists; then
   set_db_grants
-  bundle exec rake db:setup
-
-  check_db_exists || exit 1
+  bundle exec rake db:create
 else
   echo "Skipping creating DB since it already exists"
 fi
 
-# config application
+bundle exec rake db:setup
 
-cp $BUILD_DIR/lagotto.conf /etc/nginx/sites-enabled/lagotto.conf
-cp $BUILD_DIR/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
-
-cp $BUILD_DIR/env.template $SRC/.env
-
-process_template $SRC/.env
+check_db_exists #|| exit 1
 
 # run it
 
