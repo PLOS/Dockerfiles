@@ -3,7 +3,7 @@ version: '2'
 services:
 
   lagotto:
-    image: lagotto:plos_prod_fixes_jf
+    image: lagotto:4_5_plos
     ports:
       - 80:80
     environment:
@@ -15,17 +15,16 @@ services:
       - CAS_URL=https://register.plos.org
       - MEMCACHE_SERVERS=127.0.0.1
       - REDIS_URL=redis://redis:6379
-      - COUCHDB_URL=http://couch:5984
 
   mysql:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
-  couch:
-    image: couchdb
-
   redis:
     image: redis:alpine
+
+  couch:
+    image: couchdb
 
   # postfix, etc.

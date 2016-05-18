@@ -48,10 +48,8 @@ This will only work for projects you have the source code locally checked out fo
 Running
 -------
 
-To see a list of sample stacks that combine the use of these images see the configurations/ directory. Here is how you would run one:
+To see a list of sample stacks that combine the use of these images run app.sh. Here is how you would run one stack:
 
-    DOCKERFILES=$(pwd) docker-compose -f configurations/wombat.yml up
-or
     ./app.sh wombat
 
 Now, in the case above you can visit some pages to see they are up:
@@ -88,6 +86,7 @@ There is a scaling demo that runs multiple instances of NED using Consul. Here i
 * Refresh the consul UI to see the added services
 * Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
 * Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
+* You can see proxy stats at http://localhost:1936/ but it wont be accurate since scaling restarts haproxy which reset the values to 0
 
 
 Docker Registry

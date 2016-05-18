@@ -44,6 +44,7 @@ check_db_exists || exit 1
 
 # run it
 
-bundle exec rake sidekiq:start
+# bundle exec rake sidekiq:start
+bundle exec sidekiq -d -L log/sidekiq.log -C config/sidekiq.yml -e development
 
 /sbin/my_init
