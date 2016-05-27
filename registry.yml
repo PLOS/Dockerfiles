@@ -13,9 +13,9 @@ services:
       REGISTRY_HTTP_TLS_CERTIFICATE: /certs/selfsigned.crt
       REGISTRY_HTTP_TLS_KEY: /certs/selfsigned.key
     volumes:
-      # - $HOME/data/registry:/var/lib/registry
       - $DOCKERFILES/projects:/certs
-      # - /var/docker-registry:/var/lib/registry
+      - /var/docker-registry:/var/lib/registry
+      # - $HOME/data/registry:/var/lib/registry
       # - $HOME/registry_certs:/certs
 
 # TODO: add something like http://port.us.org/

@@ -99,21 +99,23 @@ To use our registry make sure you have configured your Docker daemon such that i
 As an example, here is how you would run the new Ambra stack from the repo:
 
     ./registry.sh pull_stack configurations/web_delivery.yml
-    docker-compose -f configurations/web_delivery.yml up
+    ./app.sh web_delivery.yml
 
 To see the Wombat home page, visit:
     http://localhost:8081
 
-Note: The above example requires you to have ambra templates and plos-themes checked out locally.
+Note: The above example requires you to have Ambra templates and plos-themes checked out locally.
+
+You can use the included registry.yml file to bring up the registry on your server.
 
 Status/Todo
 -----------
 
 * Akita and Lemur apps will have problems with CAS because of this bug:
 https://github.com/dlindahl/omniauth-cas/issues/41
-* Setup postgres helper method for lemur
-* Lemur needs to seperate app and db config
-* Figure out why lemur frontend needs specific npm and bower versions
+* Setup Postgres helper method for Lemur
+* Lemur needs to separate app and db config
+* Figure out why Lemur frontend needs specific npm and bower versions
 
 
 Tips
