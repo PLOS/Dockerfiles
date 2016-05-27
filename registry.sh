@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
 if [ -z $DOCKER_REPO_HOST ]; then
   DOCKER_REPO_HOST=sfo-namedparty-devbox01.int.plos.org
@@ -111,15 +111,16 @@ function push_stack {
 
 function images {
   echo Repo image list:
-  # ssh $DOCKER_REPO_HOST /bin/docker-reg-images
-  LIST_URL=$DOCKER_REPO_HOST:5001/images
 
-  HTTP_CODE=$(curl -s -w "%{http_code}\\n" $LIST_URL -o /dev/null)
-  if [[ "$HTTP_CODE" -ne "200" ]]; then
-    ssh $DOCKER_REPO_HOST find /var/docker-registry/data/docker/registry/v2/repositories -maxdepth 4 | grep _manifests/tags/ | sed 's/^\(\/var\/docker-registry\/data\/docker\/registry\/v2\/repositories\/\)//'| sed 's/\/_manifests\/tags\//:/'|sort
-  else
-    curl $LIST_URL
-  fi
+  LIST_URL=$DOCKER_REPO_HOST:5000/v2/_catalog
+  LIST=$(curl $LIST_URL)
+
+  # HTTP_CODE=$(curl -s -w "%{http_code}\\n" $LIST_URL -o /dev/null)
+  # if [[ "$HTTP_CODE" -ne "200" ]]; then
+  #   ssh $DOCKER_REPO_HOST find /var/docker-registry/data/docker/registry/v2/repositories -maxdepth 4 | grep _manifests/tags/ | sed 's/^\(\/var\/docker-registry\/data\/docker\/registry\/v2\/repositories\/\)//'| sed 's/\/_manifests\/tags\//:/'|sort
+  # else
+    (echo $LIST | jq .) || echo $LIST
+  # fi
 }
 
 if [ "$#" -eq 0 ]; then

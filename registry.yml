@@ -1,0 +1,21 @@
+version: '2'
+
+# this docker-compose file can be used to bring up an instance of the docker registry on a server
+# use > docker-compose -f registry.yaml up -d
+
+services:
+  registry:
+    restart: always
+    image: registry:2
+    ports:
+      - "5000:5000"
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/selfsigned.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/selfsigned.key
+    volumes:
+      # - $HOME/data/registry:/var/lib/registry
+      - $DOCKERFILES/projects:/certs
+      # - /var/docker-registry:/var/lib/registry
+      # - $HOME/registry_certs:/certs
+
+# TODO: add something like http://port.us.org/
