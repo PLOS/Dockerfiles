@@ -8,12 +8,18 @@ LABEL vendor="Public Library of Science"
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends build-essential \
             libpq-dev libsqlite3-dev libssl-dev curl git \
-            nginx && \
+            nginx unzip && \
     curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
     apt-get install -y nodejs && \
     gem install bundler && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-    
+
+# setup consul
+ADD https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip /root/
+WORKDIR /root
+RUN unzip consul*.zip
+RUN mkdir /etc/consul.d && echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/info", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
+
 # build assets
 
 RUN mkdir /src

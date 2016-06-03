@@ -11,6 +11,32 @@ function start_tomcat {
 	${CATALINA_HOME}/bin/catalina.sh run
 }
 
+function start_consul_agent {
+
+  CONSULSERVER=consulserver
+
+  MAX_TRIES=5
+  TRY_COUNT=0
+
+  until check_host_up $CONSULSERVER ; do
+
+    sleep 1
+    echo "Attempt to contact $CONSULSERVER failed"
+
+    ((TRY_COUNT++))
+    if [ $TRY_COUNT -gt $MAX_TRIES ]; then
+      echo "Giving up on $CONSULSERVER"
+      # break
+      return
+    fi
+
+  done
+
+  wait_for_web_service consulserver:8500/v1/agent/self "consulserver"
+
+  /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+}
+
 function wait_until_db_service_up {
 
 	$MYSQL_ROOT -e 'exit'

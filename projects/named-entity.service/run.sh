@@ -41,11 +41,6 @@ echo "SELECT * FROM namedEntities.consumers;" | $MYSQL_ROOT
 
 process_template ${CATALINA_HOME}/conf/context.xml
 
-# if the consul server is present, attach to it
-if check_host_up consulserver ; then
-  wait_for_web_service consulserver:8500/v1/agent/self "consulserver"
-
-  /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
-fi
+start_consul_agent
 
 start_tomcat

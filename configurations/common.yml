@@ -2,11 +2,35 @@ version: '2'
 
 services:
 
-  akita:
-    image: akita:develop
+  haproxy:
+    image: haproxy:alpine
     ports:
-      - 80:80
-      - 443:443
+      - "1936:1936"
+    volumes:
+      - /usr/local/etc/haproxy
+      - /dev/log:/dev/log
+
+  consulserver:
+    image: gliderlabs/consul-server
+    command: -bootstrap -ui
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:53/udp"
+
+  consultemplate:
+    image: avthart/consul-template
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    # environment:
+    #   - CONSUL_TEMPLATE_LOG=debug
+    #
+  akita-proxyable:
+    image: akita:develop
+    # ports:
+    #   - 80:80
+    #   - 443:443
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -25,11 +49,13 @@ services:
       - SALESFORCE_CONSUMER_APP=
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
-      - SSL=existingkeys  # options = none, existingkeys, generatekeys
+      - RECAPTCHA_SECRET=
+      - SSL=none
+      # - SSL=existingkeys  # options = none, existingkeys, generatekeys
       # TODO: remove generate keys. doesnt seem needed if existing keys works
-    volumes:    # when using SSL=existingkeys
-      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+    # volumes:    # when using SSL=existingkeys
+    #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+    #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
   mailcatcher:
     image: schickling/mailcatcher

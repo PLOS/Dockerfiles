@@ -1,4 +1,4 @@
-FROM tomcat:6-jre8
+FROM tomcat:7-jre8
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
