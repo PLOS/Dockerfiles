@@ -25,12 +25,14 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock
     # environment:
     #   - CONSUL_TEMPLATE_LOG=debug
-    #
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1080:1080
+
   akita-proxyable:
-    image: akita:develop
-    # ports:
-    #   - 80:80
-    #   - 443:443
+    image: akita:PS_1430
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -50,22 +52,20 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
-      - SSL=none
-      # - SSL=existingkeys  # options = none, existingkeys, generatekeys
-      # TODO: remove generate keys. doesnt seem needed if existing keys works
+      - SSL=none  # options = none, existingkeys
     # volumes:    # when using SSL=existingkeys
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-  mailcatcher:
-    image: schickling/mailcatcher
-    ports:
-      - 1080:1080
-
   nedcas:
-    image: nedcas:develop
+    extends: ned-proxyable
     ports:
       - 8443:8443
+
+  nedcas-proxyable:
+    image: nedcas:develop
+    # ports:
+    #   - 8443:8443
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -73,8 +73,8 @@ services:
       - MYSQL_HOSTNAME=neddb
       - MYSQL_DATABASE=namedEntities
       - CAS_DATABASE=cas
-      - NED_SERVICE=https://nedapi:8443/v1
-      - REGISTRATION_BASE_URL=https://localhost   # TODO: fix this
+      - NED_SERVICE=http://nedapi:8081/v1
+      - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
@@ -83,9 +83,9 @@ services:
     extends: ned-proxyable
     ports:
       - 8081:8080
-      - 8444:8443
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+    #   - 8444:8443
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
   ned-proxyable:
     image: nedapi:develop

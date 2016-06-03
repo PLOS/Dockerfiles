@@ -81,10 +81,7 @@
          connector should be using the OpenSSL style configuration
          described in the APR documentation -->
 
-
-
-         <!-- TODO: change to APR connection -->
-
+     <!-- TODO: change to APR connection so we dont have to use jks file? -->
 
     <Connector port="8443" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"

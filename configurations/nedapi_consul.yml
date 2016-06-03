@@ -2,39 +2,36 @@ version: '2'
 
 services:
 
-  consulserver:
-    image: gliderlabs/consul-server
-    command: -bootstrap -ui
-    ports:
-      - "8300:8300"
-      - "8400:8400"
-      - "8500:8500"
-      - "8600:53/udp"
-
   haproxy:
-    image: haproxy:alpine
+    extends:
+      file: common.yml
+      service: haproxy
     ports:
       - "8081:8080"
-      - "1936:1936"
-    volumes:
-      - /usr/local/etc/haproxy
-      - /dev/log:/dev/log
 
-  consul-template:
-    image: avthart/consul-template
+  consulserver:
+    extends:
+      file: common.yml
+      service: consulserver
+
+  consultemplate:
+    extends:
+      file: common.yml
+      service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_haproxy_1" # $$(docker ps -q -f name=haproxy)
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
       - ${DOCKERFILES}/projects/named-entity.service/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     volumes_from:
       - haproxy
-    # environment:
-    #   - CONSUL_TEMPLATE_LOG=debug
 
   nedapi:
     extends:
       file: common.yml
       service: ned-proxyable
+    environment:
+      - NED_SERVICE=http://nedapi:8081/v1
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
   nedcas:
     extends:

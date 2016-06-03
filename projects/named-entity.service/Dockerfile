@@ -24,8 +24,8 @@ COPY run*.sh *.sql migrations/ /root/
 
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/v1.war
 COPY context.xml $CATALINA_HOME/conf/
-COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
+# COPY server-ssl.xml $CATALINA_HOME/conf/server.xml
 
-RUN keytool -genkey -alias tomcat -keyalg RSA -noprompt -dname "CN=cas-local, C=US, ST=CA, L=SanFran, O=plos" -keystore web.jks -storepass changeit -keypass changeit
+# RUN keytool -genkey -alias tomcat -keyalg RSA -noprompt -dname "CN=cas-local, C=US, ST=CA, L=SanFran, O=plos" -keystore web.jks -storepass changeit -keypass changeit
 
 CMD bash /root/run.sh

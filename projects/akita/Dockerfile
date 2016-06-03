@@ -18,10 +18,9 @@ RUN apt-get update -qq && \
 ADD https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip /root/
 WORKDIR /root
 RUN unzip consul*.zip
-RUN mkdir /etc/consul.d && echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/info", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
+RUN mkdir /etc/consul.d && echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/status", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
 
 # build assets
-
 RUN mkdir /src
 WORKDIR /src
 
@@ -32,8 +31,6 @@ RUN bundle install
 
 COPY . /src
 
-# TODO: use dockerfile USER to isolate source files and runtime
-
 RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > /root/version.txt
 
 # only run the setup if the dependencies are missing
@@ -41,22 +38,14 @@ RUN ls frontend/node_modules || bin/setup
 
 WORKDIR /src/frontend
 RUN ./node_modules/.bin/ember build --environment=production && mv /src/frontend/dist /src/ember
-# TODO: make the ember environment configurable or change to prod
 
 # setup application
-
 RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
 		rm -f /etc/nginx/sites-enabled/default
 
-# generate self signed keys if needed for testing
-
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-    -subj "/C=US/ST=California/L=SanFran/O=Here/CN=plos" \
-    -keyout /root/nginx.key -out /root/nginx.crt
-
-# cleanup (does not reduce image size, but does reduce attack service)
-
-# RUN apt-get remove -y build-essential git libpq-dev && apt-get autoremove -y && \
-# 		rm -rf /src/frontend
+# # generate self signed keys if needed for testing
+# RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+#     -subj "/C=US/ST=California/L=SanFran/O=Here/CN=plos" \
+#     -keyout /root/nginx.key -out /root/nginx.crt
 
 # CMD bash /root/run.sh
