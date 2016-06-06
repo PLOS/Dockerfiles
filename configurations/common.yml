@@ -2,34 +2,32 @@ version: '2'
 
 services:
 
-  haproxy:
-    image: haproxy:alpine
+  akitaproxy:
+    extends:
+      file: common.yml
+      service: haproxy
     ports:
-      - "1936:1936"
+      # - "80:80"
+      - "443:443"
     volumes:
-      - /usr/local/etc/haproxy
-      - /dev/log:/dev/log
+      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
 
-  consulserver:
-    image: gliderlabs/consul-server
-    command: -bootstrap -ui
-    ports:
-      - "8300:8300"
-      - "8400:8400"
-      - "8500:8500"
-      - "8600:53/udp"
-
-  consultemplate:
-    image: avthart/consul-template
+  akitaconsultemplate:
+    extends:
+      file: common.yml
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1" # $$(docker ps -q -f name=haproxy)
     volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    # environment:
-    #   - CONSUL_TEMPLATE_LOG=debug
+      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:
+    #   - aktiaproxy
 
-  mailcatcher:
-    image: schickling/mailcatcher
-    ports:
-      - 1080:1080
+  akita:
+    extends:
+      file: common.yml
+      service: akita-proxyable
+    # ports:
+    #   - "80:80"
 
   akita-proxyable:
     image: akita:PS_1430
@@ -57,15 +55,32 @@ services:
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-  nedcas:
-    extends: ned-proxyable
+  casproxy:
+    extends:
+      file: common.yml
+      service: haproxy
     ports:
-      - 8443:8443
+      - "8443:443"
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+
+  casconsultemplate:
+    extends:
+      file: common.yml
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1" # $$(docker ps -q -f name=haproxy)
+    volumes:
+      - ${DOCKERFILES}/projects/ned-cas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:
+    #   - casproxy
+
+  nedcas:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
 
   nedcas-proxyable:
     image: nedcas:develop
-    # ports:
-    #   - 8443:8443
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -73,19 +88,33 @@ services:
       - MYSQL_HOSTNAME=neddb
       - MYSQL_DATABASE=namedEntities
       - CAS_DATABASE=cas
-      - NED_SERVICE=http://nedapi:8081/v1
+      - NED_SERVICE=http://nedapi:8080/v1
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+
+  nedproxy:
+    extends:
+      file: common.yml
+      service: haproxy
+    ports:
+      - "8081:8080"
+
+  nedconsultemplate:
+    extends:
+      file: common.yml
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=haproxy)
     volumes:
-      - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
+      - ${DOCKERFILES}/projects/named-entity.service/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:
+    #   - nedproxy
 
   nedapi:
     extends: ned-proxyable
     ports:
       - 8081:8080
-    #   - 8444:8443
-    # volumes:
-    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
   ned-proxyable:
     image: nedapi:develop
@@ -104,6 +133,35 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     # volumes:    # enable to persist database between runs
     #   - /var/lib/mysql
+
+  haproxy:
+    image: haproxy:alpine
+    # ports:
+    #   - "1936:1936"
+    volumes:
+      - /usr/local/etc/haproxy
+      - /dev/log:/dev/log
+
+  consulserver:
+    image: gliderlabs/consul-server
+    command: -bootstrap -ui
+    ports:
+      - "8300:8300"
+      - "8400:8400"
+      - "8500:8500"
+      - "8600:53/udp"
+
+  consultemplate:
+    image: avthart/consul-template
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    # environment:
+    #   - CONSUL_TEMPLATE_LOG=debug
+
+  mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+      - 1080:1080
 
   ambra:
     image: ambra:master

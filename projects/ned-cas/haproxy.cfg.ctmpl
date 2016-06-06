@@ -1,7 +1,3 @@
-
-# TODO: put certs here!!!
-# https://www.digitalocean.com/community/tutorials/how-to-implement-ssl-termination-with-haproxy-on-ubuntu-14-04
-
 global
 	log /dev/log	local0
 	log /dev/log	local1 notice
@@ -13,17 +9,17 @@ defaults
 	log global
 	mode http
 
-frontend nedcas
-  bind *:8443
+frontend front
+	bind *:443 ssl crt /etc/ssl/cert.pem
 	log	global
 	option	httplog
 	option	dontlognull
   option http-server-close
-  default_backend nedcas-backend
+  default_backend back
 	maxconn	8000
 	timeout client 30s
 
-backend nedcas-backend
+backend back
   balance roundrobin
 	option redispatch
 	timeout connect 5s

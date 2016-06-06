@@ -9,17 +9,17 @@ defaults
 	log global
 	mode http
 
-frontend ned
+frontend front
   bind *:8080
 	log	global
 	option	httplog
 	option	dontlognull
   option http-server-close
-  default_backend ned-backend
+  default_backend back
 	maxconn	8000
 	timeout client 30s
 
-backend ned-backend
+backend back
   balance roundrobin
 	option redispatch
 	timeout connect 5s

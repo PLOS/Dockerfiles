@@ -2,49 +2,63 @@ version: '2'
 
 services:
 
-  haproxy:
+  akitaproxy:
     extends:
       file: common.yml
-      service: haproxy
-    ports:
-      - "80:80"
+      service: akitaproxy
+    # ports:
+    #   - "80:80"
 
-  consulserver:
+  akitaconsultemplate:
     extends:
       file: common.yml
-      service: consulserver
-
-  consultemplate:
-    extends:
-      file: common.yml
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_haproxy_1" # $$(docker ps -q -f name=haproxy)
-    volumes:
-      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+      service: akitaconsultemplate
+    # command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1" # $$(docker ps -q -f name=haproxy)
+    # volumes:
+    #   - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     volumes_from:
-      - haproxy
+      - akitaproxy
 
   akita:
     extends:
       file: common.yml
       service: akita-proxyable
+    environment:
+      - CAS_URL=https://casproxy:443
 
-  mailcatcher:
+  casproxy:
     extends:
       file: common.yml
-      service: mailcatcher
+      service: casproxy
+
+  casconsultemplate:
+    extends:
+      file: common.yml
+      service: casconsultemplate
+    volumes_from:
+      - casproxy
 
   nedcas:
     extends:
       file: common.yml
-      service: nedcas
+      service: nedcas-proxyable
 
   nedapi:
     extends:
       file: common.yml
       service: nedapi
 
+  consulserver:
+    extends:
+      file: common.yml
+      service: consulserver
+
   neddb:
     extends:
       file: common.yml
       service: neddb
+
+  mailcatcher:
+    extends:
+      file: common.yml
+      service: mailcatcher
