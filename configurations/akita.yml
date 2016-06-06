@@ -6,16 +6,11 @@ services:
     extends:
       file: common.yml
       service: akitaproxy
-    # ports:
-    #   - "80:80"
 
   akitaconsultemplate:
     extends:
       file: common.yml
       service: akitaconsultemplate
-    # command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1" # $$(docker ps -q -f name=haproxy)
-    # volumes:
-    #   - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     volumes_from:
       - akitaproxy
 

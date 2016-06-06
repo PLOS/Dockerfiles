@@ -10,7 +10,6 @@ defaults
 	mode http
 
 frontend akita
-#	bind *:80
 	bind *:443 ssl crt /etc/ssl/cert.pem
 	log	global
 	option	httplog

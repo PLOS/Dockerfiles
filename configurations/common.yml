@@ -7,7 +7,6 @@ services:
       file: common.yml
       service: haproxy
     ports:
-      # - "80:80"
       - "443:443"
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
@@ -16,7 +15,7 @@ services:
     extends:
       file: common.yml
       service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1" # $$(docker ps -q -f name=haproxy)
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1"
     volumes:
       - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
@@ -26,11 +25,16 @@ services:
     extends:
       file: common.yml
       service: akita-proxyable
-    # ports:
-    #   - "80:80"
+    ports:
+      - "443:443"
+    environment:
+      - SSL= existingkeys
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
   akita-proxyable:
-    image: akita:PS_1430
+    image: akita:develop
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -68,7 +72,7 @@ services:
     extends:
       file: common.yml
       service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1" # $$(docker ps -q -f name=haproxy)
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1"
     volumes:
       - ${DOCKERFILES}/projects/ned-cas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
@@ -105,7 +109,7 @@ services:
     extends:
       file: common.yml
       service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=haproxy)
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=nedproxy)
     volumes:
       - ${DOCKERFILES}/projects/named-entity.service/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
