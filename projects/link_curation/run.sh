@@ -10,21 +10,7 @@ source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
 
-if ! check_db_exists; then
-  echo "Error: Database not populated. Make sure mediaTracker was setup"
-  exit 1
-  # create_db
-  # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/schema.sql
-# else
-  # echo "Skipping creating DB since it already exists"
-fi
-
-# set_db_grants
-
-# echo 'Populating schema'
-# rake db:create:all
-# rake db:migrate
-# rake db:setup
+# TODO: wait until db is populated
 
 if [ -f $NGINX_DIR/ssl/nginx.key ]; then
   NGINX_CONF=nginx-ssl.conf
