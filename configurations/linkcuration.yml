@@ -2,42 +2,51 @@ version: '2'
 
 services:
 
-  linkcuration:
-    image: linkcuration:master
-    ports:
-      - 80:80
-      - 443:443
+  # linkcuration:
+  #   image: linkcuration:master
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   environment:
+  #     - RAILS_ENV=development
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_USER=tracker
+  #     - MYSQL_USER_PASSWORD=tracker
+  #     - MYSQL_HOSTNAME=curationdb
+  #     - MYSQL_DATABASE=mediaTracker
+  #     - CAS_URL=https://register.plos.org
+  #   volumes:
+  #     - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
+  #     - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+
+  mediatracker:
+    image: mediatracker:master
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=tracker
       - MYSQL_USER_PASSWORD=tracker
       - MYSQL_HOSTNAME=curationdb
       - MYSQL_DATABASE=mediaTracker
-      - CAS_URL=https://localhost:8443
-      - SSL=existingkeys  # options = none, existingkeys, generatekeys
-      # TODO: remove generate keys. doesnt seem needed if existing keys works
-    volumes:    # when using SSL=existingkeys
-      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-  curationdb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    # volumes:    # enable to persist database between runs
-    #   - /var/lib/mysql
+  # curationdb:
+  #   image: percona:5.6
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
 
-  nedcas:
-    extends:
-      file: common.yml
-      service: nedcas
 
-  nedapi:
-    extends:
-      file: common.yml
-      service: nedapi
+  # NOTE: not bringing up a local CAS because of limitation in the rails CAS plugin.
 
-  neddb:
-    extends:
-      file: common.yml
-      service: neddb
+  # nedcas:
+  #   extends:
+  #     file: common.yml
+  #     service: nedcas
+  #
+  # nedapi:
+  #   extends:
+  #     file: common.yml
+  #     service: nedapi
+  #
+  # neddb:
+  #   extends:
+  #     file: common.yml
+  #     service: neddb

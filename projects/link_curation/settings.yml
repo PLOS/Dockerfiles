@@ -1,8 +1,8 @@
 defaults: &defaults
   solr_url: http://api.plos.org/search
-  cas_host: nedcas
-  cas_port: 8443
-  cas_logout_url: https://localhost:8443/cas/logout
+  cas_host: register.plos.org
+  cas_port: 443
+  cas_logout_url: https://register.plos.org/cas/logout
 
 # TODO: turn these values into environment vars
 

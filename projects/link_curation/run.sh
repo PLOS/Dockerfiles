@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 NGINX_DIR=/etc/nginx
 
-NGINX_CONF=nginx-ssl.conf
+NGINX_CONF=nginx.conf
 
 BUILD_DIR=/root
 
@@ -11,24 +11,24 @@ source $BUILD_DIR/run-helpers.sh
 wait_until_db_service_up
 
 if ! check_db_exists; then
-  create_db
-else
-  echo "Skipping creating DB since it already exists"
+  echo "Error: Database not populated. Make sure mediaTracker was setup"
+  exit 1
+  # create_db
+  # $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/schema.sql
+# else
+  # echo "Skipping creating DB since it already exists"
 fi
 
-set_db_grants
+# set_db_grants
 
-# if [ "$SSL" == "existingkeys" ]; then
-#   NGINX_CONF=nginx-ssl.conf
-#   # assumes you have placed/mountd a cert and key in $NGINX_DIR/ssl/
-# fi
+# echo 'Populating schema'
+# rake db:create:all
+# rake db:migrate
+# rake db:setup
 
-# if [ "$SSL" == "generatekeys" ]; then
-#   NGINX_CONF=nginx-ssl.conf
-#
-#   ln -s /root/nginx.crt $NGINX_DIR/ssl/
-#   ln -s /root/nginx.key $NGINX_DIR/ssl/
-# fi
+if [ -f $NGINX_DIR/ssl/nginx.key ]; then
+  NGINX_CONF=nginx-ssl.conf
+fi
 
 # ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
 ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
