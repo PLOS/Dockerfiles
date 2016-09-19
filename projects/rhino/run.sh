@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 BUILD_DIR=/root
 
@@ -8,12 +8,16 @@ source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
 
-# TODO: use a more up to date SQL schema dump
 if ! check_db_exists; then
   echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
-  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_schema_1005.sql
-  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_data.sql
-  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/issue.sql
+
+  # NOTE: after conversation with dipros on 9/19/2016 it appears there is a future goal to move to something like flyway where migrations from scratch will be supported
+
+  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_pre_migrations.sql
+
+  cd $BUILD_DIR
+  python migrate.py --dbUser=root --dbPass=$MYSQL_ROOT_PASSWORD --dbHost=$MYSQL_HOSTNAME --dbName=$MYSQL_DATABASE
+
 fi
 
 set_db_grants

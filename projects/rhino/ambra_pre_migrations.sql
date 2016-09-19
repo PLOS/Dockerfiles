@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.21-70.1, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.31, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: ambra
 -- ------------------------------------------------------
--- Server version	5.6.21-70.1-log
+-- Server version	5.6.31-0ubuntu0.14.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -28,6 +28,7 @@ CREATE TABLE `annotation` (
   `articleID` bigint(20) DEFAULT NULL,
   `parentID` bigint(20) DEFAULT NULL,
   `userProfileID` bigint(20) NOT NULL,
+  `annotationCitationID` bigint(20) DEFAULT NULL,
   `type` varchar(16) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `title` text CHARACTER SET utf8 COLLATE utf8_bin,
   `body` text CHARACTER SET utf8 COLLATE utf8_bin,
@@ -37,13 +38,79 @@ CREATE TABLE `annotation` (
   `lastModified` datetime NOT NULL,
   PRIMARY KEY (`annotationID`),
   UNIQUE KEY `annotationURI` (`annotationURI`),
+  UNIQUE KEY `annotationCitationID` (`annotationCitationID`),
   KEY `articleID` (`articleID`),
   KEY `parentID` (`parentID`),
   KEY `userProfileID` (`userProfileID`),
   CONSTRAINT `annotation_ibfk_1` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`),
+  CONSTRAINT `annotation_ibfk_2` FOREIGN KEY (`annotationCitationID`) REFERENCES `annotationCitation` (`annotationCitationID`),
   CONSTRAINT `annotation_ibfk_3` FOREIGN KEY (`parentID`) REFERENCES `annotation` (`annotationID`),
   CONSTRAINT `annotation_ibfk_4` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=80085 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `annotationCitation`
+--
+
+DROP TABLE IF EXISTS `annotationCitation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotationCitation` (
+  `annotationCitationID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `year` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `volume` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `issue` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `journal` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `title` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `publisherName` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `eLocationId` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `note` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `summary` varchar(10000) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `lastModified` datetime NOT NULL,
+  PRIMARY KEY (`annotationCitationID`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `annotationCitationAuthor`
+--
+
+DROP TABLE IF EXISTS `annotationCitationAuthor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotationCitationAuthor` (
+  `annotationCitationAuthorID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `annotationCitationID` bigint(20) DEFAULT NULL,
+  `fullName` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `givenNames` varchar(150) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `surnames` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `suffix` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `sortOrder` int(11) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `lastModified` datetime NOT NULL,
+  PRIMARY KEY (`annotationCitationAuthorID`),
+  UNIQUE KEY `annotationCitationID` (`annotationCitationID`,`sortOrder`),
+  CONSTRAINT `annotationCitationAuthor_ibfk_1` FOREIGN KEY (`annotationCitationID`) REFERENCES `annotationCitation` (`annotationCitationID`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `annotationCitationCollabAuthor`
+--
+
+DROP TABLE IF EXISTS `annotationCitationCollabAuthor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotationCitationCollabAuthor` (
+  `annotationCitationID` bigint(20) NOT NULL DEFAULT '0',
+  `sortOrder` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`annotationCitationID`,`sortOrder`),
+  CONSTRAINT `annotationCitationCollabAuthor_ibfk_1` FOREIGN KEY (`annotationCitationID`) REFERENCES `annotationCitation` (`annotationCitationID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +133,7 @@ CREATE TABLE `annotationFlag` (
   KEY `userProfileID` (`userProfileID`),
   CONSTRAINT `annotationFlag_ibfk_1` FOREIGN KEY (`annotationID`) REFERENCES `annotation` (`annotationID`),
   CONSTRAINT `annotationFlag_ibfk_2` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12739 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +168,7 @@ CREATE TABLE `article` (
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`articleID`),
   KEY `doi` (`doi`)
-) ENGINE=InnoDB AUTO_INCREMENT=243977 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=739 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +196,7 @@ CREATE TABLE `articleAsset` (
   KEY `articleID` (`articleID`),
   KEY `doi` (`doi`),
   CONSTRAINT `articleAsset_ibfk_1` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=14485664 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67256 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,17 +266,17 @@ DROP TABLE IF EXISTS `articleList`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `articleList` (
   `articleListID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `listCode` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `listKey` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `displayName` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `journalID` bigint(20) DEFAULT NULL,
-  `journalSortOrder` int(11) DEFAULT NULL,
   `created` datetime NOT NULL,
   `lastModified` datetime NOT NULL,
+  `listType` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`articleListID`),
-  UNIQUE KEY `listCode` (`listCode`),
+  UNIQUE KEY `listIdentity` (`journalID`,`listType`,`listKey`),
   KEY `journalID` (`journalID`),
   CONSTRAINT `articleList_ibfk_1` FOREIGN KEY (`journalID`) REFERENCES `journal` (`journalID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,9 +289,11 @@ DROP TABLE IF EXISTS `articleListJoinTable`;
 CREATE TABLE `articleListJoinTable` (
   `articleListID` bigint(20) NOT NULL,
   `sortOrder` int(11) NOT NULL,
-  `doi` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `articleID` bigint(20) NOT NULL,
   PRIMARY KEY (`articleListID`,`sortOrder`),
-  CONSTRAINT `articleListJoinTable_ibfk_1` FOREIGN KEY (`articleListID`) REFERENCES `articleList` (`articleListID`)
+  KEY `articleID` (`articleID`),
+  CONSTRAINT `articleListJoinTable_ibfk_1` FOREIGN KEY (`articleListID`) REFERENCES `articleList` (`articleListID`),
+  CONSTRAINT `articleListJoinTable_ibfk_2` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -240,16 +309,16 @@ CREATE TABLE `articlePerson` (
   `articleID` bigint(20) DEFAULT NULL,
   `sortOrder` int(11) DEFAULT NULL,
   `type` varchar(15) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `fullName` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `fullName` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `givenNames` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `surnames` varchar(200) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `surnames` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `suffix` varchar(15) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `created` datetime NOT NULL,
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`articlePersonID`),
   KEY `articleID` (`articleID`),
   CONSTRAINT `articlePerson_ibfk_1` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=1925643 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8028 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,7 +359,7 @@ CREATE TABLE `articleRelationship` (
   KEY `otherArticleID` (`otherArticleID`),
   CONSTRAINT `articleRelationship_ibfk_1` FOREIGN KEY (`parentArticleID`) REFERENCES `article` (`articleID`),
   CONSTRAINT `articleRelationship_ibfk_2` FOREIGN KEY (`otherArticleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=27866 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=807 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,7 +391,7 @@ CREATE TABLE `category` (
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`categoryID`),
   UNIQUE KEY `path` (`path`)
-) ENGINE=InnoDB AUTO_INCREMENT=54157 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3785 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,7 +443,6 @@ CREATE TABLE `citedArticle` (
   `note` text CHARACTER SET utf8 COLLATE utf8_bin,
   `url` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `doi` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `pmid` varchar(9) DEFAULT NULL,
   `citationType` varchar(60) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `summary` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `sortOrder` int(11) DEFAULT NULL,
@@ -383,7 +451,7 @@ CREATE TABLE `citedArticle` (
   PRIMARY KEY (`citedArticleID`),
   KEY `articleID` (`articleID`),
   CONSTRAINT `citedArticle_ibfk_1` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11994974 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67241 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +492,25 @@ CREATE TABLE `citedPerson` (
   PRIMARY KEY (`citedPersonID`),
   KEY `citedArticleID` (`citedArticleID`),
   CONSTRAINT `citedPerson_ibfk_1` FOREIGN KEY (`citedArticleID`) REFERENCES `citedArticle` (`citedArticleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=26082240 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=199711 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `doiAssociation`
+--
+
+DROP TABLE IF EXISTS `doiAssociation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `doiAssociation` (
+  `doiAssociationID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `doi` varchar(150) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `parentArticleDoi` varchar(150) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `created` datetime NOT NULL,
+  `lastModified` datetime NOT NULL,
+  PRIMARY KEY (`doiAssociationID`),
+  UNIQUE KEY `doi` (`doi`)
+) ENGINE=InnoDB AUTO_INCREMENT=5680 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -502,13 +588,13 @@ DROP TABLE IF EXISTS `pingback`;
 CREATE TABLE `pingback` (
   `pingbackID` bigint(20) NOT NULL AUTO_INCREMENT,
   `articleID` bigint(20) NOT NULL,
-  `url` varchar(255) COLLATE utf8_bin NOT NULL,
-  `title` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `title` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `created` datetime NOT NULL,
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`pingbackID`),
   UNIQUE KEY `articleID` (`articleID`,`url`)
-) ENGINE=InnoDB AUTO_INCREMENT=20095 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -535,7 +621,7 @@ CREATE TABLE `savedSearch` (
   KEY `savedSearchQueryID` (`savedSearchQueryID`),
   CONSTRAINT `savedSearch_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`),
   CONSTRAINT `savedSearch_ibfk_2` FOREIGN KEY (`savedSearchQueryID`) REFERENCES `savedSearchQuery` (`savedSearchQueryID`)
-) ENGINE=InnoDB AUTO_INCREMENT=11555 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -554,7 +640,7 @@ CREATE TABLE `savedSearchQuery` (
   PRIMARY KEY (`savedSearchQueryID`),
   UNIQUE KEY `hash_2` (`hash`),
   KEY `hash` (`hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=12601 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -576,7 +662,7 @@ CREATE TABLE `syndication` (
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`syndicationID`),
   UNIQUE KEY `doi` (`doi`,`target`)
-) ENGINE=InnoDB AUTO_INCREMENT=956197 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1843 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -598,7 +684,7 @@ CREATE TABLE `trackback` (
   PRIMARY KEY (`trackbackID`),
   KEY `articleID` (`articleID`),
   CONSTRAINT `trackback_ibfk_1` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4462 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -619,7 +705,7 @@ CREATE TABLE `userArticleView` (
   KEY `articleID` (`articleID`),
   CONSTRAINT `userArticleView_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`),
   CONSTRAINT `userArticleView_ibfk_2` FOREIGN KEY (`articleID`) REFERENCES `article` (`articleID`)
-) ENGINE=InnoDB AUTO_INCREMENT=270783 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -639,7 +725,7 @@ CREATE TABLE `userLogin` (
   PRIMARY KEY (`userLoginID`),
   KEY `userProfileID` (`userProfileID`),
   CONSTRAINT `userLogin_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=292167 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -651,17 +737,17 @@ DROP TABLE IF EXISTS `userOrcid`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `userOrcid` (
   `userProfileID` bigint(20) NOT NULL,
-  `orcid` varchar(25) COLLATE utf8_bin NOT NULL,
-  `accessToken` varchar(50) COLLATE utf8_bin NOT NULL,
-  `refreshToken` varchar(50) COLLATE utf8_bin NOT NULL,
-  `tokenScope` varchar(100) COLLATE utf8_bin NOT NULL,
+  `orcid` varchar(25) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `accessToken` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `refreshToken` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `tokenScope` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `tokenExpires` datetime NOT NULL,
   `lastModified` datetime NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`userProfileID`),
   UNIQUE KEY `orcid` (`orcid`),
   CONSTRAINT `userOrcid_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -689,7 +775,7 @@ CREATE TABLE `userProfile` (
   `positionType` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `organizationName` varchar(512) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `organizationType` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
-  `organizationVisibility` tinyint(1) NOT NULL DEFAULT '0',
+  `organizationVisibility` bit(1) NOT NULL DEFAULT b'0',
   `postalAddress` text CHARACTER SET utf8 COLLATE utf8_bin,
   `city` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `country` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
@@ -709,7 +795,7 @@ CREATE TABLE `userProfile` (
   UNIQUE KEY `authId` (`authId`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `displayName` (`displayName`)
-) ENGINE=InnoDB AUTO_INCREMENT=432577 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2006 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -722,15 +808,15 @@ DROP TABLE IF EXISTS `userProfileMetaData`;
 CREATE TABLE `userProfileMetaData` (
   `userProfileMetaDataID` bigint(20) NOT NULL AUTO_INCREMENT,
   `userProfileID` bigint(20) NOT NULL,
-  `metaKey` varchar(50) COLLATE utf8_bin NOT NULL,
-  `metaValue` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `metaKey` varchar(50) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `metaValue` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `lastModified` datetime NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`userProfileMetaDataID`),
   UNIQUE KEY `userProfileID` (`userProfileID`,`metaKey`),
   KEY `metaKey` (`metaKey`),
   CONSTRAINT `userProfileMetaData_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=53209 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -764,7 +850,7 @@ CREATE TABLE `userRole` (
   `lastModified` datetime NOT NULL,
   PRIMARY KEY (`userRoleID`),
   UNIQUE KEY `roleName` (`roleName`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -798,7 +884,7 @@ CREATE TABLE `userSearch` (
   PRIMARY KEY (`userSearchID`),
   KEY `userProfileID` (`userProfileID`),
   CONSTRAINT `userSearch_ibfk_1` FOREIGN KEY (`userProfileID`) REFERENCES `userProfile` (`userProfileID`)
-) ENGINE=InnoDB AUTO_INCREMENT=195384 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -816,7 +902,7 @@ CREATE TABLE `version` (
   `created` datetime NOT NULL,
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`versionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -853,12 +939,12 @@ CREATE TABLE `volume` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-09 11:48:26
--- MySQL dump 10.13  Distrib 5.6.21-70.1, for Linux (x86_64)
+-- Dump completed on 2016-09-19 14:51:24
+-- MySQL dump 10.13  Distrib 5.6.31, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: ambra
 -- ------------------------------------------------------
--- Server version	5.6.21-70.1-log
+-- Server version	5.6.31-0ubuntu0.14.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -886,7 +972,7 @@ CREATE TABLE `version` (
   `created` datetime NOT NULL,
   `lastModified` datetime DEFAULT NULL,
   PRIMARY KEY (`versionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -895,7 +981,7 @@ CREATE TABLE `version` (
 
 LOCK TABLES `version` WRITE;
 /*!40000 ALTER TABLE `version` DISABLE KEYS */;
-INSERT INTO `version` VALUES (2,'Ambra 2.20',220,'\0','2012-01-30 20:44:35','2012-01-30 20:44:35'),(3,'Ambra 2.30',230,'\0','2012-03-08 18:21:26','2012-03-08 18:22:54'),(5,'Ambra 2.32',232,'\0','2012-05-01 20:28:38','2012-05-01 20:28:55'),(7,'Ambra 2.34',234,'\0','2012-05-22 21:49:49','2012-05-22 21:50:03'),(9,'Ambra 2.37',237,'\0','2012-07-17 18:37:25','2012-07-17 18:37:26'),(11,'Ambra 2.40',240,'\0','2012-08-07 20:25:42','2012-08-07 20:25:42'),(13,'Ambra 2.43',243,'\0','2012-09-25 17:35:44','2012-09-25 17:35:52'),(15,'Ambra 2.46',246,'\0','2012-10-23 18:02:17','2012-10-23 18:02:17'),(17,'Ambra 2.48',248,'\0','2012-11-13 18:23:32','2012-11-13 18:23:32'),(19,'Ambra 2.49',249,'\0','2012-11-27 21:49:33','2012-11-27 21:49:52'),(21,'Ambra 2.50',250,'\0','2013-01-04 18:21:28','2013-01-04 18:23:08'),(23,'Ambra 2.55',255,'\0','2013-04-23 21:53:41','2013-04-23 21:53:53'),(25,'Ambra 2.80',280,'\0','2013-09-17 16:46:08','2013-09-17 16:46:08'),(27,'Ambra 2.82',282,'\0','2013-10-29 22:05:28','2013-10-29 22:05:28'),(28,'Schema 1001',1001,'\0','2014-02-18 12:55:18','2014-02-18 13:01:19'),(30,'Schema 1002',1002,'\0','2014-02-25 21:09:08','2014-02-25 21:09:08'),(31,'Schema 1003',1003,'\0','2014-04-01 22:54:58','2014-04-01 22:54:59'),(32,'Schema 1004',1004,'\0','2014-07-16 17:01:03','2014-07-16 17:01:19'),(33,'Schema 1005',1005,'\0','2014-08-06 17:32:40','2014-08-06 17:33:13');
+INSERT INTO `version` VALUES (1,'Ambra 2.20',220,'\0','2012-01-11 14:06:31','2012-01-11 14:06:39'),(2,'Ambra 2.30',230,'\0','2012-03-08 13:28:22','2012-03-08 13:28:28'),(3,'Ambra 2.32',232,'\0','2012-06-19 17:52:59','2012-06-19 17:53:10'),(4,'Ambra 2.34',234,'\0','2012-06-19 17:53:10','2012-06-19 17:53:18'),(5,'Ambra 2.37',237,'\0','2012-07-16 09:47:41','2012-07-16 09:47:42'),(6,'Ambra 2.40',240,'\0','2012-12-28 14:43:51','2012-12-28 14:43:51'),(7,'Ambra 2.43',243,'\0','2012-12-28 14:43:51','2012-12-28 14:43:51'),(8,'Ambra 2.46',246,'\0','2012-12-28 14:43:51','2012-12-28 14:43:52'),(9,'Ambra 2.48',248,'\0','2012-12-28 14:43:52','2012-12-28 14:43:52'),(10,'Ambra 2.49',249,'\0','2012-12-28 14:43:52','2012-12-28 14:43:53'),(11,'Ambra 2.50',250,'\0','2012-12-28 14:43:53','2012-12-28 14:43:54'),(12,'Ambra 2.55',255,'\0','2013-10-25 13:28:13','2013-10-25 13:28:13'),(13,'Ambra 2.80',280,'\0','2013-10-25 13:28:13','2013-10-25 13:28:13'),(14,'Ambra 2.82',282,'\0','2013-10-25 13:28:13','2013-10-25 13:28:13'),(15,'Schema 1001',1001,'\0','2015-06-02 15:48:56','2015-06-02 15:48:57'),(16,'Schema 1002',1002,'\0','2015-06-02 15:48:57','2015-06-02 15:48:58'),(17,'Schema 1003',1003,'\0','2015-06-02 15:48:58','2015-06-02 15:48:58'),(18,'Schema 1004',1004,'\0','2015-06-02 15:48:58','2015-06-02 15:48:58'),(19,'Schema 1005',1005,'\0','2015-06-02 15:48:58','2015-06-02 15:48:58'),(20,'Schema 1006',1006,'\0','2015-10-01 10:01:20','2015-10-01 10:01:20'),(21,'Schema 1007',1007,'\0','2015-10-29 11:20:23','2015-10-29 11:20:23');
 /*!40000 ALTER TABLE `version` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -908,12 +994,12 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-09 11:48:26
--- MySQL dump 10.13  Distrib 5.6.21-70.1, for Linux (x86_64)
+-- Dump completed on 2016-09-19 14:51:43
+-- MySQL dump 10.13  Distrib 5.6.31, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: ambra
 -- ------------------------------------------------------
--- Server version	5.6.21-70.1-log
+-- Server version	5.6.31-0ubuntu0.14.04.2
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -940,7 +1026,7 @@ CREATE TABLE `userRole` (
   `lastModified` datetime NOT NULL,
   PRIMARY KEY (`userRoleID`),
   UNIQUE KEY `roleName` (`roleName`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -949,36 +1035,9 @@ CREATE TABLE `userRole` (
 
 LOCK TABLES `userRole` WRITE;
 /*!40000 ALTER TABLE `userRole` DISABLE KEYS */;
-INSERT INTO `userRole` VALUES (1,'Admin','2012-03-08 18:21:48','2013-06-12 11:21:39'),(3,'Production','2012-07-17 18:37:26','2012-07-17 18:37:26'),(5,'Editorial','2012-07-17 18:37:26','2013-09-18 12:52:01'),(7,'Beta tester','2013-06-12 11:21:16','2013-06-12 11:21:24'),(9,'AE-PLOSONE','2014-04-01 22:33:21','2014-04-01 22:33:21'),(11,'Manage Users','2014-04-02 13:41:58','2014-04-18 15:12:46'),(12,'TEST_THESAURUS','2014-08-13 14:02:44','2014-08-13 15:01:44');
+INSERT INTO `userRole` VALUES (1,'Admin','2012-03-08 13:28:25','2012-07-16 09:47:42'),(2,'Production','2012-07-16 09:47:42','2012-07-16 09:47:42'),(3,'Editorial','2012-07-16 09:47:42','2012-07-16 09:47:42');
 /*!40000 ALTER TABLE `userRole` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2015-04-09 11:48:26
--- MySQL dump 10.13  Distrib 5.6.21-70.1, for Linux (x86_64)
---
--- Host: localhost    Database: ambra
--- ------------------------------------------------------
--- Server version	5.6.21-70.1-log
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
 -- Table structure for table `userRolePermission`
@@ -1001,7 +1060,7 @@ CREATE TABLE `userRolePermission` (
 
 LOCK TABLES `userRolePermission` WRITE;
 /*!40000 ALTER TABLE `userRolePermission` DISABLE KEYS */;
-INSERT INTO `userRolePermission` VALUES (1,'ACCESS_ADMIN'),(1,'BETA_FEATURES'),(1,'CROSS_PUB_ARTICLES'),(1,'DELETE_ARTICLES'),(1,'INGEST_ARTICLE'),(1,'MANAGE_ANNOTATIONS'),(1,'MANAGE_ARTICLE_LISTS'),(1,'MANAGE_CACHES'),(1,'MANAGE_CORRECTIONS'),(1,'MANAGE_FEATURED_ARTICLES'),(1,'MANAGE_FLAGS'),(1,'MANAGE_JOURNALS'),(1,'MANAGE_ROLES'),(1,'MANAGE_SEARCH'),(1,'MANAGE_USERS'),(1,'RESEND_EMAIL_ALERTS'),(1,'VIEW_UNPUBBED_ARTICLES'),(3,'ACCESS_ADMIN'),(3,'CROSS_PUB_ARTICLES'),(3,'DELETE_ARTICLES'),(3,'INGEST_ARTICLE'),(3,'MANAGE_ANNOTATIONS'),(3,'MANAGE_CACHES'),(3,'MANAGE_FLAGS'),(3,'MANAGE_JOURNALS'),(3,'MANAGE_SEARCH'),(3,'MANAGE_USERS'),(3,'VIEW_UNPUBBED_ARTICLES'),(5,'ACCESS_ADMIN'),(5,'MANAGE_ARTICLE_LISTS'),(5,'MANAGE_FEATURED_ARTICLES'),(5,'VIEW_UNPUBBED_ARTICLES'),(7,'BETA_FEATURES'),(11,'ACCESS_ADMIN'),(11,'MANAGE_ROLES'),(11,'MANAGE_USERS'),(12,'TEST_THESAURUS');
+INSERT INTO `userRolePermission` VALUES (1,'ACCESS_ADMIN'),(1,'CROSS_PUB_ARTICLES'),(1,'DELETE_ARTICLES'),(1,'INGEST_ARTICLE'),(1,'MANAGE_ANNOTATIONS'),(1,'MANAGE_CACHES'),(1,'MANAGE_FLAGS'),(1,'MANAGE_JOURNALS'),(1,'MANAGE_ROLES'),(1,'MANAGE_SEARCH'),(1,'MANAGE_USERS'),(1,'VIEW_UNPUBBED_ARTICLES'),(2,'ACCESS_ADMIN'),(2,'CROSS_PUB_ARTICLES'),(2,'DELETE_ARTICLES'),(2,'INGEST_ARTICLE'),(2,'MANAGE_ANNOTATIONS'),(2,'MANAGE_CACHES'),(2,'MANAGE_FLAGS'),(2,'MANAGE_JOURNALS'),(2,'MANAGE_ROLES'),(2,'MANAGE_SEARCH'),(2,'MANAGE_USERS'),(2,'VIEW_UNPUBBED_ARTICLES'),(3,'VIEW_UNPUBBED_ARTICLES');
 /*!40000 ALTER TABLE `userRolePermission` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1014,4 +1073,64 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-09 11:48:26
+-- Dump completed on 2016-09-19 14:52:10
+-- MySQL dump 10.13  Distrib 5.6.31, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: ambra
+-- ------------------------------------------------------
+-- Server version	5.6.31-0ubuntu0.14.04.2
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `journal`
+--
+
+DROP TABLE IF EXISTS `journal`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `journal` (
+  `journalID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `currentIssueID` bigint(20) DEFAULT NULL,
+  `journalKey` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `eIssn` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `imageUri` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `title` varchar(500) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
+  `description` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `created` datetime NOT NULL,
+  `lastModified` datetime NOT NULL,
+  PRIMARY KEY (`journalID`),
+  KEY `currentIssueID` (`currentIssueID`),
+  CONSTRAINT `journal_ibfk_1` FOREIGN KEY (`currentIssueID`) REFERENCES `issue` (`issueID`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `journal`
+--
+
+LOCK TABLES `journal` WRITE;
+/*!40000 ALTER TABLE `journal` DISABLE KEYS */;
+INSERT INTO `journal` VALUES (1,2465,'PLoSMedicine','1549-1676',NULL,'PLOS Medicine',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(3,NULL,'PLoSONE','1932-6203',NULL,'PLOS ONE',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(5,2457,'PLoSGenetics','1553-7404',NULL,'PLOS Genetics',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(7,2451,'PLoSCompBiol','1553-7358',NULL,'PLOS Computational Biology',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(9,NULL,'PLoSCollections','3333-3333',NULL,'PLOS Collections',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(11,NULL,'PLoSDefault','0000-0000',NULL,'Default Journals',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(13,2453,'PLoSNTD','1935-2735',NULL,'PLOS Neglected Tropical Diseases',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(15,2467,'PLoSBiology','1545-7885',NULL,'PLOS Biology',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(17,NULL,'PLoSClinicalTrials','1555-5887',NULL,'PLOS Clinical Trials',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00'),(19,2455,'PLoSPathogens','1553-7374',NULL,'PLOS Pathogens',NULL,'2012-05-22 21:49:52','2016-02-24 11:18:00');
+/*!40000 ALTER TABLE `journal` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2016-09-19 14:52:45

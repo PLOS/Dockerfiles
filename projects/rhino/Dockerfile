@@ -2,7 +2,7 @@ FROM tomcat:6-jre8
 
 LABEL vendor="Public Library of Science"
 
-RUN apt-get update && apt-get install -y mysql-client
+RUN apt-get update && apt-get install -y mysql-client python python-mysqldb
 RUN rm -rf $CATALINA_HOME/webapps/*
 
 RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
@@ -16,7 +16,7 @@ RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
-COPY run*.sh *.sql /root/
+COPY run*.sh *.sql dbschema /root/
 
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
 COPY rhino.yaml context.xml ambra.xml $AMBRA_CONF
