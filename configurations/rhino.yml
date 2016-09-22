@@ -11,6 +11,8 @@ services:
     extends:
       file: common.yml
       service: ambradb
+    ports:
+      - "3307:3306"
 
   solr:
     extends:

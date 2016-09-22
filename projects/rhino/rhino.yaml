@@ -24,8 +24,8 @@ httpConnectionPool:
 # (including content repo and taxonomy server).
 
 taxonomy:
-  server:    null
-  thesaurus: null
+  server:    https://plos.accessinn.com:9138/servlet/dh
+  thesaurus: plosthes.2016-3
   categoryBlacklist:
     - "/Earth sciences/Geography/Locations/"
 # Configuration related to the taxonomic classification of articles.
