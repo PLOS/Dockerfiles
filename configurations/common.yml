@@ -205,6 +205,19 @@ services:
       - MYSQL_DATABASE=ambra
       - REPO_SERVICE=http://contentrepo:8080
 
+  indexerminion:
+    image: indexerminion:master
+    environment:
+      - RHINO_SERVICE=http://rhino:8080
+      - COUNTER_DB_URL=jdbc:mysql://counterdb/plosreports
+      - COUNTER_USER=ambra
+      - COUNTER_PASSWORD=ambra
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ambra
+      - MYSQL_USER_PASSWORD=ambra
+      - MYSQL_HOSTNAME=counterdb
+      - MYSQL_DATABASE=plosreports
+
   ambradb:
     image: percona:5.6
     environment:
@@ -212,12 +225,17 @@ services:
   #  ports:
   #    - 3306:3306
 
+  counterdb:
+    image: percona:5.6
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
   solr:
     image: solr:master
     ports:
       - "8983:8080"
-    volumes:
-      - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
+    # volumes:
+    #   - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
   contentrepo:
     image: contentrepo:master

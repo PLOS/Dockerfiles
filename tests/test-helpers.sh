@@ -1,7 +1,9 @@
 
 source $SCRIPTDIR/../projects/run-helpers.sh
 
-COMPOSE_FILE=$SCRIPTDIR/../configurations/$COMPOSE_FILE
+CONFIGS_DIR=$SCRIPTDIR/../configurations
+
+COMPOSE_FILE=$CONFIGS_DIR/$COMPOSE_FILE
 
 export DOCKERFILES=$SCRIPTDIR/..
 
@@ -51,6 +53,11 @@ function start_stack {
 function stop_stack {
   docker-compose -f $COMPOSE_FILE kill
   docker-compose -f $COMPOSE_FILE rm -f
+}
+
+function run_once {
+  IMAGE=$1
+  docker-compose -f $CONFIGS_DIR/common.yml run $IMAGE
 }
 
 function wait_and_curl {

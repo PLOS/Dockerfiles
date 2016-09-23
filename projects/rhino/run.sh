@@ -15,6 +15,8 @@ if ! check_db_exists; then
 
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_pre_migrations.sql
 
+
+  # NOTE: these old python migrations might be data destructive, so this might not always work right
   cd $BUILD_DIR
   python migrate.py --dbUser=root --dbPass=$MYSQL_ROOT_PASSWORD --dbHost=$MYSQL_HOSTNAME --dbName=$MYSQL_DATABASE
 
