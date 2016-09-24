@@ -9,18 +9,18 @@ alm-default:
 rhino-default:
      url: "${RHINO_SERVICE}"
 counter-default:
-     url: "jdbc:mysql://counterdb/plosreports"
-     user: "ambra"
-     passwd: "ambra"
+     url: "${COUNTER_DATABASE_URL}"
+     user: "${COUNTER_DATABASE_USER}"
+     passwd: "${COUNTER_DATABASE_PASSWORD}"
      driver: "com.mysql.jdbc.Driver"
 article-default:
-     url: "jdbc:mysql://ambradb/ambra"
-     user: "ambra"
-     passwd: "ambra"
+     url: "${AMBRA_DATABASE_URL}"
+     user: "${AMBRA_DATABASE_USER}"
+     passwd: "${AMBRA_DATABASE_PASSWORD}"
      driver: "com.mysql.jdbc.Driver"
      articleLimit: -1
 transform-defaults:
      2-0: "article-solr-v2.xsl"
      3-0: "article-solr-v3.xsl"
 solr-defaults:
-     url: "http://solr:8080/solr/update"
+     url: "${SOLR_URL}/update"

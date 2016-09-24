@@ -49,10 +49,6 @@ SOLR_BASE=http://$(get_docker_host):8983/solr/collection1
 
 curl_test_ok $SOLR_BASE/admin/ping?wt=json "SOLR up"
 
-# index it
-
-curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true"
-
 curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true" | grep $ARTICLE
 
 INDEXED_STATE=$?
@@ -61,20 +57,13 @@ if [[ "$INDEXED_STATE" -ne "1" ]]; then
 	tests_failed "SOLR should start empty"
 fi
 
+# index it
 run_once indexerminion
 
-
-
-
-sleep 2 # HMMMMM: solr query processing time seems to take 20 seconds?
-
-
-
-
-curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true"
+# force commit the solr index update
+curl $SOLR_BASE/update?commit=true
 
 curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true" | grep $ARTICLE
-
 
 INDEXED_STATE=$?
 
