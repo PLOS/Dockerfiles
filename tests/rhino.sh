@@ -11,7 +11,7 @@ source $SCRIPTDIR/test-helpers.sh
 
 ARTICLE=pone.0099781
 
-cp $SCRIPTDIR/test_data/$ARTICLE.zip $HOME/datastores/ingest
+cp $SCRIPTDIR/test_data/*.zip $HOME/datastores/ingest
 
 start_stack
 

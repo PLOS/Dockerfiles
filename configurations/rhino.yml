@@ -10,6 +10,8 @@ services:
 
   counterdb:
     image: percona:5.6
+    ports:
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
