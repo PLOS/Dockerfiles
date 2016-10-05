@@ -221,6 +221,9 @@ services:
       - AMBRA_DATABASE_USER=ambra
       - AMBRA_DATABASE_PASSWORD=ambra
       - SOLR_URL=http://solr:8080/solr
+      - SOLR_SOURCE=http://solr:8080/solr
+      - SOLR_TARGETS=http://solr:8080/solr
+      - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
 
   ambradb:
     image: percona:5.6

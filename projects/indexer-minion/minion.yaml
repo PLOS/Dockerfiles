@@ -19,8 +19,10 @@ article-default:
      passwd: "${AMBRA_DATABASE_PASSWORD}"
      driver: "com.mysql.jdbc.Driver"
      articleLimit: -1
+     articleList: "${ARTICLE_LIST}"
 transform-defaults:
      2-0: "article-solr-v2.xsl"
      3-0: "article-solr-v3.xsl"
 solr-defaults:
-     url: "${SOLR_URL}/update"
+     source: "${SOLR_SOURCE}"
+     targets: "${SOLR_TARGETS}"
