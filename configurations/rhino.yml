@@ -6,7 +6,7 @@ services:
     extends:
       file: common.yml
       service: rhino
-    # image: rhino:accman
+    image: rhino:accman
 
   counterdb:
     image: percona:5.6

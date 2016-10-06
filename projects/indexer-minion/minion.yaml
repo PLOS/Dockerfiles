@@ -4,7 +4,7 @@ threads-default:
      heartbeat: 1000
      stats-db: "minion.bin"
 alm-default:
-     url: ""
+     url: "${ALM_URL}"
      apikey: "key"
 rhino-default:
      url: "${RHINO_SERVICE}"
@@ -14,9 +14,6 @@ counter-default:
      passwd: "${COUNTER_DATABASE_PASSWORD}"
      driver: "com.mysql.jdbc.Driver"
 article-default:
-     url: "${AMBRA_DATABASE_URL}"
-     user: "${AMBRA_DATABASE_USER}"
-     passwd: "${AMBRA_DATABASE_PASSWORD}"
      driver: "com.mysql.jdbc.Driver"
      articleLimit: -1
      articleList: "${ARTICLE_LIST}"
