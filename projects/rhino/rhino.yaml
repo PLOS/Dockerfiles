@@ -41,6 +41,25 @@ taxonomy:
 # geographic locations are over-aggressively categorized under "Earth
 # sciences". See <https://developer.plos.org/jira/browse/AMEC-100>
 
+userApi:
+  server:                http://localhost/
+  authorizationAppName:  dipro
+  authorizationPassword: asdfsadfasdfsdfs
+# Configuration for the API for user data (Named Entity Database, NED).
+
+queue:
+  solrUpdate: activemq:plos.solr.article.index?transacted=false
+  solrDelete: activemq:plos.solr.article.delete?transacted=false
+# Queue destination keys. (For now, the queue address is still set in ambra.xml
+# at ambra.services.activemq. To be moved here.
+
+manuscriptCustomMeta:
+  revisionDate:     "Publication Update"
+  publicationStage: "PLOS Publication Stage"
+# Values to look for in manuscripts as "<custom-meta><meta-name>...</meta-name
+# ></custom-meta>" XML elements, where programmatically signficant data will be
+# found.
+
 
 #................................................................................
 #................................................................................

@@ -13,6 +13,7 @@ source $BUILD_DIR/run-helpers.sh
 
 # TODO: move counter outside of indexerminion
 echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
+# TODO: use schema from counter instead of this schema I scrounged up
 $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/dpro_plosreports.sql
 set_db_grants
 

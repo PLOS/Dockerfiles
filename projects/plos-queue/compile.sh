@@ -8,6 +8,7 @@ mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install
 ls -l
 pwd
 echo $BUILDDIR
-cp target/*.?ar $BUILDDIR
+cp target/*.tar.gz $BUILDDIR
+cp -r src/main/bin $BUILDDIR
 
 java_compile_finish "target/maven-archiver/pom.properties"

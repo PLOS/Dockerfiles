@@ -127,7 +127,6 @@ function process_template {
 	CONTEXT_TEMPALTE=$1
 
   ls -lh $CONTEXT_TEMPALTE
-  head $CONTEXT_TEMPALTE
 
 	echo "Processing template $CONTEXT_TEMPALTE"
 

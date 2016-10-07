@@ -34,4 +34,7 @@ curl -X POST $REPO_SERVICE/buckets --data name=corpus
 process_template $AMBRA_CONF/context.xml
 process_template $AMBRA_CONF/rhino.yaml
 
+# TODO: figure out how to process the $ vars in this file
+# process_template $AMBRA_CONF/ambra.xml
+
 start_tomcat

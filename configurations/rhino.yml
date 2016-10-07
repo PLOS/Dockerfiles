@@ -8,6 +8,12 @@ services:
       service: rhino
     image: rhino:accman
 
+  plosqueue:
+    extends:
+      file: common.yml
+      service: plosqueue
+    image: plosqueue:accman
+
   counterdb:
     image: percona:5.6
     ports:
