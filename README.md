@@ -116,6 +116,8 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
+* Get AricleAdmin working
+- Replace tomcat:6-jre8 with tomcat:7-jre8-alpine for smaller images
 
 
 Tips

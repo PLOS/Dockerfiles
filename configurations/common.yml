@@ -205,6 +205,7 @@ services:
       - MYSQL_DATABASE=ambra
       - REPO_SERVICE=http://contentrepo:8080
       # - SOLR_URL=http://solr:8080/solr    # TODO: add to ambra.xml
+      - PLOS_QUEUE=tcp://plosqueue:61616
 
 # RUN: ./stack.sh common run indexerminion
 # DEBUG: ./stack.sh common run -p 8000:8000 -e JAVA_DEBUG_PORT=8000 indexerminion
@@ -224,7 +225,16 @@ services:
       - SOLR_SOURCE=http://api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
       # - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
-      - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0161688
+      - ARTICLE_LIST=10.1371/journal.pone.0099781 #, 10.1371/journal.pone.0161688
+
+  counter:
+    image: counter:master
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ambra
+      - MYSQL_USER_PASSWORD=ambra
+      - MYSQL_HOSTNAME=counterdb
+      - MYSQL_DATABASE=plosreports
 
   plosqueue:
     image: plosqueue:accman

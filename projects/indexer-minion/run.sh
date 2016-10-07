@@ -2,7 +2,7 @@
 
 BUILD_DIR=/root
 
-# small hack to get counter database populated, until it is moved outside of here
+# small hack for waiting for db to come up
 MYSQL_ROOT_PASSWORD=$COUNTER_DATABASE_ROOT_PASSWORD
 MYSQL_USER=$COUNTER_DATABASE_USER
 MYSQL_USER_PASSWORD=$COUNTER_DATABASE_PASSWORD
@@ -11,11 +11,7 @@ MYSQL_DATABASE=$COUNTER_DATABASE
 
 source $BUILD_DIR/run-helpers.sh
 
-# TODO: move counter outside of indexerminion
-echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
-# TODO: use schema from counter instead of this schema I scrounged up
-$MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/dpro_plosreports.sql
-set_db_grants
+wait_until_db_service_up
 
 process_template $BUILD_DIR/minion.yaml
 
