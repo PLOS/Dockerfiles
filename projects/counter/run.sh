@@ -12,3 +12,4 @@ $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/plosreports.sql
 set_db_grants
 
 # of course when there is actual PHP app running here, it will have to be in the foreground
+# tail -f /dev/null

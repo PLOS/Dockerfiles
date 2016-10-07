@@ -31,7 +31,9 @@ function parse_json {
   INPUT=$1
   LOOK_FOR="\[$2\]"
 
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
+  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh | sed 's/\"//g' | grep $LOOK_FOR)"
+
+  # echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
 }
 
 function get_container_name {
