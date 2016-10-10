@@ -5,9 +5,21 @@ CONFIGS_DIR=$SCRIPTDIR/../configurations
 
 COMPOSE_FILE=$CONFIGS_DIR/$COMPOSE_FILE
 
+HELPER_IMAGE=testhelper
+
 export DOCKERFILES=$SCRIPTDIR/..
 
 # TODO: build images if not found
+
+# build testhelper if it does not exist
+
+if ! docker images|grep $HELPER_IMAGE ; then
+  echo "Building testhelper"
+  cd $SCRIPTDIR
+  docker build . --tag $HELPER_IMAGE
+  cd -
+fi
+
 
 function die {
   echo "$@" 1>&2
@@ -27,11 +39,18 @@ function get_docker_host {
   echo $HOST
 }
 
+function jq {
+  JSON_URL=$1
+  JQ_QUERY=$2
+
+  echo $(curl $JSON_URL | docker run -i --rm $HELPER_IMAGE /bin/jq $JQ_QUERY)
+}
+
 function parse_json {
   INPUT=$1
   LOOK_FOR="\[$2\]"
 
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh | sed 's/\"//g' | grep $LOOK_FOR)"
+  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
 
   # echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
 }
