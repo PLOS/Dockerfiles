@@ -8,12 +8,8 @@ SVC_NAME="solr"
 
 wait_for_web_service $SVC_URL $SVC_NAME
 
-# begin tests
-
 curl_test_ok $SVC_URL/solr/ $SVC_NAME
 
-curl_test_ok $SVC_URL/bogus Bogus
-
-# end tests
+# curl_test_ok $SVC_URL/bogus Bogus
 
 tests_passed

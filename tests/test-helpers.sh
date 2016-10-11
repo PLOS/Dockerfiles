@@ -75,7 +75,7 @@ function stop_stack {
 
 function run_once {
   IMAGE=$1
-  docker-compose -f $CONFIGS_DIR/common.yml run $IMAGE
+  docker-compose -f $CONFIGS_DIR/common.yml run --rm $IMAGE
 }
 
 function wait_and_curl {

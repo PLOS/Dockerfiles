@@ -1,8 +1,10 @@
-FROM tomcat:6-jre8
+# FROM tomcat:6-jre8
+FROM tomcat:7-jre8-alpine
 
 LABEL vendor="Public Library of Science"
 
-RUN apt-get update && apt-get install -y mysql-client python python-mysqldb
+# RUN apt-get update && apt-get install -y mysql-client python python-mysqldb
+RUN apk update && apk add mysql-client python py-mysqldb bash curl
 RUN rm -rf $CATALINA_HOME/webapps/*
 
 RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \

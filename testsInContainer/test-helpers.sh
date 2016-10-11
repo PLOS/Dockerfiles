@@ -1,15 +1,4 @@
 
-source $SCRIPTDIR/../projects/run-helpers.sh
-
-CONFIGS_DIR=$SCRIPTDIR/../configurations
-
-COMPOSE_FILE=$CONFIGS_DIR/$COMPOSE_FILE
-
-HELPER_IMAGE=testhelper
-
-export DOCKERFILES=$SCRIPTDIR/..
-
-
 function die {
   echo "$@" 1>&2
   exit 1
@@ -26,7 +15,6 @@ function wait_and_curl {
 }
 
 function curl_test_ok {
-
   URL=$1
   TITLE=$2
   CREDS=$3
@@ -36,6 +24,12 @@ function curl_test_ok {
   if [[ "$HTTP_CODE" -ne "200" ]]; then
     tests_failed "status code = $HTTP_CODE"
   fi
+}
+
+function run_container_once {
+  # so we can run a container from inside another container! DOCKERCEPTION
+  IMAGE=$1
+  DOCKERFILES=/dockerfiles docker-compose -f /dockerfiles/configurations/common.yml run --rm $IMAGE
 }
 
 function tests_passed {

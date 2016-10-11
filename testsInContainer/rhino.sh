@@ -51,7 +51,7 @@ fi
 
 curl -X POST $ARTICLE_RHINO?solrIndex=anythinggoeshere
 
-sleep 2 # sloppy wait for queue to run job
+sleep 3 # sloppy wait for queue to run job
 
 # force commit the solr index update
 curl $SOLR_BASE/update?commit=true
@@ -66,18 +66,12 @@ fi
 
 # TODO: make some changes that will reflect in the index
 
-
-
-
-
-
 # update the index
-run_once indexerminion
+run_container_once indexerminion
 
-
-
-
-
+if [ $? -ne 0 ]; then
+	tests_failed "minion errored"
+fi
 
 # force commit the solr index update
 curl $SOLR_BASE/update?commit=true
