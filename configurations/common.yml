@@ -210,7 +210,7 @@ services:
 # RUN: ./stack.sh common run indexerminion
 # DEBUG: ./stack.sh common run -p 8000:8000 -e JAVA_DEBUG_PORT=8000 indexerminion
   indexerminion:
-    image: indexerminion:PLT_377
+    image: indexerminion:accman
     volumes:
       - /tmp/indexerminion:/cache   # caches between runs
     environment:
@@ -221,9 +221,9 @@ services:
       - COUNTER_DATABASE_USER=ambra
       - COUNTER_DATABASE_PASSWORD=ambra
       - COUNTER_DATABASE_ROOT_PASSWORD=root
-      # - SOLR_SOURCE=http://solr:8080/solr
-      - SOLR_SOURCE=http://api.plos.org
-      - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
+      - SOLR_SOURCE=http://solr:8080/solr
+      # - SOLR_SOURCE=http://api.plos.org
+      # - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
       # - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
       - ARTICLE_LIST=10.1371/journal.pone.0099781 #, 10.1371/journal.pone.0161688

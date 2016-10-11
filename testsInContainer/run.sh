@@ -2,49 +2,48 @@
 
 # This is an experimental tester for running tests inside of a container instead of running them on the host bash
 
-set -x
+# set -x
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 export DOCKERFILES=$(pwd)/..
 
-TEST=solr
+if [ "$#" -eq 0 ]; then
+  echo TESTS: $(find -name "*.sh" ! -name "test-helpers.sh" ! -name "run.sh" -exec basename -s .sh -a {} +)
+  exit 1
+fi
 
+TEST=$1
+STACK=$1
 
 CONFIGS_DIR=$SCRIPTDIR/../configurations
 
-COMPOSE_FILE=$DOCKERFILES/configurations/$TEST.yml
+COMPOSE_FILE=$CONFIGS_DIR/$STACK.yml
+
+COMPOSE="docker-compose -f $COMPOSE_FILE"
 
 TEST_IMAGE=testrunner
-
-function start_stack {
-  docker-compose -f $COMPOSE_FILE up -d
-  docker-compose -f $COMPOSE_FILE logs --no-color > $SCRIPTDIR/lasttest.log &
-}
-
-function stop_stack {
-  docker-compose -f $COMPOSE_FILE kill
-  docker-compose -f $COMPOSE_FILE rm -f
-}
-
-function run_once {
-  IMAGE=$1
-  docker-compose -f $CONFIGS_DIR/common.yml run $IMAGE
-}
-
 
 # build testhelper if it does not exist
 if ! docker images|grep $TEST_IMAGE ; then
   echo "Building $TEST_IMAGE"
-  docker build $SCRIPTDIR -f Dockerfile.testrunner --tag $TEST_IMAGE
+  docker build $SCRIPTDIR --tag $TEST_IMAGE
 fi
 
-start_stack
+# start stack
+$COMPOSE up -d
+$COMPOSE logs --no-color > $SCRIPTDIR/lasttest.log &
 
-# run_once
+# run_the test in the container
+docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE bash /tests/$TEST.sh
 
-RESULT=$(docker-compose -f $CONFIGS_DIR/common.yml run $TEST_IMAGE bash /tests/$TEST.sh)
+EXIT_CODE=$?
 
-echo $?
+echo EXIT CODE : $EXIT_CODE
 
-stop_stack
+# stop stack
+$COMPOSE kill
+$COMPOSE rm -f
+
+# preserve the exit code of the container test
+exit $EXIT_CODE

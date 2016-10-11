@@ -43,6 +43,6 @@ function tests_passed {
 }
 
 function tests_failed {
-  cp $SCRIPTDIR/lasttest.log $SCRIPTDIR/lasttest_failure.log
+  # cp $SCRIPTDIR/lasttest.log $SCRIPTDIR/lasttest_failure.log
   die "TEST FAILED   $1"
 }
