@@ -223,6 +223,7 @@ services:
       - COUNTER_DATABASE_ROOT_PASSWORD=root
       # - SOLR_SOURCE=http://solr:8080/solr
       - SOLR_SOURCE=http://api.plos.org
+      - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
       # - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
       - ARTICLE_LIST=10.1371/journal.pone.0099781 #, 10.1371/journal.pone.0161688
@@ -299,3 +300,9 @@ services:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
+
+  testrunner:
+    image: testrunner
+    volumes:
+      - ${DOCKERFILES}/testsInContainer:/tests
+      - ${DOCKERFILES}/projects:/projects
