@@ -5,7 +5,6 @@ Requirements
 ------------
 * docker >= 1.10
 * docker-compose >= 1.6
-* curl (optional, for running the tests)
 * git  (optional, for checking out missing project sources if they are not found)
 
 Status
@@ -64,7 +63,7 @@ Note, that before running one of these docker-compose files you need to make sur
 Testing
 -------
 
-See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything.
+See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything. Tests themselves run in the 'testrunner' container so testing requirements are isolated from the host.
 
 
 Development/Conventions
@@ -116,6 +115,9 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
+* Dockerize: ploscli, AricleAdmin
+- Replace tomcat:6-jre8 with tomcat:7-jre8-alpine for smaller images
+* Use a bash testing system like https://github.com/sstephenson/bats
 
 
 Tips

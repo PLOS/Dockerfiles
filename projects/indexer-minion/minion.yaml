@@ -21,4 +21,5 @@ transform-defaults:
      3-0: "article-solr-v3.xsl"
 solr-defaults:
      source: "${SOLR_SOURCE}"
+     sourceRequestHandler: "${SOLR_SOURCE_REQUEST_HANDLER}"
      targets: "${SOLR_TARGETS}"

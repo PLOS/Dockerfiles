@@ -14,12 +14,19 @@ services:
       service: plosqueue
     image: plosqueue:accman
 
+  counter:
+    extends:
+      file: common.yml
+      service: counter
+
   counterdb:
-    image: percona:5.6
-    ports:
-      - "3308:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends:
+      file: common.yml
+      service: counterdb
+    # ports:
+    #   - "3308:3306"
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
 
   ambradb:
     extends:
@@ -52,8 +59,8 @@ services:
     extends:
       file: common.yml
       service: mogilenode
-    ports:
-      - "7500:7500"
+    # ports:
+    #   - "7500:7500"
 
   mogiledb:
     extends:

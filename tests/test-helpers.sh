@@ -5,9 +5,18 @@ CONFIGS_DIR=$SCRIPTDIR/../configurations
 
 COMPOSE_FILE=$CONFIGS_DIR/$COMPOSE_FILE
 
+TEST_IMAGE=testhelper
+
 export DOCKERFILES=$SCRIPTDIR/..
 
 # TODO: build images if not found
+
+# build testhelper if it does not exist
+if ! docker images|grep $TEST_IMAGE ; then
+  echo "Building $TEST_IMAGE"
+  docker build $SCRIPTDIR -f Dockerfile.testhelper --tag $TEST_IMAGE
+fi
+
 
 function die {
   echo "$@" 1>&2
@@ -27,11 +36,20 @@ function get_docker_host {
   echo $HOST
 }
 
+function jq {
+  JSON_URL=$1
+  JQ_QUERY=$2
+
+  echo $(curl $JSON_URL | docker run -i --rm $TEST_IMAGE /bin/jq $JQ_QUERY)
+}
+
 function parse_json {
   INPUT=$1
   LOOK_FOR="\[$2\]"
 
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
+  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
+
+  # echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
 }
 
 function get_container_name {
@@ -57,7 +75,7 @@ function stop_stack {
 
 function run_once {
   IMAGE=$1
-  docker-compose -f $CONFIGS_DIR/common.yml run $IMAGE
+  docker-compose -f $CONFIGS_DIR/common.yml run --rm $IMAGE
 }
 
 function wait_and_curl {
