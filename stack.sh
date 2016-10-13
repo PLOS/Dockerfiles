@@ -20,7 +20,7 @@ else
 
   args="$@"
 
-  if [ $1 == "build" ]; then
+  if [ "$1" == "build" ]; then
 
     IMAGES=$(_get_images_from_config $STACK)
 

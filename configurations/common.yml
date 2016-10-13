@@ -74,7 +74,7 @@ services:
       service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1"
     volumes:
-      - ${DOCKERFILES}/projects/ned-cas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
     #   - casproxy
 
@@ -114,7 +114,7 @@ services:
       service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=nedproxy)
     volumes:
-      - ${DOCKERFILES}/projects/named-entity.service/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+      - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
     #   - nedproxy
 
