@@ -17,7 +17,7 @@ RUN rm -rf "$CATALINA_HOME/webapps/*"
 
 RUN mkdir -p $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=v1"/>' > $CATALINA_HOME/webapps/ROOT/index.html
 
-COPY run*.sh *.sql /root/
+COPY run*.sh /root/
 COPY migrations /root/migrations
 
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/v1.war

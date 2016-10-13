@@ -52,6 +52,8 @@ services:
     extends:
       file: common.yml
       service: neddb
+    ports:
+      - "3307:3306"
 
   mailcatcher:
     extends:

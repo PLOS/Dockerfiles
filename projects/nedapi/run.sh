@@ -19,19 +19,14 @@ set_db_grants
 bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
     -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
 
-# ambra DB
-
-if ! check_db_exists ${AMBRA_DATABASE}; then
-  create_db ${AMBRA_DATABASE}
-  $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_users.sql
-fi
-
 # ringgold DB
 
 if ! check_db_exists ${RINGGOLD_DATABASE}; then
   create_db ${RINGGOLD_DATABASE}
 fi
 
+# TODO: move this to some kind of optional dev seeding powered by an environment varriable perhaps?
+# maybe also include some users in the seed like devreader@mailinator.com:plos1234, devadmin@mailinator.com:plos1234
 # insert dev:dev user for userapp authentication
 unzip -q $CATALINA_HOME/webapps/v?.war -d $BUILD_DIR/ned
 cd $BUILD_DIR/ned/WEB-INF
