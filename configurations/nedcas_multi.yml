@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+
+  casproxy:
+    extends:
+      file: common.yml
+      service: casproxy
+
+  casconsultemplate:
+    extends:
+      file: common.yml
+      service: casconsultemplate
+    volumes_from:
+      - casproxy
+
+  nedcas0:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
+    environment:
+      - CLUSTER_MEMBERS=nedcas0,nedcas1
+
+  nedcas1:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
+    environment:
+      - CLUSTER_MEMBERS=nedcas1,nedcas0
+
+  nedapi:
+    extends:
+      file: common.yml
+      service: nedapi
+
+  neddb:
+    extends:
+      file: common.yml
+      service: neddb
