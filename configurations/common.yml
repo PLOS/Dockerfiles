@@ -82,6 +82,8 @@ services:
     extends:
       file: common.yml
       service: nedcas-proxyable
+    # ports:
+    #   - "8443:8080"
 
   nedcas-proxyable:
     image: nedcas:develop

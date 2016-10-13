@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# set -x
+set -x
 
 MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
@@ -140,12 +140,13 @@ function build_java_service_images() {
 
 	BUILD_RESULT_DIR=${IMAGE_NAME}_build
 
-	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_NAME
+	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$IMAGE_NAME
 	# assumes the project is locally in the same directory as the Dockerfiles project
 	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
 
   # perhaps they supplied an absolute path to an existing project directory
-  if [ -d ${PROJECT_DIR} ]; then
+  # if [ -d ${PROJECT_DIR} ]; then
+  if [[ ${PROJECT_DIR} == \/* ]]; then
     PROJECT_LOCAL_REPO=${PROJECT_DIR}/
   fi
 

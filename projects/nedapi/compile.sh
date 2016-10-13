@@ -10,6 +10,6 @@ cd ../..
 
 mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install
 cp target/*.?ar $BUILDDIR
-cp * $BUILDDIR
+cp -r database/migrations/ $BUILDDIR/
 
 java_compile_finish "target/classes/version.properties"

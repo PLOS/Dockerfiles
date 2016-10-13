@@ -13,7 +13,7 @@ wait_and_curl http://$DOCKER_HOST:8081 /v1/service/config "NED"
 
 curl_test_ok http://$DOCKER_HOST:8081/v1/typeclasses "Authenticated request" "-u dev:dev"
 
-wait_and_curl https://$DOCKER_HOST:8443 /cas/login "CAS"
+# wait_and_curl https://$DOCKER_HOST:8443 /cas/login "CAS"
 
 tests_passed
 
