@@ -179,7 +179,7 @@ function build_java_service_images() {
 	   --volume $PROJECT_LOCAL_REPO:/src \
 	   --volume $DOCKER_SETUP_DIR:/scripts \
 	   --volume $DOCKER_SETUP_DIR/..:/shared \
-	   $BASE_IMAGE bash /scripts/compile.sh
+	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
 
