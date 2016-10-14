@@ -14,6 +14,11 @@ services:
     volumes_from:
       - casproxy
 
+  consulserver:
+    extends:
+      file: common.yml
+      service: consulserver
+
   nedcas0:
     extends:
       file: common.yml
