@@ -132,6 +132,9 @@ services:
       - MYSQL_HOSTNAME=neddb
       - MYSQL_DATABASE=namedEntities
       - RINGGOLD_DATABASE=ringgold
+      - SEEDS=simpledev
+    volumes:
+      - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
 
   neddb:
     image: percona:5.6

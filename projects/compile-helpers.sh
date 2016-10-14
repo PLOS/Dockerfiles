@@ -6,6 +6,12 @@ BUILDDIR="/build"
 
 # TODO: run tests in build
 
+
+function die() {
+  echo "$@" 1>&2
+  exit 1
+}
+
 function java_compile_prepare {
 
   rm $BUILDDIR/*
