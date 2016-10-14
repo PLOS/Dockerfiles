@@ -86,7 +86,7 @@ services:
     #   - "8443:8080"
 
   nedcas-proxyable:
-    image: nedcas:develop
+    image: nedcas:2.0.0-SNAPSHOT
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
