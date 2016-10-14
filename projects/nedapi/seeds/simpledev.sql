@@ -1,7 +1,7 @@
 
 -- consumer   = dev:dev
 -- individual = devreader@mailinator.com:plos1234
--- individual = adminreader@mailinator.com:plos1234
+-- individual = devadmin@mailinator.com:plos1234
 
 REPLACE INTO `consumers` VALUES (5,'dev','$2a$04$ngPAL3DjegCrSW8r57ZJ3e3tKPA9HIvmYyB.9gZSuPgK76wvHi3Tq','2016-10-13 21:06:44','2016-10-13 21:06:44');
 
@@ -12,3 +12,5 @@ REPLACE INTO `emails` VALUES (1,1,NULL,'devreader@mailinator.com',7,1,1,'2016-10
 REPLACE INTO `authCas` VALUES (1,1,1,'8eb87d70-32c6-405c-a385-f504352dbc90','3feba5329a45c0469388b33098e9d36c77beb127b7599350304b0cd938d1b42703d0d9e811ecec76168618b76fc0ae5f484817db26170165de2b2ff9213721bf',0,NULL,0,1,'2016-10-13 23:16:12',5,'2016-10-13 23:16:48',5),(2,2,2,'f69e1eac-33c1-4b6d-a744-f47333c14073','bb8e1de1fa2d6a3782332f493b7b432bc96f37cb37d86bf2838d235c63f97efbb28592cb51426f1f352a55b0a57939c49e4853f1a02c33c644da70155ea82164',0,NULL,0,1,'2016-10-13 23:26:13',5,'2016-10-13 23:26:42',5);
 
 REPLACE INTO `individualProfiles` VALUES (1,1,'John',NULL,'Reader',NULL,NULL,NULL,'jreader',NULL,7,1,'2016-10-13 23:16:12',5,'2016-10-13 23:16:12',5),(2,2,'Jane',NULL,'Admin',NULL,NULL,NULL,'jadmin',NULL,7,1,'2016-10-13 23:26:13',5,'2016-10-13 23:26:13',5);
+
+REPLACE INTO `groups` VALUES (1,1,548,5,'2016-03-01','2017-02-12',7,'2016-10-14 23:20:15',5,'2016-10-14 23:20:15',5);
