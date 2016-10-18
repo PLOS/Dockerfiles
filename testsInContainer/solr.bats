@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+# load test_helper
+
 # source /projects/run-helpers.sh
 # source /tests/test-helpers.sh
 #
@@ -9,6 +11,14 @@
 @test "addition using bc" {
   result="$(echo 2+2 | bc)"
   [ "$result" -eq 4 ]
+}
+
+@test "a passing test" {
+  true
+}
+
+@test "a failing test" {
+  false
 }
 
 # wait_for_web_service $SVC_URL $SVC_NAME

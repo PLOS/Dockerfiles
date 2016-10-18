@@ -2,7 +2,6 @@
 
 # set -x
 
-source /projects/run-helpers.sh
 source /tests/test-helpers.sh
 
 SVC_URL=rhino:8080
@@ -23,29 +22,24 @@ ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true
 
 curl -X POST --form "archive=@/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles > /dev/null
 
-if [ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") == "null" ]; then
-	tests_failed "Article ingestion failed"
-fi
+[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]
+	test_true "Article ingestion"
 
 # create a revision
 
 curl -X POST $ARTICLE_RHINO/revisions?ingestion=1 > /dev/null
 
-if [ $(curl $ARTICLE_RHINO | jq .revisions.\"1\") == "null" ]; then
-	tests_failed "Article revision failed"
-fi
+[ $(curl $ARTICLE_RHINO | jq .revisions.\"1\") != "null" ]
+	test_true "Article revision"
 
 # make sure SOLR is running
 
-curl_test_ok $SOLR_BASE/admin/ping?wt=json "SOLR up"
+test_up $SOLR_BASE/admin/ping?wt=json "SOLR"
 
 curl $ARTICLE_SOLR | grep $ARTICLE
 
-INDEXED_STATE=$?
-
-if [[ "$INDEXED_STATE" == "0" ]]; then
-	tests_failed "SOLR should start empty"
-fi
+[ $? -ne 0 ]
+	test_true "SOLR should start empty"
 
 # index it (queue)
 
@@ -57,34 +51,18 @@ sleep 3 # sloppy wait for queue to run job
 curl $SOLR_BASE/update?commit=true
 
 curl $ARTICLE_SOLR | grep $ARTICLE
-
-INDEXED_STATE=$?
-
-if [ "$INDEXED_STATE" != "0" ]; then
-	tests_failed "queue/indexer failed"
-fi
+	test_true "queue/indexer"
 
 # TODO: make some changes that will reflect in the index
 
 # update the index
 run_container_once indexerminion
-
-if [ $? -ne 0 ]; then
-	tests_failed "minion errored"
-fi
+	test_true "minion run"
 
 # force commit the solr index update
 curl $SOLR_BASE/update?commit=true
 
 curl $ARTICLE_SOLR | grep $ARTICLE
-
-INDEXED_STATE=$?
-
-if [ "$INDEXED_STATE" != "0" ]; then
-	tests_failed "reindex failed"
-fi
-
+	test_true "reindex"
 
 # TODO: fetch categories, and repopulate ?
-
-tests_passed
