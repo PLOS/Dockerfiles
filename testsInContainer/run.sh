@@ -36,7 +36,6 @@ $COMPOSE logs --no-color > $SCRIPTDIR/lasttest.log &
 
 # run_the test in the container
 docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE bash /tests/$TEST.sh
-# docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE bats /tests/$TEST.bats
 
 EXIT_CODE=$?
 
