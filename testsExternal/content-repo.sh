@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-COMPOSE_FILE=content-repo.yml
+COMPOSE_FILE=contentrepo.yml
 
 source $SCRIPTDIR/test-helpers.sh
 

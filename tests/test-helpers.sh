@@ -1,81 +1,12 @@
 
-source $SCRIPTDIR/../projects/run-helpers.sh
+source /projects/run-helpers.sh
 
-CONFIGS_DIR=$SCRIPTDIR/../configurations
+# HELPER METHODS
 
-COMPOSE_FILE=$CONFIGS_DIR/$COMPOSE_FILE
-
-TEST_IMAGE=testhelper
-
-export DOCKERFILES=$SCRIPTDIR/..
-
-# TODO: build images if not found
-
-# build testhelper if it does not exist
-if ! docker images|grep $TEST_IMAGE ; then
-  echo "Building $TEST_IMAGE"
-  docker build $SCRIPTDIR -f Dockerfile.testhelper --tag $TEST_IMAGE
-fi
-
-
-function die {
-  echo "$@" 1>&2
-  stop_stack
-  exit 1
-}
-
-function get_docker_host {
-  HOST="localhost"
-
-  if boot2docker ip >/dev/null 2>&1 ; then
-    HOST=$(boot2docker ip)
-  elif docker-machine ip >/dev/null 2>&1 ; then
-    HOST=$(docker-machine ip)
-  fi
-
-  echo $HOST
-}
-
-function jq {
-  JSON_URL=$1
-  JQ_QUERY=$2
-
-  echo $(curl $JSON_URL | docker run -i --rm $TEST_IMAGE /bin/jq $JQ_QUERY)
-}
-
-function parse_json {
-  INPUT=$1
-  LOOK_FOR="\[$2\]"
-
-  echo "$($INPUT | bash $SCRIPTDIR/JSON.sh | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
-
-  # echo "$($INPUT | bash $SCRIPTDIR/JSON.sh -b | sed 's/\"//g' | grep $LOOK_FOR | awk '{print $2}')"
-}
-
-function get_container_name {
-  CONTAINER_BASENAME=$1
-
-  # CONTAINER=$(docker-compose -f $COMPOSE_FILE ps | grep $CONTAINER_BASENAME | awk 'END {print $1}')
-
-  # workaround because the previous line does not work yet.
-  # see: https://github.com/docker/compose/issues/1513
-
-  echo $(docker inspect -f '{{if .State.Running}}{{.Name}}{{end}}' $(docker-compose -f $COMPOSE_FILE ps -q) | sed 's/^\///' | grep $CONTAINER_BASENAME)
-}
-
-function start_stack {
-  docker-compose -f $COMPOSE_FILE up -d
-  docker-compose -f $COMPOSE_FILE logs --no-color > $SCRIPTDIR/lasttest.log &
-}
-
-function stop_stack {
-  docker-compose -f $COMPOSE_FILE kill
-  docker-compose -f $COMPOSE_FILE rm -f
-}
-
-function run_once {
+function run_container_once {
+  # so we can run a container from inside another container! DOCKERCEPTION
   IMAGE=$1
-  docker-compose -f $CONFIGS_DIR/common.yml run --rm $IMAGE
+  DOCKERFILES=/dockerfiles docker-compose -f /dockerfiles/configurations/common.yml run --rm $IMAGE
 }
 
 function wait_and_curl {
@@ -85,27 +16,41 @@ function wait_and_curl {
   # CREDS=$4
 
   wait_for_web_service $BASEURL $TITLE
-  curl_test_ok ${BASEURL}${ROUTE} $TITLE $4
+  test_up ${BASEURL}${ROUTE} $TITLE $4
 }
 
-function curl_test_ok {
+# PUBLIC ASSERTIONS
 
+function test_true {
+  CONDITION=$? # NOTE: this is the result of the last command run, not a param
+  TITLE="$1"
+  [ $CONDITION -eq 0 ] && _passed "$TITLE" || _failed "$TITLE"
+}
+
+function test_up {
   URL=$1
   TITLE=$2
   CREDS=$3
-  echo "Testing $TITLE -> $URL"
 
   HTTP_CODE=$(curl -Lk $CREDS -w "%{http_code}\\n" -s -o /dev/null $URL)
-  if [[ "$HTTP_CODE" -ne "200" ]]; then
-    tests_failed "status code = $HTTP_CODE"
+
+  if [[ "$HTTP_CODE" == "200" ]]; then
+    _passed "($TITLE up) $URL"
+  else
+    _failed "($TITLE up) $URL" "status code = $HTTP_CODE"
   fi
 }
 
-function tests_passed {
-  echo "TESTS PASSED"
+# PRIVATE METHODS
+
+function _failed {
+  TITLE="$1"
+  INFO=$2
+
+  echo $TITLE FAILED $INFO
+  exit 1
 }
 
-function tests_failed {
-  cp $SCRIPTDIR/lasttest.log $SCRIPTDIR/lasttest_failure.log
-  die "TEST FAILED   $1"
+function _passed {
+  echo "$1" PASSED
 }

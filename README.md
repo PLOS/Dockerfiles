@@ -1,6 +1,8 @@
 PLOS Dockerfiles
 ================
 
+This repo contains the dockerizations for PLOS projects.
+
 Requirements
 ------------
 * docker >= 1.10
@@ -14,6 +16,14 @@ An _image_ is built for every project or service (ie - rhino). When you start an
 
 A _stack_ is a combination of services. The docker-compose files in the configurations/ directory are stacks.
 
+Getting started
+---------------
+
+To make sure you are setup correctly, I recommend building a minimal stack and seeing that the tests pass for it.
+
+    ./build.sh stack solr
+    tests/run.sh solr
+
 Setup
 -----
 
@@ -26,7 +36,6 @@ All the directories in the projects/ directory correspond to a PLOS project in g
 This way (workspace)/Dockerfiles/projects/wombat/ knows where to find the source code.
 
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
-
 
 Building images
 ---------------

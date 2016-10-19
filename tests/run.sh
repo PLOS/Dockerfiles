@@ -9,7 +9,8 @@ SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 export DOCKERFILES=$(pwd)/..
 
 if [ "$#" -eq 0 ]; then
-  echo TESTS: $(find -name "*.sh" ! -name "test-helpers.sh" ! -name "run.sh" -exec basename -s .sh -a {} +)
+  echo TESTS:
+  echo "$(find $SCRIPTDIR -name "*.sh" ! -name "test-helpers.sh" ! -name "run.sh" -exec basename -s .sh -a {} +)"
   exit 1
 fi
 

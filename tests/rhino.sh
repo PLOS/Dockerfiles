@@ -2,78 +2,67 @@
 
 # set -x
 
-SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source /tests/test-helpers.sh
 
-COMPOSE_FILE=rhino.yml
-SVC_TITLE=rhino
-
-source $SCRIPTDIR/test-helpers.sh
-
-ARTICLE=pone.0099781
-
-cp $SCRIPTDIR/test_data/*.zip $HOME/datastores/ingest
-
-start_stack
-
-SVC_URL=$(get_docker_host):8080
+SVC_URL=rhino:8080
 
 wait_for_web_service $SVC_URL "rhino"
 
 # begin tests
 
-curl_test_ok $SVC_URL/articles $SVC_TITLE
+ARTICLE=pone.0099781
+
+SOLR_BASE=http://solr:8080/solr/collection1
+
+ARTICLE_RHINO=$SVC_URL/articles/10.1371++journal.$ARTICLE
+
+ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true"
 
 # ingest an article
 
-# NOTE: ingestion will change when accman goes live
+curl -X POST --form "archive=@/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles > /dev/null
 
-curl -X POST -s -F name="$ARTICLE.zip" $SVC_URL/ingestibles > /dev/null
+[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]
+	test_true "Article ingestion"
 
-curl_test_ok $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE "$SVC_TITLE ingested"
+# create a revision
 
-# publish the article
+curl -X POST $ARTICLE_RHINO/revisions?ingestion=1 > /dev/null
 
-docker exec -it $(get_container_name rhino) sh -c "echo UPDATE article SET state=0 WHERE doi LIKE \'%$ARTICLE\'|mysql -N -h ambradb -P 3306 -uroot -proot ambra"
-
-# docker exec -it $(get_container_name rhino) sh -c "echo select state from article|mysql -h ambradb -P 3306 -uroot -proot ambra"
-
-PUBLISHED_STATE=$(parse_json "curl $SVC_URL/articles/info:doi/10.1371/journal.$ARTICLE" "state")
-
-if [[ "$PUBLISHED_STATE" != "published" ]]; then
-	tests_failed "Article publish failed"
-fi
+[ $(curl $ARTICLE_RHINO | jq .revisions.\"1\") != "null" ]
+	test_true "Article revision"
 
 # make sure SOLR is running
 
-SOLR_BASE=http://$(get_docker_host):8983/solr/collection1
+test_up $SOLR_BASE/admin/ping?wt=json "SOLR"
 
-curl_test_ok $SOLR_BASE/admin/ping?wt=json "SOLR up"
+curl $ARTICLE_SOLR | grep $ARTICLE
 
-curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true" | grep $ARTICLE
+[ $? -ne 0 ]
+	test_true "SOLR should start empty"
 
-INDEXED_STATE=$?
+# index it (queue)
 
-if [[ "$INDEXED_STATE" -ne "1" ]]; then
-	tests_failed "SOLR should start empty"
-fi
+curl -X POST $ARTICLE_RHINO?solrIndex=anythinggoeshere
 
-# index it
-run_once indexerminion
+sleep 3 # sloppy wait for queue to run job
 
 # force commit the solr index update
 curl $SOLR_BASE/update?commit=true
 
-curl "$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true" | grep $ARTICLE
+curl $ARTICLE_SOLR | grep $ARTICLE
+	test_true "queue/indexer"
 
-INDEXED_STATE=$?
+# TODO: make some changes that will reflect in the index
 
-if [[ "$INDEXED_STATE" -ne "0" ]]; then
-	tests_failed "indexer failed"
-fi
+# update the index
+run_container_once indexerminion
+	test_true "minion run"
 
+# force commit the solr index update
+curl $SOLR_BASE/update?commit=true
+
+curl $ARTICLE_SOLR | grep $ARTICLE
+	test_true "reindex"
 
 # TODO: fetch categories, and repopulate ?
-
-tests_passed
-
-stop_stack

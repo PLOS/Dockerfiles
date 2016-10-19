@@ -52,11 +52,10 @@ elif [ "$COMMAND" == "stack" ]; then
     for IMAGE in $IMAGES; do
 
       PROJECT=$(echo $IMAGE | cut -d':' -f1)
-      PROJECT_DIR="$DOCKERFILES/projects/$PROJECT"
 
-      if [ -d "$PROJECT_DIR" ]; then
+      if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
 
-        _build_image $PROJECT_DIR
+        _build_image $PROJECT
 
         docker inspect $IMAGE > /dev/null
         if [ $? -ne 0 ]; then
