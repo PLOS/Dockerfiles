@@ -8,7 +8,11 @@ function die {
 }
 
 function start_tomcat {
-	${CATALINA_HOME}/bin/catalina.sh run
+    if [[ -n $JPDA_OPTS ]] ; then
+	    ${CATALINA_HOME}/bin/catalina.sh jpda start && tail -f $CATALINA_HOME/logs/catalina.out
+    else
+	    ${CATALINA_HOME}/bin/catalina.sh run
+    fi
 }
 
 function start_consul_agent {
