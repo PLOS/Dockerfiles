@@ -4,14 +4,15 @@ PLOS Dockerfiles
 Requirements
 ------------
 * docker >= 1.10
-* docker-compose >= 1.6
+* docker-compose >= 1.7
 * git  (optional, for checking out missing project sources if they are not found)
 
-Status
-------
-* Article ingestion might be broken due to schema updates
-* Some registry functionality might not work due to compose schema
+Terminology
+-----------
 
+An _image_ is built for every project or service (ie - rhino). When you start an image that service should be up and running.
+
+A _stack_ is a combination of services. The docker-compose files in the configurations/ directory are stacks.
 
 Setup
 -----
@@ -30,24 +31,19 @@ If you want docker images to build for certain versions of a project, make sure 
 Building images
 ---------------
 
-To build a docker image for a project, run the build script. For example:
+The _build.sh_ script can be used to build single images or whole stacks.
 
-    projects/wombat/build-image.sh
-    projects/rhino/build-image.sh
-    projects/content-repo/build-image.sh
-    projects/plos-solr/build-image.sh
+Note that images are tagged with the git branch you have checked out for that project. For example if you build rhino while you have the development branch checked out, it will create a rhino:development image. configurations files refer to specific branches.... (finish this)
 
-Or build them all with:
-
-    projects/build-all.sh
-
-This will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
+Image builds will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
 
 
-Running
--------
+Running a stack
+---------------
 
-To see a list of sample stacks that combine the use of these images run stack.sh. Here is how you would run one stack:
+The _stack.sh_ script is a wrapper around docker-compose. It can be used to bring stacks up and down.
+
+Here is how you would run one stack:
 
     ./stack.sh wombat
 
@@ -73,6 +69,17 @@ For each project the images created for it should be tagged with a version numbe
 
 In each image, create a file at /root/version.txt that contains the version number representing the built artifacts. For example, "0.5.0-SNAPSHOT".
 
+Here are some of the files you will find in each of the project directories, and what they are used for:
+
+__build-image.sh__ - Builds an image from the source code of the project
+
+__compile.sh__ - An intermediate build container is used before the final image is created. This script performs inside that container what is needed to turn your project source code into its compiled assets (commonly .war files) and then collects additional files (commonly config files and database migrations) into a common place so the runnable image can grab them.
+
+__Dockerfile__ - The Dockerfile for the runable image of the project
+
+__run.sh__ - The script that is run in the foreground inside your container. This commonly consists of seeding the database, processing configuration templates, and running a service like tomcat.
+
+__(configuration templates)__ - You will see various files (ie - context.xml) in project directories. These are specific to that project and are simple templates that are processed at run time with whatever environment variables were set (most commonly in the docker-compose file).
 
 Scaling/Load Balancing
 ----------------------
@@ -90,6 +97,8 @@ There is a scaling demo that runs multiple instances of NED using Consul. Here i
 
 Docker Registry
 ---------------
+
+Note: Some registry functionality might currently not work due to compose schema.
 
 The Docker registry is a place to host images. Images can be pushed and pulled from our local Docker Registry (2.0). If an image is there you, you can pull from it instead of having to build it.
 
@@ -117,11 +126,10 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Figure out why Lemur frontend needs specific npm and bower versions
 * Dockerize: ploscli, AricleAdmin
 - Replace tomcat:6-jre8 with tomcat:7-jre8-alpine for smaller images
-* Use a bash testing system like https://github.com/sstephenson/bats
 
 
-Tips
-----
+Troubleshooting
+---------------
 
 Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
 
