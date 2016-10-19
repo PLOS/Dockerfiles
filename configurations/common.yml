@@ -310,6 +310,6 @@ services:
     image: testrunner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock #/tmp/docker.sock
-      - ${DOCKERFILES}/testsInContainer:/tests
+      - ${DOCKERFILES}/tests:/tests
       - ${DOCKERFILES}/projects:/projects
       - ${DOCKERFILES}:/dockerfiles

@@ -12,11 +12,11 @@ function run_container_once {
 function wait_and_curl {
   BASEURL=$1
   ROUTE=$2
-  TITLE=$3
+  TITLE="$3"
   # CREDS=$4
 
-  wait_for_web_service $BASEURL $TITLE
-  test_up ${BASEURL}${ROUTE} $TITLE $4
+  wait_for_web_service $BASEURL "$TITLE"
+  test_up ${BASEURL}${ROUTE} "$TITLE" $4
 }
 
 # PUBLIC ASSERTIONS
@@ -29,7 +29,7 @@ function test_true {
 
 function test_up {
   URL=$1
-  TITLE=$2
+  TITLE="$2"
   CREDS=$3
 
   HTTP_CODE=$(curl -Lk $CREDS -w "%{http_code}\\n" -s -o /dev/null $URL)

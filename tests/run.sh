@@ -6,7 +6,7 @@
 
 SCRIPTDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-export DOCKERFILES=$(pwd)/..
+export DOCKERFILES=$SCRIPTDIR/..
 
 if [ "$#" -eq 0 ]; then
   echo TESTS:
@@ -36,6 +36,7 @@ $COMPOSE up -d
 $COMPOSE logs --no-color > $SCRIPTDIR/lasttest.log &
 
 # run_the test in the container
+# docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE sh -c "source /tests/test-helpers.sh && bash /tests/$TEST.sh"
 docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE bash /tests/$TEST.sh
 
 EXIT_CODE=$?
