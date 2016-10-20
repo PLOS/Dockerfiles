@@ -1,1 +1,0 @@
-<img class="spinner" src="${freemarker_config.context}/images/loading_small.gif" class="loading" />

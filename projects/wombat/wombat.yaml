@@ -3,6 +3,9 @@
 server: $RHINO_SERVICE
 # URL of the server for the service API ("Rhino")
 
+solrServer: $SOLR_SERVER
+# solrServer: http://sfo-stage-solr01.int.plos.org/solr/select/
+
 compiledAssetDir: null
 # The local directory to which to write compiled JavaScript and CSS assets.
 #
@@ -29,8 +32,8 @@ cas:
   loginUrl: https://register.plos.org/cas/login
   logoutUrl: https://register.plos.org/cas/logout
 
-  serviceUrl: http://localhost:8234/wombat/j_spring_cas_security_check
-  logoutServiceUrl: http://localhost:8234/wombat/user/logout
+  # serviceUrl: http://localhost:8234/wombat/j_spring_cas_security_check
+  # logoutServiceUrl: http://localhost:8234/wombat/user/logout
 # cas.serviceUrl is in the form of 'webapp url/j_spring_cas_security_check'.
 # cas.logoutServiceUrl is the url that will be used by cas to bring the user
 # back to the web application. This url should be in the form of 'webapp

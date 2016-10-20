@@ -12,10 +12,27 @@ services:
       file: common.yml
       service: rhino
 
+  plosqueue:
+    extends:
+      file: common.yml
+      service: plosqueue
+
+  counter:
+    extends:
+      file: common.yml
+      service: counter
+
+  counterdb:
+    extends:
+      file: common.yml
+      service: counterdb
+
   ambradb:
     extends:
       file: common.yml
       service: ambradb
+    ports:
+      - "3307:3306"
 
   solr:
     extends:
@@ -41,6 +58,8 @@ services:
     extends:
       file: common.yml
       service: mogilenode
+    # ports:
+    #   - "7500:7500"
 
   mogiledb:
     extends:
