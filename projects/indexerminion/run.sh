@@ -15,8 +15,4 @@ wait_until_db_service_up
 
 process_template $BUILD_DIR/minion.yaml
 
-if [[ $JAVA_DEBUG_PORT =~ ^[0-9]+$ ]] ; then
-  DEBUG_FLAGS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y'
-fi
-
 java -server -d64 $DEBUG_FLAGS -jar $BUILD_DIR/solr-indexer-*-jar-with-dependencies.jar -properties $BUILD_DIR/minion.yaml

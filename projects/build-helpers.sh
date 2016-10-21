@@ -189,7 +189,7 @@ function build_java_service_images() {
   TEMP_BUILD_DIR=`mktemp -d`
   docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
   tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
-  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR
+  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
 
 
 	# tag docker image with asset version number

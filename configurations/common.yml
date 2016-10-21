@@ -200,14 +200,16 @@ services:
       # - SOLR_URL=http://solr:8080/solr    # TODO: add to ambra.xml
       - PLOS_QUEUE=tcp://plosqueue:61616
 
-# RUN: ./stack.sh common run indexerminion
-# DEBUG: ./stack.sh common run -p 8000:8000 -e JAVA_DEBUG_PORT=8000 indexerminion
+# RUN: ./stack.sh common run --rm indexerminion
+# DEBUG: ./stack.sh common run -p 8000:8000 --rm indexerminion
   indexerminion:
     image: indexerminion:accman
     volumes:
       - /tmp/indexerminion:/cache   # caches between runs
     environment:
       - RHINO_SERVICE=http://rhino:8080
+      - ALM_URL=http://alm-101.soma.plos.org
+      - ALM_KEY=
       - COUNTER_DATABASE_URL=jdbc:mysql://counterdb/plosreports
       - COUNTER_DATABASE=plosreports
       - COUNTER_HOSTNAME=counterdb
@@ -218,8 +220,8 @@ services:
       - SOLR_SOURCE=http://api.plos.org
       - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
-      # - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
-      - ARTICLE_LIST=10.1371/journal.pone.0099781 #, 10.1371/journal.pone.0161688
+      - ARTICLE_LIST=10.1371/journal.pone.0099781
+      - DEBUG_FLAGS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y # needed for running in debug mode
 
   counter:
     image: counter:master

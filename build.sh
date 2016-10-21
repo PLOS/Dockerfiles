@@ -21,7 +21,7 @@ function _get_images_from_config {
 function _build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
-  $DOCKERFILES/projects/$PROJECT/build-image.sh
+  $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
 }
 
 function _list_projects {
@@ -72,7 +72,7 @@ elif [ "$COMMAND" == "all" ]; then
   projects=$(_list_projects)
   for project in $projects
   do
-    _build_image $project || exit 1
+    _build_image $project
   done;
 else
   echo $USAGE

@@ -1,6 +1,10 @@
 FROM tomcat:6-jre8
+# FROM tomcat:7-jre8-alpine
 
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
+
+# RUN apk update && apk add mysql-client bash curl
 
 RUN apt-get update && apt-get install -y mysql-client \
     build-essential cpanminus && \

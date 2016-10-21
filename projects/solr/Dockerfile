@@ -1,7 +1,9 @@
-FROM tomcat:6-jre7
+FROM tomcat:7-jre8-alpine
 
-MAINTAINER Public Library of Science <BAU_Team@plos.org>
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
+
+RUN apk update && apk add bash openssl
 
 RUN wget -O $CATALINA_HOME/lib/slf4j-log4j12-1.6.1.jar \
       https://search.maven.org/remotecontent?filepath=org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar && \
@@ -23,14 +25,11 @@ RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
 COPY run*.sh /root/
-
 COPY log4j.xml $CATALINA_HOME/lib/
 COPY solr.war $CATALINA_HOME/webapps/
 
 WORKDIR /root
 
-RUN unzip -q $CATALINA_HOME/webapps/solr.war -d temp/ && \
-  cp -r temp/collection1 $CATALINA_HOME/solr/home/ && \
-  rm -rf temp/
+RUN unzip $CATALINA_HOME/webapps/solr.war 'collection1/*' -d $CATALINA_HOME/solr/home/
 
 CMD bash /root/run.sh

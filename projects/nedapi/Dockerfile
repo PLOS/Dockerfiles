@@ -1,12 +1,12 @@
-FROM tomcat:6-jre8
+# FROM tomcat:6-jre8
+FROM tomcat:7-jre8-alpine
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
 WORKDIR /root
 
-RUN apt-get update && apt-get install -y --no-install-recommends mysql-client-5.5 \
-  && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN apk update && apk add bash curl openssl mysql-client && \
   wget -O - https://dl.bintray.com/business/maven/flyway-commandline-3.2.1-linux-x64.tar.gz | tar xz && \
   wget -O consul.zip https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip consul.zip
 

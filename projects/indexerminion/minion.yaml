@@ -5,7 +5,7 @@ threads-default:
      stats-db: "/cache/minion.bin"
 alm-default:
      url: "${ALM_URL}"
-     apikey: "key"
+     apikey: "${ALM_KEY}"
 rhino-default:
      url: "${RHINO_SERVICE}"
 counter-default:

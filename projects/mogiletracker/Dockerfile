@@ -1,5 +1,8 @@
 FROM ubuntu:trusty
 
+MAINTAINER Jono <jfinger@plos.org>
+LABEL vendor="Public Library of Science"
+
 RUN apt-get update && \
     apt-get install -y cpanminus build-essential libmysqlclient-dev mysql-client && \
     cpanm install --force MogileFS::Server && \
