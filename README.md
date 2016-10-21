@@ -1,28 +1,53 @@
 PLOS Dockerfiles
 ================
 
-This repo contains the dockerizations for PLOS projects.
+This repo contains the dockerizations for PLOS projects. It provides complete stacks which are runnable combinations of PLOS services. For example with one command you can start up a stack containing Rhino, Wombat, Content Repo, MySQL, Solr, Plos Queue, and MogileFS.
+
+To keep your host clean, all projects are built and tested in disposable containers.
+
 
 Requirements
 ------------
 * docker >= 1.10
 * docker-compose >= 1.7
-* git  (optional, for checking out missing project sources if they are not found)
+* git
 
-Terminology
+It is recommended you configure Docker to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
+
+Quick Start
 -----------
-
-An _image_ is built for every project or service (ie - rhino). When you start an image that service should be up and running.
-
-A _stack_ is a combination of services. The docker-compose files in the configurations/ directory are stacks.
-
-Getting started
----------------
 
 To make sure you are setup correctly, I recommend building a minimal stack and seeing that the tests pass for it.
 
     ./build.sh stack solr
     tests/run.sh solr
+
+For a slightly more complex stack try bringing up the content repo.
+
+    ./build.sh stack contentrepo
+    ./stack.sh contentrepo
+
+See Troubleshooting below if you have problem with Maven running too slow.
+
+Images
+------
+
+An _image_ is built for every project or service (ie - rhino). When you start an image that service should be up and running in a container that you can access from the host.
+
+All images are production grade and designed in a [Twelve-Factor](https://12factor.net/) style. They are setup to be configured at run time using environment variables.
+
+
+Configurations
+--------------
+
+Generally these images cannot run on their own since, like most apps, they depend on additional services like a database. This is where docker-compose comes in.
+
+Compose lets you specify a combination of services in a yaml file and allows you to specify the environment variables needed to wire your services together. It uses an isolated bridged/NAT network by default.
+
+In the configurations/ directory you can these yaml files. _common.yml_ contains the definition of every service and some default setups for them. The other files (ie - contentrepo.yml) inherit common.yml to specify only the services needed for a contentrepo _stack_ and overrides defaults as needed.
+
+Note that these are only sample configurations. You should create your own depending on the combination of services you require. The samples mostly include top to bottom stacks, but you are not required to do this. For example we bring up a CAS server in the Akita stack. But you can set environment variables to point to production CAS instead of bringing up that service. Feel free to mix and match.
+
 
 Setup
 -----
@@ -71,7 +96,7 @@ Testing
 See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything. Tests themselves run in the 'testrunner' container so testing requirements are isolated from the host.
 
 
-Development/Conventions
+Development Conventions
 -----------------------
 
 For each project the images created for it should be tagged with a version number and with the name of the git branch.
@@ -148,3 +173,5 @@ To allow resolve.conf to populate as it used to I had to open
 and comment out this line:
 
     dns=dnsmasq
+
+Then restart the NetworkManager service.
