@@ -184,8 +184,8 @@ services:
       - SOLR_SERVICE=http://solr:8080/select
 
   rhino:
-    # image: rhino:master
-    image: rhino:accman
+    image: rhino:master
+    # image: rhino:accman
     ports:
       - 8080:8080
     volumes:
@@ -221,7 +221,7 @@ services:
       - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
       - ARTICLE_LIST=10.1371/journal.pone.0099781
-      - DEBUG_FLAGS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y # needed for running in debug mode
+      - DEBUG_FLAGS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n # needed for running in debug mode
 
   counter:
     image: counter:master

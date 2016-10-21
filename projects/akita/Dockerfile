@@ -1,4 +1,5 @@
 FROM ruby:2.2-slim
+# TODO: replace with ruby:2.2-slim (its 150MB smaller)
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"

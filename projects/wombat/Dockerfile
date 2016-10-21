@@ -1,19 +1,20 @@
-FROM tomcat:6-jre8
+FROM tomcat:7-jre8-alpine
 
+MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
+
+RUN apk update && apk add bash curl
 
 RUN rm -rf $CATALINA_HOME/webapps/*
 
 ENV AMBRA_CONF /etc/ambra/
 
-RUN mkdir $AMBRA_CONF
-
-RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
+RUN mkdir $AMBRA_CONF && \
+  cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
 COPY run*.sh /root/
-
 COPY wombat.yaml $AMBRA_CONF
 COPY wombat-*.war $CATALINA_HOME/webapps/ROOT.war
 

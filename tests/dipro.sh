@@ -22,7 +22,7 @@ ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true
 
 curl -X POST --form "archive=@/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles > /dev/null
 
-[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]
+[[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]]
 	test_true "Article ingestion"
 
 # create a revision
@@ -66,3 +66,10 @@ curl $ARTICLE_SOLR | grep $ARTICLE
 	test_true "reindex"
 
 # TODO: fetch categories, and repopulate ?
+
+
+# frontend tests
+
+wait_for_web_service wombat:8080 "wombat"
+
+test_up wombat:8080/DesktopPlosOne/article?id=10.1371/journal.$ARTICLE "Wombat article"
