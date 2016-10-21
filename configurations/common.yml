@@ -96,7 +96,6 @@ services:
       - CAS_DATABASE=cas
       - NED_SERVICE=http://nedapi:8080/v1
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
-      - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
     # volumes:
     #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
