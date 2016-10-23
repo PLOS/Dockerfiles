@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /tests/test-helpers.sh
+source /dockerfiles/tests/test-helpers.sh
 
 wait_and_curl nedapi:8080 /v1/service/config "NED API"
 # wait_and_curl https://$DOCKER_HOST:8444 "/v1/service/config" "NED API ssl"

@@ -173,7 +173,7 @@ services:
       - 1080:1080
 
   wombat:
-    image: wombat:accman
+    image: wombat:master
     volumes:
       - ${DOCKERFILES}/../plos-themes:/root/themes
       # TODO: bring in plos-themes as a seperate image or something?
@@ -182,10 +182,12 @@ services:
     environment:
       - RHINO_SERVICE=http://rhino:8080
       - SOLR_SERVICE=http://solr:8080/select
+      - CAS_URL=https://localhost:8443/cas
+      - CAS_LOGIN=https://localhost:8443/cas/login
+      - CAS_LOGOUT=https://localhost:8443/cas/logout
 
   rhino:
     image: rhino:master
-    # image: rhino:accman
     ports:
       - 8080:8080
     volumes:
@@ -197,8 +199,11 @@ services:
       - MYSQL_HOSTNAME=ambradb
       - MYSQL_DATABASE=ambra
       - REPO_SERVICE=http://contentrepo:8080
-      # - SOLR_URL=http://solr:8080/solr    # TODO: add to ambra.xml
+      - SOLR_URL=http://solr:8080/solr
       - PLOS_QUEUE=tcp://plosqueue:61616
+      - NED_API=http://nedapi:8080
+      - NED_USER=dev
+      - NED_PASSWORD=dev
 
 # RUN: ./stack.sh common run --rm indexerminion
 # DEBUG: ./stack.sh common run -p 8000:8000 --rm indexerminion
@@ -300,6 +305,4 @@ services:
     image: testrunner
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock #/tmp/docker.sock
-      - ${DOCKERFILES}/tests:/tests
-      - ${DOCKERFILES}/projects:/projects
-      - ${DOCKERFILES}:/dockerfiles
+      - ${DOCKERFILES}:/dockerfiles:ro

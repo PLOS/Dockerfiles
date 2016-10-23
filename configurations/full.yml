@@ -1,0 +1,89 @@
+version: '2'
+
+services:
+
+  akita:
+    extends:
+      file: common.yml
+      service: akita
+
+  nedcas:
+    extends:
+      file: common.yml
+      service: nedcas
+
+  nedapi:
+    extends:
+      file: common.yml
+      service: nedapi
+
+  neddb:
+    extends:
+      file: common.yml
+      service: neddb
+    ports:
+      - "3308:3306"
+
+  wombat:
+    extends:
+      file: common.yml
+      service: wombat
+
+  rhino:
+    extends:
+      file: common.yml
+      service: rhino
+
+  plosqueue:
+    extends:
+      file: common.yml
+      service: plosqueue
+
+  counter:
+    extends:
+      file: common.yml
+      service: counter
+
+  counterdb:
+    extends:
+      file: common.yml
+      service: counterdb
+
+  ambradb:
+    extends:
+      file: common.yml
+      service: ambradb
+    ports:
+      - "3307:3306"
+
+  solr:
+    extends:
+      file: common.yml
+      service: solr
+
+  contentrepo:
+    extends:
+      file: common.yml
+      service: contentrepo
+
+  repodb:
+    extends:
+      file: common.yml
+      service: repodb
+
+  mogiletracker:
+    extends:
+      file: common.yml
+      service: mogiletracker
+
+  mogilenode:
+    extends:
+      file: common.yml
+      service: mogilenode
+    # ports:
+    #   - "7500:7500"
+
+  mogiledb:
+    extends:
+      file: common.yml
+      service: mogiledb

@@ -1,9 +1,9 @@
 ################################ System Config ################################
 
-server: $RHINO_SERVICE
+server: ${RHINO_SERVICE}
 # URL of the server for the service API ("Rhino")
 
-solrServer: $SOLR_SERVER
+solrServer: ${SOLR_SERVER}
 # solrServer: http://sfo-stage-solr01.int.plos.org/solr/select/
 
 compiledAssetDir: null
@@ -28,9 +28,9 @@ cache:
 # all three are required.
 
 cas:
-  casUrl: https://register.plos.org/cas
-  loginUrl: https://register.plos.org/cas/login
-  logoutUrl: https://register.plos.org/cas/logout
+  casUrl: ${CAS_URL}
+  loginUrl: ${CAS_LOGIN}
+  logoutUrl: ${CAS_LOGOUT}
 
   # serviceUrl: http://localhost:8234/wombat/j_spring_cas_security_check
   # logoutServiceUrl: http://localhost:8234/wombat/user/logout

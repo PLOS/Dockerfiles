@@ -42,9 +42,9 @@ taxonomy:
 # sciences". See <https://developer.plos.org/jira/browse/AMEC-100>
 
 userApi:
-  server:                http://localhost/
-  authorizationAppName:  dipro
-  authorizationPassword: asdfsadfasdfsdfs
+  server:                ${NED_API}
+  authorizationAppName:  ${NED_USER}
+  authorizationPassword: ${NED_PASSWORD}
 # Configuration for the API for user data (Named Entity Database, NED).
 
 queue:

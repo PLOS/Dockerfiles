@@ -2,7 +2,7 @@
 
 # set -x
 
-source /tests/test-helpers.sh
+source /dockerfiles/tests/test-helpers.sh
 
 SVC_URL=rhino:8080
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-source /tests/test-helpers.sh
-
-# set -x
+source /dockerfiles/tests/test-helpers.sh
 
 SVC_URL=solr:8080
 SVC_NAME="solr"

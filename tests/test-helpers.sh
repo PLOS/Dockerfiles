@@ -1,5 +1,5 @@
 
-source /projects/run-helpers.sh
+source /dockerfiles/projects/run-helpers.sh
 
 # HELPER METHODS
 

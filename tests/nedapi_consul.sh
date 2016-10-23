@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /tests/test-helpers.sh
+source /dockerfiles/tests/test-helpers.sh
 
 # TODO: create a way to wait for the CONSUL response size so we dont have to do a guess and sleep
 sleep 20

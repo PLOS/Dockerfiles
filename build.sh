@@ -8,8 +8,9 @@ cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 COMMAND=$1
 NAME=$2
+DRYRUN=false
 
-USAGE="usage: $0 image|stack|all name"
+USAGE="usage: $0 image|stack|all name [--dry-run]"
 
 export DOCKERFILES=$(pwd)
 
@@ -21,12 +22,18 @@ function _get_images_from_config {
 function _build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
-  $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+  if [ "$DRYRUN" == "false" ]; then
+    $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+  fi
 }
 
 function _list_projects {
   echo "$(find projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
 }
+
+if [[ "$3" == "--dry-run" ]]; then
+  DRYRUN=true
+fi
 
 if [ "$#" -eq 0 ]; then
   echo $USAGE
