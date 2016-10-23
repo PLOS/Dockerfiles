@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# set -x
+set -x
 
 source /dockerfiles/tests/test-helpers.sh
 
@@ -20,7 +20,9 @@ ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true
 
 # ingest an article
 
-curl -X POST --form "archive=@/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles > /dev/null
+curl -X POST --form "archive=@/dockerfiles/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles  > /dev/null
+
+# TODO; check return code of POST, and other POSTs in this test
 
 [[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]]
 	test_true "Article ingestion"

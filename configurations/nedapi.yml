@@ -2,10 +2,15 @@ version: '2'
 
 services:
 
-  nedcas:
+  nedcas-ssl:
     extends:
       file: common.yml
-      service: nedcas
+      service: nedcas-ssl
+
+  nedcas-proxyable:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
 
   nedapi:
     extends:

@@ -4,7 +4,7 @@ services:
 
   akitaproxy:
     extends:
-      file: common.yml
+      # file: common.yml
       service: haproxy
     ports:
       - "443:443"
@@ -13,7 +13,7 @@ services:
 
   akitaconsultemplate:
     extends:
-      file: common.yml
+      # file: common.yml
       service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1"
     volumes:
@@ -23,7 +23,7 @@ services:
 
   akita:
     extends:
-      file: common.yml
+      # file: common.yml
       service: akita-proxyable
     ports:
       - "443:443"
@@ -61,7 +61,7 @@ services:
 
   casproxy:
     extends:
-      file: common.yml
+      # file: common.yml
       service: haproxy
     ports:
       - "8443:443"
@@ -70,7 +70,7 @@ services:
 
   casconsultemplate:
     extends:
-      file: common.yml
+      # file: common.yml
       service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1"
     volumes:
@@ -78,12 +78,15 @@ services:
     # volumes_from:
     #   - casproxy
 
-  nedcas:
+  nedcas-ssl:
     extends:
-      file: common.yml
-      service: nedcas-proxyable
-    # ports:
-    #   - "8443:8080"
+      # file: common.yml
+      service: haproxy
+    ports:
+      - "8443:443"
+    volumes:
+      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
 
   nedcas-proxyable:
     image: nedcas:develop
@@ -103,14 +106,14 @@ services:
 
   nedproxy:
     extends:
-      file: common.yml
+      # file: common.yml
       service: haproxy
     ports:
       - "8081:8080"
 
   nedconsultemplate:
     extends:
-      file: common.yml
+      # file: common.yml
       service: consultemplate
     command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=nedproxy)
     volumes:
@@ -140,7 +143,8 @@ services:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
-    # volumes:    # enable to persist database between runs
+    volumes:    # enable to persist database between runs
+      - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
     #   - /var/lib/mysql
 
   haproxy:
@@ -178,7 +182,7 @@ services:
       - ${DOCKERFILES}/../plos-themes:/root/themes
       # TODO: bring in plos-themes as a seperate image or something?
     ports:
-      - 8081:8080
+      - 8082:8080
     environment:
       - RHINO_SERVICE=http://rhino:8080
       - SOLR_SERVICE=http://solr:8080/select
