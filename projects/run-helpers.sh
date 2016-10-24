@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# set -x
+
 MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
 
 function die {
@@ -72,14 +74,15 @@ function wait_for_web_service {
 
   URL=$1
   NAME=$2
-  TEST_CMD="curl -skI $URL -o /dev/null"
+  # TEST_CMD="curl -skI $URL -o /dev/null"
   TEST_RETURN_CODE=1
   TRY_COUNT=0
-  MAX_TRIES=20
+  MAX_TRIES=30
 
   while [ $TEST_RETURN_CODE -ne 0 ] ; do
     sleep 3
-    $TEST_CMD
+    # $TEST_CMD
+    curl -skI $URL -o /dev/null
     TEST_RETURN_CODE=$?
 
     ((TRY_COUNT++))

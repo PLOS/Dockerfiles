@@ -2,7 +2,7 @@ version: '2'
 
 services:
 
-  nedcas-ssl:
+  nedcas:
     extends:
       file: common.yml
       service: nedcas-ssl

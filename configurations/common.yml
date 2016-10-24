@@ -61,7 +61,6 @@ services:
 
   casproxy:
     extends:
-      # file: common.yml
       service: haproxy
     ports:
       - "8443:443"
@@ -80,7 +79,6 @@ services:
 
   nedcas-ssl:
     extends:
-      # file: common.yml
       service: haproxy
     ports:
       - "8443:443"

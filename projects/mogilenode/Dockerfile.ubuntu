@@ -3,7 +3,7 @@ FROM ubuntu:trusty
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-# TODO: switch to alpine and pin library libsys-syscall-perl 0.23-1
+# TODO: pin library libsys-syscall-perl 0.23-1
 
 RUN apt-get update && apt-get install -y build-essential cpanminus && \
     cpanm install --force MogileFS::Server
