@@ -187,6 +187,9 @@ services:
       - CAS_URL=https://localhost:8443/cas
       - CAS_LOGIN=https://localhost:8443/cas/login
       - CAS_LOGOUT=https://localhost:8443/cas/logout
+      # TODO: implement root page override. see plos-themes/prod-wombat-config.py
+      # - ROOT_PAGE_PATH=/root/themes/content/rootPage.html
+      # TODO: perhaps we should use plos-themes/build_config_wombat.py to generate the config instead of a templated wombat.yaml
 
   rhino:
     image: rhino:master

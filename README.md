@@ -159,8 +159,8 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
 * Dockerize: ploscli, AricleAdmin
-- Replace tomcat:6-jre8 with tomcat:7-jre8-alpine for smaller images
-
+* Alpine everything for smaller images
+* plos-themes and apache-conf (and patch so we can use environment vars for run time config)
 
 Troubleshooting
 ---------------
