@@ -1,14 +1,14 @@
-FROM tomcat:6-jre8
-# FROM tomcat:7-jre8-alpine
+FROM tomcat:7-jre8-alpine
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-# RUN apk update && apk add mysql-client bash curl
+# TODO: move gcc et tools into build step instead of prod image
 
-RUN apt-get update && apt-get install -y mysql-client \
-    build-essential cpanminus && \
-    cpanm install --force MogileFS::Utils
+RUN apk update && apk add mysql-client bash curl \
+  wget make gcc g++ git patch perl perl-dev && \
+  curl -L https://cpanmin.us | perl - App::cpanminus && \
+  cpanm install --force MogileFS::Utils
 
 RUN rm -rf $CATALINA_HOME/webapps/*
 

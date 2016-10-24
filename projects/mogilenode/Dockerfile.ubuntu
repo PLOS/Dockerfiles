@@ -1,15 +1,12 @@
-FROM alpine
+FROM ubuntu:trusty
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
 # TODO: switch to alpine and pin library libsys-syscall-perl 0.23-1
 
-RUN apk update && apk add bash curl \
-  wget make gcc g++ git patch perl perl-dev && \
-  curl -L https://cpanmin.us | perl - App::cpanminus && \
-  cpanm install --force MogileFS::Server
-
+RUN apt-get update && apt-get install -y build-essential cpanminus && \
+    cpanm install --force MogileFS::Server
 
 # TODO: pin the Mogile version to something specific
 

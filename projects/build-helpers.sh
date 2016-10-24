@@ -128,9 +128,9 @@ function build_java_service_images() {
 
 	# TODO: implement --no-cache option or mark images with build date
 
-	BASE_IMAGE=$1
-	PROJECT_DIR=$2
-	IMAGE_NAME=$3
+	BASE_IMAGE=maven:3-jdk-8-alpine
+	PROJECT_DIR=$1
+	IMAGE_NAME=$2
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
 
