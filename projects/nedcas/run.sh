@@ -15,6 +15,6 @@ if ! check_db_exists ${CAS_DATABASE}; then
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/cas*.sql
 fi
 
-start_consul_agent
+start_consul_agent &
 
 start_tomcat

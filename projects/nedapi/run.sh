@@ -40,6 +40,6 @@ echo "SELECT count(*) as user_count FROM namedEntities.individualProfiles;" | $M
 
 process_template ${CATALINA_HOME}/conf/context.xml
 
-start_consul_agent
+start_consul_agent &
 
 start_tomcat

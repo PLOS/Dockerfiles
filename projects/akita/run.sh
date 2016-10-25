@@ -16,7 +16,7 @@ fi
 ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
 ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
 
-start_consul_agent
+start_consul_agent &
 
 service nginx start
 bundle exec puma -C /root/puma.rb --daemon

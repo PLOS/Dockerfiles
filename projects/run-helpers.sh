@@ -2,7 +2,7 @@
 
 # set -x
 
-MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root -p${MYSQL_ROOT_PASSWORD}"
+MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root --password=${MYSQL_ROOT_PASSWORD}"
 
 function die {
   echo "$@" 1>&2
@@ -23,9 +23,9 @@ function start_consul_agent {
   until check_host_up $CONSULSERVER ; do
 
     sleep 1
-    echo "Attempt to contact $CONSULSERVER failed"
-
     ((TRY_COUNT++))
+
+    echo "Attempt to contact $CONSULSERVER failed ($TRY_COUNT/$MAX_TRIES)"
     if [ $TRY_COUNT -gt $MAX_TRIES ]; then
       echo "Giving up on $CONSULSERVER"
       # break
