@@ -7,41 +7,22 @@ services:
       file: common.yml
       service: nedcas
 
-  # casproxy:
-  #   extends:
-  #     file: common.yml
-  #     service: casproxy
-  #
-  # casconsultemplate:
-  #   extends:
-  #     file: common.yml
-  #     service: casconsultemplate
-  #   volumes_from:
-  #     - casproxy
-  #
-  # nedcas:
-  #   extends:
-  #     file: common.yml
-  #     service: nedcas-proxyable
-  #   environment:
-  #     - NED_SERVICE=http://nedproxy:8080/v1
-
-  nedproxy:
+  nedapi-lb:
     extends:
       file: common.yml
-      service: nedproxy
+      service: nedapi-lb
 
-  nedconsultemplate:
+  nedapi-consultemplate:
     extends:
       file: common.yml
-      service: nedconsultemplate
+      service: nedapi-consultemplate
     volumes_from:
-      - nedproxy
+      - nedapi-lb
 
   nedapi:
     extends:
       file: common.yml
-      service: ned-proxyable
+      service: nedapi-proxyable
 
   consulserver:
     extends:

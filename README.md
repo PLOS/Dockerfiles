@@ -161,6 +161,8 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Dockerize: ploscli, AricleAdmin
 * Alpine everything for smaller images
 * plos-themes and apache-conf (and patch so we can use environment vars for run time config)
+* Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
+* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service.
 
 Troubleshooting
 ---------------
