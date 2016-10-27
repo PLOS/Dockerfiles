@@ -2,11 +2,6 @@ version: '2'
 
 services:
 
-  nedcas:
-    extends:
-      file: common.yml
-      service: nedcas
-
   nedapi-lb:
     extends:
       file: common.yml
@@ -18,6 +13,18 @@ services:
       service: nedapi-consultemplate
     volumes_from:
       - nedapi-lb
+
+  nedcas-ssl:
+    extends:
+      file: common.yml
+      service: nedcas-ssl
+    depends_on:
+      - nedcas-proxyable
+
+  nedcas-proxyable:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
 
   nedapi:
     extends:

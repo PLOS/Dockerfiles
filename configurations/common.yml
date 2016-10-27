@@ -15,9 +15,9 @@ services:
   akita-ssl:
     extends:
       service: haproxy
-
     ports:
       - "443:443"
+      - "80:80"
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
       - ${DOCKERFILES}/projects/akita/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
@@ -33,19 +33,10 @@ services:
     # volumes_from:   # you have to specify this value in the extended config
     #   - aktia-lb
 
-  # akita:
-  #   extends:
-  #     service: akita-proxyable
-  #   ports:
-  #     - "443:443"
-  #   environment:
-  #     - SSL= existingkeys
-  #   volumes:
-  #     - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-  #     - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
-
   akita-proxyable:
     image: akita:develop
+    volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
+      - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -157,6 +148,9 @@ services:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
     #   - /var/lib/mysql
 
+
+
+  # TODO: make a dockerfile for this so we can set some env vars and cover the two common cases. SSL and LB
   haproxy:
     image: haproxy:alpine
     # ports:
