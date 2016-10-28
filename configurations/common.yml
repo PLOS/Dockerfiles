@@ -24,6 +24,12 @@ services:
     # depends_on:           # must be specified in extending file, not here
     #   - "akita-proxyable"
 
+
+
+  # TODO: pass in service name so the name can by dynamic
+  #
+  # https://github.com/hashicorp/consul-template/issues/532
+
   akita-consultemplate:
     extends:
       service: consultemplate
@@ -149,6 +155,15 @@ services:
     #   - /var/lib/mysql
 
 
+  haproxy-template:
+    image: haproxy-template
+    environment:
+      - FRONTEND_PORT=433
+      - BACKEND=hostname:80
+      # - MODE=ssl or loadbalance
+    # volumes:
+    #   - /usr/local/etc/haproxy
+    #   - /dev/log:/dev/log
 
   # TODO: make a dockerfile for this so we can set some env vars and cover the two common cases. SSL and LB
   haproxy:
