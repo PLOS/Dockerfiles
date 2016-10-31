@@ -1,15 +1,13 @@
-# FROM tomcat:6-jre8
-FROM tomcat:7-jre8-alpine
+FROM tomcat:7-plos
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-# RUN apt-get update && apt-get install -y mysql-client python python-mysqldb
-RUN apk update && apk add mysql-client python py-mysqldb bash curl
-RUN rm -rf $CATALINA_HOME/webapps/*
-
-RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
-  wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
+RUN apk add python py-mysqldb
+# RUN rm -rf $CATALINA_HOME/webapps/*
+#
+# RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
+#   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
 
 ENV AMBRA_CONF /etc/ambra/
 

@@ -6,6 +6,8 @@
 
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
+source projects/build-helpers.sh
+
 COMMAND=$1
 NAME=$2
 DRYRUN=false
@@ -19,13 +21,13 @@ function _get_images_from_config {
   echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
-function _build_image {
-  PROJECT=$1
-  echo Building image $PROJECT ...
-  if [ "$DRYRUN" == "false" ]; then
-    $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
-  fi
-}
+# function build_image {
+#   PROJECT=$1
+#   echo Building image $PROJECT ...
+#   if [ "$DRYRUN" == "false" ]; then
+#     $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+#   fi
+# }
 
 function _list_projects {
   echo "$(find projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
@@ -43,7 +45,7 @@ elif [[ "$COMMAND" == "image" ]]; then
     echo Choose an image to build:
     _list_projects
   else
-    _build_image $NAME
+    build_image $NAME
   fi
 
 elif [ "$COMMAND" == "stack" ]; then
@@ -62,12 +64,14 @@ elif [ "$COMMAND" == "stack" ]; then
 
       if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
 
-        _build_image $PROJECT
+        build_image $PROJECT
 
         docker inspect $IMAGE > /dev/null
         if [ $? -ne 0 ]; then
           echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
           exit 1;
+
+          # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
         fi
 
       fi
@@ -79,7 +83,7 @@ elif [ "$COMMAND" == "all" ]; then
   projects=$(_list_projects)
   for project in $projects
   do
-    _build_image $project
+    build_image $project
   done;
 else
   echo $USAGE

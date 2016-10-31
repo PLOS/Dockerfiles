@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 
 GITHUB_REPO_BASE=git@github.com:PLOS
-
-# TODO: create a common image that contains the bellow assets since these dynamic builds do not work
-# export COMMON_GET_TOMCAT_JDBC="wget -P /tmp http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar"
-# export COMMON_GET_MYSQL_CONNECTOR="wget -P /tmp http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar"
-# export COMMON_GET_FLYWAY="wget -O - https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3.tar.gz | tar xz -C /root"
-# export COMMON_GET_CONSUL="wget -P /tmp https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip /tmp/consul*.zip -d /root"
 
 
 function die() {
   echo "$@" 1>&2
   exit 1
 }
+
+function build_image {
+  PROJECT=$1
+  echo Building image $PROJECT ...
+  # if [ "$DRYRUN" == "false" ]; then
+    $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+  # fi
+}
+
 
 function build_rails_passenger_image() {
 
@@ -131,6 +134,8 @@ function build_rails_ember_images() {
 }
 
 function build_java_service_images() {
+
+  build_image tomcat
 
   MAVEN_LOCAL_REPO=maven_local_repo
 
