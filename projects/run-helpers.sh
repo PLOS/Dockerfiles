@@ -138,8 +138,4 @@ function process_template {
 $(<$CONTEXT_TEMPALTE)
 EOF
 " > $CONTEXT_TEMPALTE
-
-  # cat $CONTEXT_TEMPALTE
-
-  # TODO: figure out how to ignore bad substitution errors. For example, false positive $ characters in ambra.xml'
 }

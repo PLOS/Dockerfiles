@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # set -x
 
@@ -7,11 +7,6 @@ NGINX_CONF=nginx.conf
 
 BUILD_DIR=/root
 source $BUILD_DIR/run-helpers.sh
-
-if [ "$SSL" == "existingkeys" ]; then
-  NGINX_CONF=nginx-ssl.conf
-  # assumes you have placed/mountd a cert and key in $NGINX_DIR/ssl/
-fi
 
 ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
 ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/

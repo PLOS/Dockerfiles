@@ -16,14 +16,16 @@ fi
 
 set_db_grants
 
-bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
-    -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
+bash $BUILD_DIR/flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
+    -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:$BUILD_DIR/migrations migrate
 
 # ringgold DB
 
 if ! check_db_exists ${RINGGOLD_DATABASE}; then
   create_db ${RINGGOLD_DATABASE}
 fi
+
+# TODO: seed ringgold
 
 # seed NED with dev data as needed
 

@@ -2,39 +2,47 @@ version: '2'
 
 services:
 
-  akitaproxy:
+  akita-lb:
     extends:
-      # file: common.yml
       service: haproxy
     ports:
       - "443:443"
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
-  akitaconsultemplate:
+  akita-ssl:
     extends:
-      # file: common.yml
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1"
-    volumes:
-      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - aktiaproxy
-
-  akita:
-    extends:
-      # file: common.yml
-      service: akita-proxyable
+      service: haproxy
     ports:
       - "443:443"
-    environment:
-      - SSL= existingkeys
+      - "80:80"
     volumes:
-      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+      - ${DOCKERFILES}/projects/akita/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "akita-proxyable"
+
+
+
+  # TODO: pass in service name so the name can by dynamic
+  #
+  # https://github.com/hashicorp/consul-template/issues/532
+
+  akita-consultemplate:
+    extends:
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akita-lb_1"
+    volumes:
+      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:   # you have to specify this value in the extended config
+    #   - aktia-lb
 
   akita-proxyable:
     image: akita:develop
+    volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
+      - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -54,28 +62,20 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
-      - SSL=none  # options = none, existingkeys
+      # - SSL=none  # options = none, existingkeys
     # volumes:    # when using SSL=existingkeys
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-  casproxy:
+  nedcas-lb:
     extends:
       service: haproxy
     ports:
       - "8443:443"
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-
-  casconsultemplate:
-    extends:
-      # file: common.yml
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1"
-    volumes:
-      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - casproxy
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
   nedcas-ssl:
     extends:
@@ -85,6 +85,17 @@ services:
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
       - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "nedcas-proxyable"
+
+  nedcas-consultemplate:
+    extends:
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedcas-lb_1"
+    volumes:
+      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:
+    #   - nedcas-lb
 
   nedcas-proxyable:
     image: nedcas:develop
@@ -99,32 +110,30 @@ services:
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
-    # volumes:
-    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
-  nedproxy:
+  nedapi-lb:
     extends:
-      # file: common.yml
       service: haproxy
     ports:
       - "8081:8080"
-
-  nedconsultemplate:
-    extends:
-      # file: common.yml
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=nedproxy)
-    volumes:
-      - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - nedproxy
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
   nedapi:
-    extends: ned-proxyable
+    extends: nedapi-proxyable
     ports:
       - 8081:8080
 
-  ned-proxyable:
+  nedapi-consultemplate:
+    extends:
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedapi-lb_1" # $$(docker ps -q -f name=nedapi-lb)
+    volumes:
+      - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:
+    #   - nedapi-lb
+
+  nedapi-proxyable:
     image: nedapi:develop
     environment:
       - MYSQL_ROOT_PASSWORD=root
@@ -145,6 +154,18 @@ services:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
     #   - /var/lib/mysql
 
+
+  haproxy-template:
+    image: haproxy-template
+    environment:
+      - FRONTEND_PORT=433
+      - BACKEND=hostname:80
+      # - MODE=ssl or loadbalance
+    # volumes:
+    #   - /usr/local/etc/haproxy
+    #   - /dev/log:/dev/log
+
+  # TODO: make a dockerfile for this so we can set some env vars and cover the two common cases. SSL and LB
   haproxy:
     image: haproxy:alpine
     # ports:

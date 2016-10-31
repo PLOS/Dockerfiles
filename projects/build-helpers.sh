@@ -2,8 +2,14 @@
 
 set -x
 
-MAVEN_LOCAL_REPO=maven_local_repo
 GITHUB_REPO_BASE=git@github.com:PLOS
+
+# TODO: create a common image that contains the bellow assets since these dynamic builds do not work
+# export COMMON_GET_TOMCAT_JDBC="wget -P /tmp http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar"
+# export COMMON_GET_MYSQL_CONNECTOR="wget -P /tmp http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar"
+# export COMMON_GET_FLYWAY="wget -O - https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3.tar.gz | tar xz -C /root"
+# export COMMON_GET_CONSUL="wget -P /tmp https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip /tmp/consul*.zip -d /root"
+
 
 function die() {
   echo "$@" 1>&2
@@ -126,6 +132,8 @@ function build_rails_ember_images() {
 
 function build_java_service_images() {
 
+  MAVEN_LOCAL_REPO=maven_local_repo
+
 	# TODO: implement --no-cache option or mark images with build date
 
 	BASE_IMAGE=maven:3-jdk-8-alpine
@@ -189,8 +197,8 @@ function build_java_service_images() {
   TEMP_BUILD_DIR=`mktemp -d`
   docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
   tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
-  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
 
+  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
