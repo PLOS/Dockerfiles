@@ -48,10 +48,14 @@ userApi:
 # Configuration for the API for user data (Named Entity Database, NED).
 
 queue:
+  brokerUrl:        ${PLOS_QUEUE}
+
   solrUpdate: activemq:plos.solr.article.index?transacted=false
   solrDelete: activemq:plos.solr.article.delete?transacted=false
-# Queue destination keys. (For now, the queue address is still set in ambra.xml
-# at ambra.services.activemq. To be moved here.
+  # Queue destination keys.
+
+  syndicationRange: 30
+  # Number of days in the past to syndicate.
 
 manuscriptCustomMeta:
   revisionDate:     "Publication Update"

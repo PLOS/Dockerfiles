@@ -146,11 +146,11 @@
         <!-- Number of results per page -->
         <pageSize>10</pageSize>
 				<server>
-          <url>${SOLR_URL}</url>
+          <url>${SOLR_URL}</url>    <!-- can we remove this yet? -->
 				</server>
       </search>
 
-      <activemq>${PLOS_QUEUE}</activemq>
+      <activemq>${PLOS_QUEUE}</activemq>   <!-- can we remove this yet? It may have moved to rhino.yaml already -->
 
       <registration>
         <!-- Default assumption is that the registration application is running on ambra-cas. If the

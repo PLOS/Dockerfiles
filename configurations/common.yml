@@ -264,7 +264,7 @@ services:
       - MYSQL_DATABASE=plosreports
 
   plosqueue:
-    image: plosqueue:accman
+    image: plosqueue:master
     environment:
       - SOLR_URL=http://solr:8080/solr/update
       - RHINO_SERVICE=http://rhino:8080
