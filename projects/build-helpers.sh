@@ -2,8 +2,11 @@
 
 # set -x
 
+# TODO: make these build methods DRY
+
 GITHUB_REPO_BASE=git@github.com:PLOS
 
+DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
 
 function die() {
   echo "$@" 1>&2
@@ -18,6 +21,25 @@ function build_image {
   # fi
 }
 
+function get_git_branch {
+  PROJECT_DIR=$1
+  echo $(git --git-dir=$PROJECT_DIR/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+}
+
+function get_local_src_dir {
+  PROJECT_DIR=$1
+
+  # assumes the project is locally in the same directory as the Dockerfiles project
+	PROJECT_LOCAL_REPO=$DOCKERFILES/../${PROJECT_DIR}/
+
+  # perhaps they supplied an absolute path to an existing project directory
+  # if [ -d ${PROJECT_DIR} ]; then
+  if [[ ${PROJECT_DIR} == \/* ]]; then
+    PROJECT_LOCAL_REPO=${PROJECT_DIR}/
+  fi
+
+  echo $PROJECT_LOCAL_REPO
+}
 
 function build_rails_passenger_image() {
 
@@ -30,6 +52,7 @@ function build_rails_passenger_image() {
 
   BASE_TAG=current
 
+  # TODO: use $DOCKERFILES instead
   DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_NAME
 
   # perhaps they supplied an absolute path to an existing project directory
@@ -81,6 +104,7 @@ function build_rails_ember_images() {
 
   BASE_TAG=current
 
+  # TODO: use $DOCKERFILES instead
   DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$IMAGE_NAME
 
   PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
@@ -151,26 +175,11 @@ function build_java_service_images() {
 
 	BUILD_RESULT_DIR=${IMAGE_NAME}_build
 
-	DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$IMAGE_NAME
-	# assumes the project is locally in the same directory as the Dockerfiles project
-	PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
+  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
 
-  # perhaps they supplied an absolute path to an existing project directory
-  # if [ -d ${PROJECT_DIR} ]; then
-  if [[ ${PROJECT_DIR} == \/* ]]; then
-    PROJECT_LOCAL_REPO=${PROJECT_DIR}/
-  fi
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
-  # checkout the project from git if it doesn't exist on the local machine
-	if [ ! -d $PROJECT_LOCAL_REPO ];
-	  then
-	  echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
-	  git --version > /dev/null || die "git is not installed"
-
-	  git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
-
-	  if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
-	fi
+	check_local_git $PROJECT_DIR
 
 	# create build and maven repo volumes if they do not exist
 	docker inspect $BUILD_RESULT_DIR > /dev/null
@@ -179,7 +188,8 @@ function build_java_service_images() {
 	docker inspect $MAVEN_LOCAL_REPO > /dev/null
 	[ $? -eq 1 ] && docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
 
-  BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  # BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
 	# build java assets (ie - API war)
 	echo "Building and Loading Java Assets on Base Image (maven)..."
@@ -207,11 +217,79 @@ function build_java_service_images() {
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
-
+	docker inspect $BUILD_RESULT_DIR > /dev/null
+	[ $? -eq 1 ] && docker create -v /build --name $BUILD_RESULT_DIR $BASE_IMAGE /bin/true
 	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
 
 	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
 }
 
-"$@"
+function check_local_git {
+
+	PROJECT_DIR=$1
+
+  PROJECT_NAME=$(basename $PROJECT_DIR)
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
+
+  # checkout the project from git if it doesn't exist on the local machine
+  if [ ! -d $PROJECT_LOCAL_REPO ];
+    then
+    echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
+    git --version > /dev/null || die "git is not installed"
+
+    git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
+
+    if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
+  fi
+}
+
+function build_non_runnable_images() {
+
+	BASE_IMAGE=bash
+	PROJECT_DIR=$1
+	IMAGE_NAME=$2
+
+  PROJECT_NAME=$(basename $PROJECT_DIR)
+
+  BASE_TAG=current
+
+	BUILD_RESULT_DIR=${IMAGE_NAME}_build
+
+  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
+
+  check_local_git $PROJECT_DIR
+
+  docker inspect $BUILD_RESULT_DIR > /dev/null
+  [ $? -eq 1 ] && docker create -v /build --name $BUILD_RESULT_DIR $BASE_IMAGE /bin/true
+
+  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
+
+	# build assets
+	echo "Building and Loading Base Image..."
+
+	docker run --rm \
+     --volumes-from $BUILD_RESULT_DIR \
+	   --volume $PROJECT_LOCAL_REPO:/src \
+	   --volume $DOCKER_SETUP_DIR:/scripts \
+	   --volume $DOCKER_SETUP_DIR/..:/shared \
+	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
+
+	echo "Building runnable docker image ..."
+
+  # NOTE: another workaround without sudo: https://github.com/docker/docker/issues/15785#issuecomment-164030356
+  TEMP_BUILD_DIR=`mktemp -d`
+  docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
+  tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
+
+  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
+
+	echo "image tags = $IMAGE_NAME:$BASE_TAG"
+
+}
+
+
+# execute as subshell if this script is not being sourced
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"

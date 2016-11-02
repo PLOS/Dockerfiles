@@ -27,6 +27,8 @@ For a slightly more complex stack try bringing up the content repo.
     ./build.sh stack contentrepo
     ./stack.sh contentrepo
 
+This one might take some time to finish because building mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
+
 See Troubleshooting below if you have problem with Maven running too slow.
 
 Images

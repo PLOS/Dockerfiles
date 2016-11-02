@@ -2,7 +2,7 @@
 
 source /shared/compile-helpers.sh
 
-java_compile_prepare
+compile_prepare
 
 cd config/docker-maven-plugin
 mvn clean install
@@ -12,4 +12,4 @@ mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install || die "compile failed
 cp target/*.?ar $BUILDDIR
 cp -r database/migrations/ $BUILDDIR/
 
-java_compile_finish "target/classes/version.properties"
+maven_fetch_version "target/classes/version.properties"

@@ -3,5 +3,5 @@
 # TODO: pull down and overwrite:
 # code/general/Plos/ftl/common/userMgmtBaseUrl.ftl:<#assign userMgmtBaseUrl = '${AKITA_URL}'/>
 
-echo "not implemented yet"
-exit 1
+$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
+  build_non_runnable_images plos-themes plosthemes

@@ -195,6 +195,9 @@ services:
     ports:
       - 1080:1080
 
+  plosthemes:
+    image: plosthemes:master
+
   wombat:
     image: wombat:master
     volumes:

@@ -21,13 +21,14 @@ function _get_images_from_config {
   echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
 }
 
-# function build_image {
-#   PROJECT=$1
-#   echo Building image $PROJECT ...
-#   if [ "$DRYRUN" == "false" ]; then
-#     $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
-#   fi
-# }
+function _build_image {
+  PROJECT=$1
+  echo Building image $PROJECT ...
+  if [ "$DRYRUN" == "false" ]; then
+    build_image $PROJECT
+    # $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+  fi
+}
 
 function _list_projects {
   echo "$(find projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
@@ -45,7 +46,7 @@ elif [[ "$COMMAND" == "image" ]]; then
     echo Choose an image to build:
     _list_projects
   else
-    build_image $NAME
+    _build_image $NAME
   fi
 
 elif [ "$COMMAND" == "stack" ]; then
@@ -64,7 +65,7 @@ elif [ "$COMMAND" == "stack" ]; then
 
       if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
 
-        build_image $PROJECT
+        _build_image $PROJECT
 
         docker inspect $IMAGE > /dev/null
         if [ $? -ne 0 ]; then
@@ -72,6 +73,7 @@ elif [ "$COMMAND" == "stack" ]; then
           exit 1;
 
           # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
+          # tricky to do because the git repo name is stored in build-image.sh
         fi
 
       fi
@@ -83,7 +85,7 @@ elif [ "$COMMAND" == "all" ]; then
   projects=$(_list_projects)
   for project in $projects
   do
-    build_image $project
+    _build_image $project
   done;
 else
   echo $USAGE

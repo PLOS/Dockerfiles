@@ -2,3 +2,6 @@
 
 $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
   build_java_service_images plos-solr solr
+
+# source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh
+# build_java_service_images plos-solr solr

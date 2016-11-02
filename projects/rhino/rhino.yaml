@@ -6,14 +6,10 @@ prettyPrintJson: true
 contentRepo:
   editorial:
     # Editorial content written by Lemur.
-#    address: http://sfo-cms-devbox01.int.plos.org:8080/repo/
-#    bucket:  plive-stage
     address: ${REPO_SERVICE}
     bucket:  cms
   corpus:
     # Main corpus of articles.
-#    address: http://sfo-perf-plosrepo01.int.plos.org:8002/v1/
-#    bucket:  perf-repo
     address: ${REPO_SERVICE}
     bucket:  corpus
 
