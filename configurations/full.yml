@@ -2,15 +2,26 @@ version: '2'
 
 services:
 
-  akita:
+  akita-ssl:
     extends:
       file: common.yml
-      service: akita
+      service: akita-ssl
+    depends_on:
+      - akita-proxyable
 
-  nedcas:
+  akita-proxyable:
+    extends:
+      file: common.yml
+      service: akita-proxyable
+    environment:
+      - CAS_URL=https://nedcas-ssl:443
+
+  nedcas-ssl:
     extends:
       file: common.yml
       service: nedcas-ssl
+    depends_on:
+      - nedcas-proxyable
 
   nedcas-proxyable:
     extends:
