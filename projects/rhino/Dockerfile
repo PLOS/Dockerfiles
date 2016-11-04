@@ -3,11 +3,11 @@ FROM tomcat:7-plos
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk add python py-mysqldb
-# RUN rm -rf $CATALINA_HOME/webapps/*
-#
-# RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
-#   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
+RUN apk add python py-mysqldb py-pip
+
+COPY requirements.txt /root
+
+RUN pip install -r /root/requirements.txt
 
 ENV AMBRA_CONF /etc/ambra/
 
@@ -17,8 +17,7 @@ RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
-COPY run*.sh *.sql dbschema /root/
-
+COPY run*.sh *.sql *.py dbschema /root/
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
 COPY rhino.yaml context.xml ambra.xml $AMBRA_CONF
 

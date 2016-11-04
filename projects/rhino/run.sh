@@ -32,7 +32,18 @@ wait_for_web_service $REPO_SERVICE/config "contentrepo"
 curl -X POST $REPO_SERVICE/buckets --data name=corpus
 
 process_template $AMBRA_CONF/context.xml
-process_template $AMBRA_CONF/rhino.yaml
+# process_template $AMBRA_CONF/rhino.yaml
+
+./build_config_rhino.py                                                       \
+    --repo_location     $REPO_SERVICE         \
+    --corpus_bucket     mogilefs-prod-repo                                    \
+    --editorial_bucket  plive                                                 \
+    --user_api_server   $NED_API                          \
+    --user_api_auth     6ahnD9mb9rIPhspx0ROa                                  \
+    --queue_location    tcp://queue-101.soma.plos.org:61616                   \
+
+$BUILD_DIR/build_config_rhino.py > $AMBRA_CONF/rhino2.yaml
+
 
 # TODO: figure out how to process the $ vars in this file
 # process_template $AMBRA_CONF/ambra.xml
