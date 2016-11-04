@@ -3,11 +3,11 @@ FROM tomcat:7-plos
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk add python py-mysqldb py-pip
+RUN apk add python py-mysqldb
 
-COPY requirements.txt /root
-
-RUN pip install -r /root/requirements.txt
+# RUN apk add py-pip
+# COPY requirements.txt /root
+# RUN pip install -r /root/requirements.txt
 
 ENV AMBRA_CONF /etc/ambra/
 

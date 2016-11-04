@@ -56,6 +56,10 @@ sleep 3 # sloppy wait for queue to run job
 # force commit the solr index update
 curl $SOLR_BASE/update?commit=true
 
+# sleep 2
+
+curl $ARTICLE_SOLR
+
 curl $ARTICLE_SOLR | grep $ARTICLE
 	test_true "queue/indexer"
 

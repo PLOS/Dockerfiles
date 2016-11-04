@@ -269,7 +269,7 @@ services:
   plosqueue:
     image: plosqueue:master
     environment:
-      - SOLR_URL=http://solr:8080/solr/update
+      - SOLR_URL=http://solr:8080/solr
       - RHINO_SERVICE=http://rhino:8080
       - COUNTER_DATABASE_URL=jdbc:mysql://counterdb/plosreports
       - COUNTER_DATABASE_USER=ambra
