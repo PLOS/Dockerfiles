@@ -11,7 +11,7 @@ wait_until_db_service_up
 if ! check_db_exists; then
   echo "CREATE SCHEMA $MYSQL_DATABASE" | $MYSQL_ROOT
 
-  # NOTE: after conversation with dipros on 9/19/2016 it appears there is a future goal to move to something like flyway where migrations from scratch will be supported
+  # HACK: after conversation with dipros on 9/19/2016 it appears there is a future goal to move to something like flyway where migrations from scratch will be supported
 
   $MYSQL_ROOT $MYSQL_DATABASE < ${BUILD_DIR}/ambra_pre_migrations.sql
 
@@ -32,17 +32,20 @@ wait_for_web_service $REPO_SERVICE/config "contentrepo"
 curl -X POST $REPO_SERVICE/buckets --data name=corpus
 
 process_template $AMBRA_CONF/context.xml
-process_template $AMBRA_CONF/rhino.yaml
-
-# $BUILD_DIR/build_config_rhino.py                              \
-#     --repo_location     $REPO_SERVICE         \
-#     --corpus_bucket     mogilefs-prod-repo                   \
-#     --editorial_bucket  plive                          \
-#     --user_api_server   $NED_API             \
-#     --user_api_auth     $NED_PASSWORD       \
-#     --queue_location    $PLOS_QUEUE  > $AMBRA_CONF/rhino.yaml
-
-# TODO: figure out how to process the $ vars in this file
 # process_template $AMBRA_CONF/ambra.xml
+
+# process_template $AMBRA_CONF/rhino.yaml
+
+$BUILD_DIR/build_config_rhino.py                \
+    --repo_location     $REPO_SERVICE           \
+    --corpus_bucket     $REPO_CORPUS_BUCKET     \
+    --editorial_bucket  $REPO_EDITORIAL_BUCKET  \
+    --user_api_server   $NED_API                \
+    --user_api_auth     $NED_PASSWORD           \
+    --queue_location    $PLOS_QUEUE > $AMBRA_CONF/rhino.yaml
+
+# HACK: inject NED username. needed because username is hardcoded in config
+sed -i "s/authorizationAppName:\s*dipro.*/authorizationAppName: $NED_USER/" $AMBRA_CONF/rhino.yaml
+
 
 start_tomcat

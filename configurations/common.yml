@@ -228,6 +228,8 @@ services:
       - MYSQL_HOSTNAME=ambradb
       - MYSQL_DATABASE=ambra
       - REPO_SERVICE=http://contentrepo:8080
+      - REPO_CORPUS_BUCKET=corpus
+      - REPO_EDITORIAL_BUCKET=cms
       - SOLR_URL=http://solr:8080/solr
       - PLOS_QUEUE=tcp://plosqueue:61616
       - NED_API=http://nedapi:8080

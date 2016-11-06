@@ -12,6 +12,19 @@ function die() {
   exit 1
 }
 
+function verify_unchanged {
+  FILE=$1
+  CHECKSUM=$2
+
+  CURRENT_CHECKSUM=($(md5sum $FILE))
+
+  if [ $CHECKSUM != $CURRENT_CHECKSUM ]; then
+    echo "Critical file checksum mismatch"
+    echo $FILE expected $CHECKSUM but is currently $CURRENT_CHECKSUM
+    exit 1
+  fi
+}
+
 function compile_prepare {
 
   rm -rf $BUILDDIR/*

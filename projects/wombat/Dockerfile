@@ -1,9 +1,10 @@
-FROM tomcat:7-jre8-alpine
+FROM tomcat:7-plos
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk update && apk add bash curl
+RUN apk add python py-pip
+# TODO: replace wombat.yaml with python script from plos-themes
 
 RUN rm -rf $CATALINA_HOME/webapps/*
 
