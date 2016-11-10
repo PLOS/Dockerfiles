@@ -17,7 +17,7 @@ function delete_all_images {
 
 function delete_unused_volumes {
   echo Deleting old volumes
-  docker run -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker --rm martin/docker-cleanup-volumes
+  docker volume rm $(docker volume ls -qf dangling=true)
 }
 
 function kill_all_containers {
@@ -26,6 +26,7 @@ function kill_all_containers {
 }
 
 function basic {
+  delete_unused_volumes
   delete_untagged_images
   delete_stopped_containers
 }
