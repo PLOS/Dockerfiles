@@ -23,7 +23,7 @@ cp $BUILD_DIR/lagotto.conf /etc/nginx/sites-enabled/lagotto.conf
 cp $BUILD_DIR/00_app_env.conf /etc/nginx/conf.d/00_app_env.conf
 cp $BUILD_DIR/env.template $SRC/.env
 
-process_template $SRC/.env
+process_env_template $SRC/.env
 
 # set up services
 

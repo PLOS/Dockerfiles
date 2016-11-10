@@ -5,15 +5,16 @@ LABEL vendor="Public Library of Science"
 
 RUN apk update && apk add mysql-client bash
 
-WORKDIR /root
-
+ENV HOME /root/
 ENV AMBRA_CONF /etc/ambra/
+WORKDIR /root
 
 RUN mkdir $AMBRA_CONF
 
-COPY run*.sh bin /root/
-ADD *.tar.gz /root/
-RUN mv /root/plos-queue-* /root/plos-queue
+COPY run*.sh bin $HOME
 COPY camel.properties $AMBRA_CONF
 
-CMD bash /root/run.sh
+ADD *.tar.gz $HOME
+RUN mv $HOME/plos-queue-* $HOME/plos-queue
+
+CMD bash $HOME/run.sh

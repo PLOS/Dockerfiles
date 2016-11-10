@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-BUILD_DIR=/root
+source $HOME/run-helpers.sh
 
-source $BUILD_DIR/run-helpers.sh
+require_envs SOLR_URL RHINO_SERVICE COUNTER_DATABASE_URL \
+  COUNTER_DATABASE_USER COUNTER_DATABASE_PASSWORD
 
-process_template $AMBRA_CONF/camel.properties
+process_env_template $AMBRA_CONF/camel.properties
 
-PLOS_CAMEL_HOME=$BUILD_DIR/plos-queue $BUILD_DIR/runcamel.sh
+PLOS_CAMEL_HOME=$HOME/plos-queue $HOME/runcamel.sh

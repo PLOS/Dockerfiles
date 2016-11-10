@@ -119,11 +119,6 @@ services:
     # depends_on:           # must be specified in extending file, not here
     #   - "consulserver"
 
-  nedapi:
-    extends: nedapi-proxyable
-    ports:
-      - 8081:8080
-
   nedapi-consultemplate:
     extends:
       service: consultemplate
@@ -132,6 +127,11 @@ services:
       - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
     #   - nedapi-lb
+
+  nedapi:
+    extends: nedapi-proxyable
+    ports:
+      - 8081:8080
 
   nedapi-proxyable:
     image: nedapi:develop
@@ -206,14 +206,13 @@ services:
     ports:
       - 8082:8080
     environment:
-      - RHINO_SERVICE=http://rhino:8080
-      - SOLR_SERVICE=http://solr:8080/select
-      - CAS_URL=https://localhost:8443/cas
-      - CAS_LOGIN=https://localhost:8443/cas/login
-      - CAS_LOGOUT=https://localhost:8443/cas/logout
-      # TODO: implement root page override. see plos-themes/prod-wombat-config.py
+      - SERVER=http://rhino:8080
+      - SOLR=http://solr:8080/select
+      - CAS=https://localhost:8443/cas
+      - EMAIL=plos-org.mail.protection.outlook.com
+      - ROOT=/root/themes/
+      # - DISABLE_COMMENTS=true
       # - ROOT_PAGE_PATH=/root/themes/content/rootPage.html
-      # TODO: perhaps we should use plos-themes/build_config_wombat.py to generate the config instead of a templated wombat.yaml
 
   rhino:
     image: rhino:master
@@ -227,14 +226,14 @@ services:
       - MYSQL_USER_PASSWORD=ambra
       - MYSQL_HOSTNAME=ambradb
       - MYSQL_DATABASE=ambra
-      - REPO_SERVICE=http://contentrepo:8080
-      - REPO_CORPUS_BUCKET=corpus
-      - REPO_EDITORIAL_BUCKET=cms
-      - SOLR_URL=http://solr:8080/solr
-      - PLOS_QUEUE=tcp://plosqueue:61616
-      - NED_API=http://nedapi:8080
-      - NED_USER=dev
-      - NED_PASSWORD=dev
+      - REPO_LOCATION=http://contentrepo:8080
+      - CORPUS_BUCKET=corpus
+      - EDITORIAL_BUCKET=cms
+      - QUEUE_LOCATION=tcp://plosqueue:61616
+      - USER_API_SERVER=http://nedapi:8080
+      - USER_API_USER=dev
+      - USER_API_AUTH=dev
+      # - SOLR_URL=http://solr:8080/solr
 
 # RUN: ./stack.sh common run --rm indexerminion
 # DEBUG: ./stack.sh common run -p 8000:8000 --rm indexerminion
@@ -322,6 +321,7 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=mogile
       - MYSQL_USER_PASSWORD=mogile
+      # - MYSQL_DATABASE=mogilefs         # TODO: include this
       - MOG_NODE_HOST=mogilenode
 
   mogilenode:

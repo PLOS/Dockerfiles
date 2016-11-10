@@ -8,8 +8,8 @@ To keep your host clean, all projects are built and tested in disposable contain
 
 Requirements
 ------------
-* docker >= 1.10
-* docker-compose >= 1.7
+* docker >= 1.12
+* docker-compose >= 1.8
 * git
 
 It is recommended you configure Docker to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
@@ -161,10 +161,9 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
 * Dockerize: ploscli, AricleAdmin
-* Alpine everything for smaller images
 * plos-themes and apache-conf (and patch so we can use environment vars for run time config)
 * Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
-* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service.
+* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service. (https://github.com/hashicorp/consul-template/issues/532)
 
 Troubleshooting
 ---------------

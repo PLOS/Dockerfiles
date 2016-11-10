@@ -1,4 +1,11 @@
 #!/usr/bin/env bash
 
-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
-  build_java_service_images wombat wombat
+source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh
+
+# HACK: copy python scripts over from ploth-themes
+cp $(get_local_src_dir plos-themes)/{requirements.txt,build_config_utils.py,build_config_wombat.py} "$( dirname "${BASH_SOURCE[0]}" )"
+
+build_java_service_images wombat wombat
+
+# hack cleanup
+rm "$( dirname "${BASH_SOURCE[0]}" )"/{requirements.txt,build_config_utils.py,build_config_wombat.py}

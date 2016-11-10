@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # set -x
 
@@ -7,6 +7,19 @@ MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root --pa
 function die {
   echo "$@" 1>&2
   exit 1
+}
+
+function require_envs {
+  LIST=("$@")
+
+  for env in "${LIST[@]}"; do
+    # echo Checking for required environment variable : $env
+    [[ ${!env} ]] || die "Missing required environment variable: $env"
+  done
+}
+
+function require_mysql_envs {
+  require_envs MYSQL_ROOT_PASSWORD MYSQL_USER MYSQL_USER_PASSWORD MYSQL_HOSTNAME MYSQL_DATABASE
 }
 
 function start_tomcat {
@@ -127,7 +140,7 @@ function create_db {
   echo "CREATE DATABASE ${DB}" | ${MYSQL_ROOT}
 }
 
-function process_template {
+function process_env_template {
 	CONTEXT_TEMPALTE=$1
 
   ls -lh $CONTEXT_TEMPALTE

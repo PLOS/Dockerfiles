@@ -20,6 +20,8 @@ ENV AMBRA_CONF /etc/ambra/
 
 RUN mkdir -p $AMBRA_CONF $CATALINA_HOME/solr/home $CATALINA_HOME/solr/home/data
 
+# TODO: add HEALTHCHECK
+
 RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
@@ -32,4 +34,4 @@ WORKDIR /root
 
 RUN unzip $CATALINA_HOME/webapps/solr.war 'collection1/*' -d $CATALINA_HOME/solr/home/
 
-CMD bash /root/run.sh
+CMD bash $HOME/run.sh

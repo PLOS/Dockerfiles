@@ -13,6 +13,6 @@ source $BUILD_DIR/run-helpers.sh
 
 wait_until_db_service_up
 
-process_template $BUILD_DIR/minion.yaml
+process_env_template $BUILD_DIR/minion.yaml
 
 java -server -d64 $DEBUG_FLAGS -jar $BUILD_DIR/solr-indexer-*-jar-with-dependencies.jar -properties $BUILD_DIR/minion.yaml

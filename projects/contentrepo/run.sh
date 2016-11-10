@@ -1,15 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-BUILD_DIR=/root
-
-source $BUILD_DIR/run-helpers.sh
+source $HOME/run-helpers.sh
 
 wait_until_db_service_up
 
 if ! check_db_exists; then
   echo "Setting up schema"
   echo "DROP SCHEMA IF EXISTS ${MYSQL_DATABASE}; CREATE SCHEMA ${MYSQL_DATABASE};" | $MYSQL_ROOT
-  $MYSQL_ROOT < ${BUILD_DIR}/setup.mysql
+  $MYSQL_ROOT < $HOME/setup.mysql
   # TODO: run schema migrations
 fi
 
@@ -24,6 +22,6 @@ done;
 
 echo "Mogile is ready"
 
-process_template $CATALINA_HOME/conf/context.xml
+process_env_template $CATALINA_HOME/conf/context.xml
 
 start_tomcat

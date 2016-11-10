@@ -16,11 +16,10 @@ RUN apt-get update -qq && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     wget -O consul.zip https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip consul.zip
 
-# setup consul
-# ADD https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip /root/
-# WORKDIR /root
-# RUN unzip consul*.zip
 RUN mkdir /etc/consul.d && echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/status", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
+
+HEALTHCHECK --interval=2m --timeout=3s \
+  CMD curl -f http://localhost/flanders/status || exit 1
 
 # build assets
 RUN mkdir /src
@@ -33,7 +32,7 @@ RUN bundle install
 
 COPY . /src
 
-RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > /root/version.txt
+RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > $HOME/version.txt
 
 # only run the setup if the dependencies are missing
 RUN ls frontend/node_modules || bin/setup
@@ -45,4 +44,4 @@ RUN ./node_modules/.bin/ember build --environment=production && mv /src/frontend
 RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
 		rm -f /etc/nginx/sites-enabled/default
 
-# CMD bash /root/run.sh
+# CMD bash $HOME/run.sh
