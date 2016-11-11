@@ -4,7 +4,7 @@ source /shared/compile-helpers.sh
 
 compile_prepare
 
-verify_unchanged src/main/resources/camel.properties f93287a598e754568c99ec249472cff2
+verify_unchanged src/main/resources/camel.properties 5e7fb6c56af663d25df2814e8278f2a3 # 11.10.16
 
 mvn -Dmaven.exec.skip=true -Dmaven.test.skip=true install
 ls -l
