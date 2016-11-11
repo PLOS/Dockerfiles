@@ -43,12 +43,13 @@ fi
 
 # kill the lingering instances and state
 $COMPOSE kill
-$COMPOSE rm -f
+$COMPOSE rm -f -v
 
 # start stack
 $COMPOSE up -d
 $COMPOSE logs --no-color > $SCRIPTDIR/lasttest.log &
 
+# TODO: is there a way to run this in the foreground perhaps so we can ^C out of it? as of now, that does not work.
 # run_the test in the container
 # docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE sh -c "source /dockerfiles/tests/test-helpers.sh && bash /tests/$TEST.sh"
 docker-compose -f $CONFIGS_DIR/common.yml run --rm $TEST_IMAGE bash /dockerfiles/tests/$TEST.sh
@@ -61,7 +62,7 @@ echo EXIT CODE : $EXIT_CODE
 
 # stop stack
 $COMPOSE kill
-$COMPOSE rm -f
+$COMPOSE rm -f -v
 
 # preserve the exit code of the container test
 exit $EXIT_CODE
