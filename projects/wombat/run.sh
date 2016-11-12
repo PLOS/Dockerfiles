@@ -24,7 +24,7 @@ $HOME/build_config_wombat.py $ROOT_PAGE_PATH $DISABLE_COMMENTS_ARG \
     --solr $SOLR           \
     --email $EMAIL         \
     --root $ROOT           \
-    --cas $CAS_URL      > $AMBRA_CONF/wombat.yaml || die "Config error"
+    --cas $CAS      > $AMBRA_CONF/wombat.yaml || die "Config error"
     # --prodsites                              \
     # --memcached                              \
     # --assets "/var/local/wombat/compiledAssets"  \
