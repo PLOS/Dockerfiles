@@ -81,6 +81,8 @@ curl $ARTICLE_SOLR | grep $ARTICLE
 
 wait_for_web_service wombat:8080 "wombat"
 
-test_up wombat:8080/DesktopPlosOne/article?id=10.1371/journal.$ARTICLE "Wombat article"
+# sloppy test to make sure plos-themes loaded
+curl wombat:8082/DesktopPlosOne | grep -q "plos.org"
+	test_true "plos themes loaded"
 
-# TODO: test themes = check for a plos logo or something?
+test_up wombat:8080/DesktopPlosOne/article?id=10.1371/journal.$ARTICLE "Wombat article"

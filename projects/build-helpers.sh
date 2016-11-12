@@ -23,7 +23,9 @@ function build_image {
 
 function get_git_branch {
   PROJECT_DIR=$1
-  echo $(git --git-dir=$PROJECT_DIR/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  echo $(git --git-dir=$PROJECT_DIR/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.\-]/_/g')
+
+  # TODO: can we remove these character restrictions for tags yet?
 }
 
 function get_local_src_dir {
@@ -135,6 +137,10 @@ function build_java_image() {
 
 function build_rails_passenger_image() {
 
+
+  # TODO: get this function working again
+
+
   PROJECT_DIR=$1
   IMAGE_NAME=$2
 
@@ -172,15 +178,16 @@ function build_rails_passenger_image() {
   						--volume $DOCKER_SETUP_DIR/..:/shared \
   						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
   							'cp /shared/run-helpers.sh /scripts/* /root/;
-  					     cat /root/version.txt')
+  					     cat /root/version.txt || echo missing')
 
   docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
 
   # tag docker image with asset version number
 
-  echo tagging container with version : $VERSION
-
-  docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+  # if [ "$VERSION" != "missing" ]; then
+    echo tagging container with version : $VERSION
+    docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+  # fi
 
   docker rm $TMP_BUILD_CONTAINER
 }
@@ -249,47 +256,37 @@ function build_rails_ember_images() {
   docker rm $TMP_BUILD_CONTAINER
 }
 
-function build_non_runnable_images() {
+# basically copies the Dockerfile into the src dir and then builds it
+function build_image_non_compiled() {
 
-	BASE_IMAGE=bash
 	PROJECT_DIR=$1
 	IMAGE_NAME=$2
 
-  PROJECT_NAME=$(basename $PROJECT_DIR)
-
-  BASE_TAG=current
-
-	BUILD_RESULT_DIR=${IMAGE_NAME}_build
-
   DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
-
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
   check_local_src $PROJECT_DIR
 
-  # create build volume to store compiled assets
-  docker volume create --name $BUILD_RESULT_DIR
-
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
-	# build assets
-	echo "Building and Loading Base Image..."
+  cd $DOCKER_SETUP_DIR
+  # this is a hack to allow the Dockerfile to exist in this subfolder
+  cp Dockerfile $PROJECT_LOCAL_REPO/Dockerfile.tmp
+  cp project.dockerignore $PROJECT_LOCAL_REPO/.dockerignore
 
-	docker run --rm \
-    --volume $BUILD_RESULT_DIR:/build \
-	  --volume $PROJECT_LOCAL_REPO:/src \
-	  --volume $DOCKER_SETUP_DIR:/scripts \
-	  --volume $DOCKER_SETUP_DIR/..:/shared \
-	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
+  cd $PROJECT_LOCAL_REPO
 
-	echo "Building runnable docker image ..."
-  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
+	echo "Building image..."
+  docker build -f Dockerfile.tmp -t $IMAGE_NAME:$BASE_TAG . || die "build failed"
 
   echo "image tag = $IMAGE_NAME:$BASE_TAG"
 
+  # TODO: should we handle if there is a version file or if they need the run helper?
+
   # clean up
-  docker volume rm $BUILD_RESULT_DIR
+  rm $PROJECT_LOCAL_REPO/{Dockerfile.tmp,.dockerignore}
 }
+
 
 # execute as subshell if this script is not being sourced
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"
