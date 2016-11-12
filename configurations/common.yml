@@ -200,9 +200,11 @@ services:
 
   wombat:
     image: wombat:master
-    volumes:
-      - ${DOCKERFILES}/../plos-themes:/root/themes
+    # volumes:
+      # - ${DOCKERFILES}/../plos-themes:/root/themes
       # TODO: bring in plos-themes as a seperate image or something?
+    # volumes_from:
+    #   - plosthemes
     ports:
       - 8082:8080
     environment:

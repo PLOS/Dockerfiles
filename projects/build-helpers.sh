@@ -61,27 +61,77 @@ function check_local_src {
   fi
 }
 
-_create_build_volume() {
-
-  # creates a build volume to put your temporary assets into for compiling
-
-  BUILD_VOLUME=$1
-  BUILD_IMAGE=$2
-
-  echo $(docker inspect --format="{{.Id}}" $BUILD_VOLUME || docker create -v /build --name $BUILD_VOLUME $BUILD_IMAGE /bin/true)
-}
-
 _builder_to_runner() {
 
-  # pipe the build assets from the builder image to the runner image
+  # pipe the build assets from the build volume to the runner image
 
   BUILD_VOLUME=$1
   BUILD_IMAGE=$2
   RUN_IMAGE=$3
 
-  docker run --rm --volumes-from $BUILD_VOLUME $BUILD_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $RUN_IMAGE -  || die "build failed"
+  docker run --rm --volume $BUILD_VOLUME:/build $BUILD_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $RUN_IMAGE - || die "build failed"
+
 }
 
+
+function build_java_image() {
+
+  # most of the depend on a base image so make sure it exists
+  build_image tomcat
+
+  MAVEN_LOCAL_REPO=maven_local_repo
+
+	# TODO: implement --no-cache option or mark images with build date
+
+	BASE_IMAGE=maven:3-jdk-8-alpine
+	PROJECT_DIR=$1
+	IMAGE_NAME=$2
+
+  PROJECT_NAME=$(basename $PROJECT_DIR)
+
+  BASE_TAG=current
+
+	BUILD_RESULT_DIR=${IMAGE_NAME}_build
+
+  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
+
+	check_local_src $PROJECT_DIR
+
+  # create shared maven cache to use accross projects
+  docker volume create --name $MAVEN_LOCAL_REPO
+
+  # create build volume to store compiled assets
+  docker volume create --name $BUILD_RESULT_DIR
+
+  # BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
+
+	echo "Building and Loading Java Assets on Base Image (maven)..."
+
+  # compile the java assets using a container and save results to build volume
+	docker run --rm \
+    --volume $MAVEN_LOCAL_REPO:/root/.m2 \
+    --volume $BUILD_RESULT_DIR:/build \
+    --volume $PROJECT_LOCAL_REPO:/src \
+    --volume $DOCKER_SETUP_DIR:/scripts \
+	  --volume $DOCKER_SETUP_DIR/..:/shared \
+	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
+
+	echo "Building runnable docker image ..."
+  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
+
+	# tag docker image with asset version number
+	VERSION=$(docker run --rm --volume $BUILD_RESULT_DIR:/build $BASE_IMAGE cat /build/version.txt)
+
+	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
+
+	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+
+  # clean up
+  docker volume rm $BUILD_RESULT_DIR
+}
 
 function build_rails_passenger_image() {
 
@@ -199,65 +249,6 @@ function build_rails_ember_images() {
   docker rm $TMP_BUILD_CONTAINER
 }
 
-function build_java_image() {
-
-  # most of the depend on a base image so make sure it exists
-  build_image tomcat
-
-  MAVEN_LOCAL_REPO=maven_local_repo
-
-	# TODO: implement --no-cache option or mark images with build date
-
-	BASE_IMAGE=maven:3-jdk-8-alpine
-	PROJECT_DIR=$1
-	IMAGE_NAME=$2
-
-  PROJECT_NAME=$(basename $PROJECT_DIR)
-
-  BASE_TAG=current
-
-	BUILD_RESULT_DIR=${IMAGE_NAME}_build
-
-  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
-
-  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
-
-	check_local_src $PROJECT_DIR
-
-  # create build and maven repo volumes if they do not exist
-	docker inspect $MAVEN_LOCAL_REPO > /dev/null || docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
-  # CHECK: this the m2 cache being used?
-
-  _create_build_volume $BUILD_RESULT_DIR $BASE_IMAGE
-
-  # BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
-  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
-
-	echo "Building and Loading Java Assets on Base Image (maven)..."
-
-  # run the build container and compile the java assets (ie - API war)
-	docker run --rm \
-	   --volumes-from $MAVEN_LOCAL_REPO \
-	   --volumes-from $BUILD_RESULT_DIR \
-	   --volume $PROJECT_LOCAL_REPO:/src \
-	   --volume $DOCKER_SETUP_DIR:/scripts \
-	   --volume $DOCKER_SETUP_DIR/..:/shared \
-	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
-
-	echo "Building runnable docker image ..."
-  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
-
-	# tag docker image with asset version number
-	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
-
-	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
-
-	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
-
-  # clean up
-  # docker rm -v $BUILD_RESULT_DIR
-}
-
 function build_non_runnable_images() {
 
 	BASE_IMAGE=bash
@@ -276,7 +267,8 @@ function build_non_runnable_images() {
 
   check_local_src $PROJECT_DIR
 
-  _create_build_volume $BUILD_RESULT_DIR $BASE_IMAGE
+  # create build volume to store compiled assets
+  docker volume create --name $BUILD_RESULT_DIR
 
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
@@ -284,19 +276,19 @@ function build_non_runnable_images() {
 	echo "Building and Loading Base Image..."
 
 	docker run --rm \
-     --volumes-from $BUILD_RESULT_DIR \
-	   --volume $PROJECT_LOCAL_REPO:/src \
-	   --volume $DOCKER_SETUP_DIR:/scripts \
-	   --volume $DOCKER_SETUP_DIR/..:/shared \
-	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
+    --volume $BUILD_RESULT_DIR:/build \
+	  --volume $PROJECT_LOCAL_REPO:/src \
+	  --volume $DOCKER_SETUP_DIR:/scripts \
+	  --volume $DOCKER_SETUP_DIR/..:/shared \
+	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
   _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
 
-  # clean up
-  docker rm -v $BUILD_RESULT_DIR
+  echo "image tag = $IMAGE_NAME:$BASE_TAG"
 
-	echo "image tag = $IMAGE_NAME:$BASE_TAG"
+  # clean up
+  docker volume rm $BUILD_RESULT_DIR
 }
 
 # execute as subshell if this script is not being sourced

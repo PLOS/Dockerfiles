@@ -6,16 +6,21 @@ services:
     extends:
       file: common.yml
       service: wombat
+    volumes_from:
+      - plosthemes
     environment:
-      - CAS_URL=https://register.plos.org/cas
-      - CAS_LOGIN=https://register.plos.org/cas/login
-      - CAS_LOGOUT=https://register.plos.org/cas/logout
+      - CAS=https://register.plos.org/cas
 
   rhino:
     extends:
       file: common.yml
       service: rhino
 
+  plosthemes:
+    extends:
+      file: common.yml
+      service: plosthemes
+      
   plosqueue:
     extends:
       file: common.yml

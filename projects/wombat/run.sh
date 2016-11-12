@@ -6,7 +6,7 @@ source $HOME/run-helpers.sh
 
 [ -d "$ROOT" ] || die "Theme root not found"
 
-require_envs SERVER SOLR EMAIL ROOT CAS_URL
+require_envs SERVER SOLR EMAIL ROOT CAS
 
 wait_for_web_service $SERVER/journals "Rhino"
 
