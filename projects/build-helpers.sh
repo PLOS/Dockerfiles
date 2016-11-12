@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# set -x
+set -x
 
 # TODO: make these build methods DRY
 
@@ -40,6 +40,48 @@ function get_local_src_dir {
 
   echo $PROJECT_LOCAL_REPO
 }
+
+# looks for a local source directory and checks it out from git if missing
+function check_local_src {
+
+	PROJECT_DIR=$1
+
+  PROJECT_NAME=$(basename $PROJECT_DIR)
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
+
+  # checkout the project from git if it doesn't exist on the local machine
+  if [ ! -d $PROJECT_LOCAL_REPO ];
+    then
+    echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
+    git --version > /dev/null || die "git is not installed"
+
+    git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
+
+    if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
+  fi
+}
+
+_create_build_volume() {
+
+  # creates a build volume to put your temporary assets into for compiling
+
+  BUILD_VOLUME=$1
+  BUILD_IMAGE=$2
+
+  echo $(docker inspect --format="{{.Id}}" $BUILD_VOLUME || docker create -v /build --name $BUILD_VOLUME $BUILD_IMAGE /bin/true)
+}
+
+_builder_to_runner() {
+
+  # pipe the build assets from the builder image to the runner image
+
+  BUILD_VOLUME=$1
+  BUILD_IMAGE=$2
+  RUN_IMAGE=$3
+
+  docker run --rm --volumes-from $BUILD_VOLUME $BUILD_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $RUN_IMAGE -  || die "build failed"
+}
+
 
 function build_rails_passenger_image() {
 
@@ -157,8 +199,9 @@ function build_rails_ember_images() {
   docker rm $TMP_BUILD_CONTAINER
 }
 
-function build_java_service_images() {
+function build_java_image() {
 
+  # most of the depend on a base image so make sure it exists
   build_image tomcat
 
   MAVEN_LOCAL_REPO=maven_local_repo
@@ -179,21 +222,20 @@ function build_java_service_images() {
 
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
-	check_local_git $PROJECT_DIR
+	check_local_src $PROJECT_DIR
 
-	# create build and maven repo volumes if they do not exist
-	docker inspect $BUILD_RESULT_DIR > /dev/null
-	[ $? -eq 1 ] && docker create -v /build --name $BUILD_RESULT_DIR $BASE_IMAGE /bin/true
+  # create build and maven repo volumes if they do not exist
+	docker inspect $MAVEN_LOCAL_REPO > /dev/null || docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
+  # CHECK: this the m2 cache being used?
 
-	docker inspect $MAVEN_LOCAL_REPO > /dev/null
-	[ $? -eq 1 ] && docker create -v /root/.m2 --name $MAVEN_LOCAL_REPO $BASE_IMAGE /bin/true
+  _create_build_volume $BUILD_RESULT_DIR $BASE_IMAGE
 
   # BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
-	# build java assets (ie - API war)
 	echo "Building and Loading Java Assets on Base Image (maven)..."
 
+  # run the build container and compile the java assets (ie - API war)
 	docker run --rm \
 	   --volumes-from $MAVEN_LOCAL_REPO \
 	   --volumes-from $BUILD_RESULT_DIR \
@@ -203,45 +245,17 @@ function build_java_service_images() {
 	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
-
-  # NOTE: the sudo below is a temp workaround for a bug that might not be fixed until docker 1.10
-  # https://github.com/docker/docker/issues/15785
-	# docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .' | sudo docker build -t $IMAGE_NAME:$BASE_TAG -
-
-  # NOTE: another workaround without sudo: https://github.com/docker/docker/issues/15785#issuecomment-164030356
-  TEMP_BUILD_DIR=`mktemp -d`
-  docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
-  tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
-
-  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
+  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE cat /build/version.txt)
-	docker inspect $BUILD_RESULT_DIR > /dev/null
-	[ $? -eq 1 ] && docker create -v /build --name $BUILD_RESULT_DIR $BASE_IMAGE /bin/true
+
 	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
 
 	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
 
-}
-
-function check_local_git {
-
-	PROJECT_DIR=$1
-
-  PROJECT_NAME=$(basename $PROJECT_DIR)
-  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
-
-  # checkout the project from git if it doesn't exist on the local machine
-  if [ ! -d $PROJECT_LOCAL_REPO ];
-    then
-    echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
-    git --version > /dev/null || die "git is not installed"
-
-    git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
-
-    if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
-  fi
+  # clean up
+  # docker rm -v $BUILD_RESULT_DIR
 }
 
 function build_non_runnable_images() {
@@ -260,10 +274,9 @@ function build_non_runnable_images() {
 
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
-  check_local_git $PROJECT_DIR
+  check_local_src $PROJECT_DIR
 
-  docker inspect $BUILD_RESULT_DIR > /dev/null
-  [ $? -eq 1 ] && docker create -v /build --name $BUILD_RESULT_DIR $BASE_IMAGE /bin/true
+  _create_build_volume $BUILD_RESULT_DIR $BASE_IMAGE
 
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
@@ -278,18 +291,13 @@ function build_non_runnable_images() {
 	   $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
+  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
 
-  # NOTE: another workaround without sudo: https://github.com/docker/docker/issues/15785#issuecomment-164030356
-  TEMP_BUILD_DIR=`mktemp -d`
-  docker run --rm --volumes-from $BUILD_RESULT_DIR $BASE_IMAGE sh -c 'tar -czf - -C /build .'  > $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
-  tar -C $TEMP_BUILD_DIR -xvf $TEMP_BUILD_DIR/$IMAGE_NAME-$BASE_TAG.tar
+  # clean up
+  docker rm -v $BUILD_RESULT_DIR
 
-  docker build -t $IMAGE_NAME:$BASE_TAG $TEMP_BUILD_DIR || die "build failed"
-
-	echo "image tags = $IMAGE_NAME:$BASE_TAG"
-
+	echo "image tag = $IMAGE_NAME:$BASE_TAG"
 }
-
 
 # execute as subshell if this script is not being sourced
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"

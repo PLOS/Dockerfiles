@@ -9,11 +9,11 @@ function die {
   exit 1
 }
 
+# makes sure required environment variables are set
 function require_envs {
   LIST=("$@")
 
   for env in "${LIST[@]}"; do
-    # echo Checking for required environment variable : $env
     [[ ${!env} ]] || die "Missing required environment variable: $env"
   done
 }
@@ -53,6 +53,8 @@ function start_consul_agent {
 }
 
 function wait_until_db_service_up {
+
+  # TODO: implement timeout?
 
 	$MYSQL_ROOT -e 'exit'
 	MYSQL_NOT_CONNECTING=$?

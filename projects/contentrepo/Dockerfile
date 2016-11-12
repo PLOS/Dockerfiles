@@ -12,8 +12,7 @@ RUN apk update && apk add mysql-client bash curl \
   curl -L https://cpanmin.us | perl - App::cpanminus && \
   cpanm install --force MogileFS::Utils
 
-HEALTHCHECK --interval=2m --timeout=3s \
-  CMD curl -f http://localhost:8080/config || exit 1
+HEALTHCHECK CMD curl -f http://localhost:8080/config || exit 1
 
 RUN rm -rf $CATALINA_HOME/webapps/*
 

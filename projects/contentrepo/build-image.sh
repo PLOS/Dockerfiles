@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
-  build_java_service_images content-repo contentrepo
+  build_java_image content-repo contentrepo

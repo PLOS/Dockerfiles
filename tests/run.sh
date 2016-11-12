@@ -36,10 +36,7 @@ TEST_IMAGE=testrunner
 echo Running tests/$TEST.sh against $COMPOSE_FILE
 
 # build testhelper if it does not exist
-if ! docker images|grep $TEST_IMAGE ; then
-  echo "Building $TEST_IMAGE"
-  docker build $SCRIPTDIR --tag $TEST_IMAGE
-fi
+docker images|grep -q $TEST_IMAGE || docker build $SCRIPTDIR --tag $TEST_IMAGE || exit 2
 
 # kill the lingering instances and state
 $COMPOSE kill

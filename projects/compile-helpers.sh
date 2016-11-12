@@ -34,7 +34,7 @@ function compile_prepare {
   cd /src
   mkdir /root/src
 
-  # bing in the source code
+  # bring in the source code
   cp -r `ls -A | grep -Ev ".git|.idea|target"` /root/src
   cd /root/src
 

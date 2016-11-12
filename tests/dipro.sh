@@ -4,9 +4,8 @@ set -x
 
 source /dockerfiles/tests/test-helpers.sh
 
-SVC_URL=rhino:8080
-
-wait_for_web_service $SVC_URL "rhino"
+wait_for_web_service contentrepo:8080 "Content repo"
+wait_for_web_service rhino:8080 "Rhino"
 
 # begin tests
 
@@ -14,13 +13,13 @@ ARTICLE=pone.0099781
 
 SOLR_BASE=http://solr:8080/solr/collection1
 
-ARTICLE_RHINO=$SVC_URL/articles/10.1371++journal.$ARTICLE
+ARTICLE_RHINO=rhino:8080/articles/10.1371++journal.$ARTICLE
 
 ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true"
 
 # ingest an article
 
-curl -X POST --form "archive=@/dockerfiles/tests/test_data/accman/$ARTICLE.zip" $SVC_URL/articles  > /dev/null
+curl -X POST --form "archive=@/dockerfiles/tests/test_data/accman/$ARTICLE.zip" rhino:8080/articles  > /dev/null
 # TODO: should return 201 ?
 
 # TODO; check return code of POST, and other POSTs in this test
