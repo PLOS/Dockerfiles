@@ -12,7 +12,7 @@ check_local_src plos-themes
 cp $(get_local_src_dir plos-themes)/{requirements.txt,build_config_utils.py,build_config_rhino.py} "$SCRIPTDIR" || die "cant find config generator"
 # TODO: checksum validate build_config_rhino.py
 
-build_java_image rhino rhino
+build_image_maven rhino rhino
 
 # hack cleanup
 rm "$SCRIPTDIR"/{requirements.txt,build_config_utils.py,build_config_rhino.py}

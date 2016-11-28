@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-set -x
+# This script is used to help create runnable docker images of your application. it is the starting point for using intermediate build containers to create clean runnable images.
 
-# TODO: make these build methods DRY
+# set -x
 
-GITHUB_REPO_BASE=git@github.com:PLOS
+# TODO: make these build methods more DRY
 
 DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
 
+# utility function for failing with a messsage
 function die() {
   echo "$@" 1>&2
   exit 1
@@ -21,13 +22,13 @@ function build_image {
   # fi
 }
 
+# fetch the current branch name of the checked out git repo, and then sanitize it for acceptable characters for a docker tag
 function get_git_branch {
   PROJECT_DIR=$1
   echo $(git --git-dir=$PROJECT_DIR/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.\-]/_/g')
-
-  # TODO: can we remove these character restrictions for tags yet?
 }
 
+# returns the path to the local source directory of a project
 function get_local_src_dir {
   PROJECT_DIR=$1
 
@@ -47,6 +48,7 @@ function get_local_src_dir {
 function check_local_src {
 
 	PROJECT_DIR=$1
+  REPO_BASE=${2:-git@github.com:PLOS}
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
@@ -57,37 +59,48 @@ function check_local_src {
     echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
     git --version > /dev/null || die "git is not installed"
 
-    git clone ${GITHUB_REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
+    git clone ${REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
 
     if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
   fi
 }
 
+# since the builder image builds the assets, we need a way to copy from the builder to the final resulting image. this method performs the pipe that sends the data from the builder to the runner
 _builder_to_runner() {
-
-  # pipe the build assets from the build volume to the runner image
 
   BUILD_VOLUME=$1
   BUILD_IMAGE=$2
   RUN_IMAGE=$3
 
   docker run --rm --volume $BUILD_VOLUME:/build $BUILD_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $RUN_IMAGE - || die "build failed"
-
 }
 
 
-function build_java_image() {
+#  build a docker image using maven
+function build_image_maven() {
+
+  PROJECT_DIR=$1
+  IMAGE_NAME=$2
 
   # most of the depend on a base image so make sure it exists
   build_image tomcat
 
-  MAVEN_LOCAL_REPO=maven_local_repo
+  build_image_compiled \
+      $PROJECT_DIR $IMAGE_NAME \
+      maven:3-jdk-8-alpine maven_local_repo /root/.m2
+}
+
+# This function is used to build docker images that use an intermediate builder image and uses a library cache
+function build_image_compiled() {
+
+  PROJECT_DIR=$1
+  IMAGE_NAME=$2
+
+  BASE_IMAGE=$3
+  SHARED_CACHE_NAME=$4
+  SHARED_CACHE_PATH=$5
 
 	# TODO: implement --no-cache option or mark images with build date
-
-	BASE_IMAGE=maven:3-jdk-8-alpine
-	PROJECT_DIR=$1
-	IMAGE_NAME=$2
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
 
@@ -101,20 +114,19 @@ function build_java_image() {
 
 	check_local_src $PROJECT_DIR
 
-  # create shared maven cache to use accross projects
-  docker volume create --name $MAVEN_LOCAL_REPO
+  # create shared library cache to use accross projects
+  docker volume create --name $SHARED_CACHE_NAME
 
   # create build volume to store compiled assets
   docker volume create --name $BUILD_RESULT_DIR
 
-  # BASE_TAG=$(git --git-dir=$PROJECT_LOCAL_REPO/.git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
-	echo "Building and Loading Java Assets on Base Image (maven)..."
+	echo "Compiling assets using base image ($BASE_IMAGE)..."
 
-  # compile the java assets using a container and save results to build volume
+  # compile the assets using a container and save results to build volume
 	docker run --rm \
-    --volume $MAVEN_LOCAL_REPO:/root/.m2 \
+    --volume $SHARED_CACHE_NAME:$SHARED_CACHE_PATH \
     --volume $BUILD_RESULT_DIR:/build \
     --volume $PROJECT_LOCAL_REPO:/src \
     --volume $DOCKER_SETUP_DIR:/scripts \
@@ -168,7 +180,8 @@ function build_rails_passenger_image() {
 
   cd $PROJECT_LOCAL_REPO
 
-  BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  # BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
   time docker build -t $IMAGE_NAME:$BASE_TAG .
   # cd $DOCKER_SETUP_DIR
@@ -232,7 +245,8 @@ function build_rails_ember_images() {
 
   cd $PROJECT_LOCAL_REPO
 
-  BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  # BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
+  BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
   time docker build -t $IMAGE_NAME:$BASE_TAG .
   # cd $DOCKER_SETUP_DIR

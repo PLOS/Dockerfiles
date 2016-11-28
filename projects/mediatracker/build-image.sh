@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
-  build_java_image mediaTracker mediatracker
+  build_image_maven mediaTracker mediatracker
