@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
+source $FLATRACK/build-helpers.sh || source "$( dirname "${BASH_SOURCE[0]}" )"/../../flatrack/build-helpers.sh
   build_rails_ember_images link_curation linkcuration

@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
+source $FLATRACK/build-helpers.sh || source "$( dirname "${BASH_SOURCE[0]}" )"/../../flatrack/build-helpers.sh
   build_image_maven named-entity.service nedapi

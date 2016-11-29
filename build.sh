@@ -6,7 +6,8 @@
 
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-source projects/build-helpers.sh
+source flatrack/build-helpers.sh
+source flatrack/stack-helpers.sh
 
 COMMAND=$1
 NAME=$2
@@ -16,10 +17,10 @@ USAGE="usage: $0 image|stack|all name [--dry-run]"
 
 export DOCKERFILES=$(pwd)
 
-function _get_images_from_config {
-  CONFIG_FILE=$1
-  echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
-}
+# function _get_images_from_config {
+#   CONFIG_FILE=$1
+#   echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
+# }
 
 function _build_image {
   PROJECT=$1
@@ -30,9 +31,9 @@ function _build_image {
   fi
 }
 
-function _list_projects {
-  echo "$(find projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
-}
+# function _list_projects {
+#   echo "$(find projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
+# }
 
 if [[ "$3" == "--dry-run" ]]; then
   DRYRUN=true
@@ -44,7 +45,7 @@ elif [[ "$COMMAND" == "image" ]]; then
 
   if [ -z $NAME ]; then
     echo Choose an image to build:
-    _list_projects
+    list_projects
   else
     _build_image $NAME
   fi
@@ -57,28 +58,29 @@ elif [ "$COMMAND" == "stack" ]; then
   else
     STACK=configurations/$NAME.yml
 
-    IMAGES=$(_get_images_from_config $STACK)
+    IMAGES=$(get_images_from_config $STACK)
 
-    for IMAGE in $IMAGES; do
-
-      PROJECT=$(echo $IMAGE | cut -d':' -f1)
-
-      if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
-
-        _build_image $PROJECT
-
-        docker inspect $IMAGE > /dev/null
-        if [ $? -ne 0 ]; then
-          echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
-          exit 1;
-
-          # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
-          # tricky to do because the git repo name is stored in build-image.sh
-        fi
-
-      fi
-
-    done;
+    build_images $IMAGES
+    # for IMAGE in $IMAGES; do
+    #
+    #   PROJECT=$(echo $IMAGE | cut -d':' -f1)
+    #
+    #   if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
+    #
+    #     _build_image $PROJECT
+    #
+    #     docker inspect $IMAGE > /dev/null
+    #     if [ $? -ne 0 ]; then
+    #       echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
+    #       exit 1;
+    #
+    #       # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
+    #       # tricky to do because the git repo name is stored in build-image.sh
+    #     fi
+    #
+    #   fi
+    #
+    # done;
 
   fi
 elif [ "$COMMAND" == "all" ]; then

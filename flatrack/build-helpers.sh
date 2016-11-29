@@ -2,11 +2,13 @@
 
 # This script is used to help create runnable docker images of your application. it is the starting point for using intermediate build containers to create clean runnable images.
 
-# set -x
+set -x
 
 # TODO: make these build methods more DRY
 
 DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
+
+FLATRACK=$DOCKERFILES/flatrack  # TODO: handle other locations
 
 # utility function for failing with a messsage
 function die() {
@@ -14,12 +16,42 @@ function die() {
   exit 1
 }
 
+ # given the name of a project directory in Dockerfiles, build it
 function build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
   # if [ "$DRYRUN" == "false" ]; then
     $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
   # fi
+}
+
+ # given an array of images and tags, build them
+function build_images {
+  IMAGES=$1
+
+  for IMAGE in $IMAGES; do
+
+    PROJECT=$(echo $IMAGE | cut -d':' -f1)
+
+    if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
+
+      # TODO: check the current git brach. if it does not match the tag, error out
+
+      build_image $PROJECT
+
+      # docker inspect $IMAGE > /dev/null
+      # if [ $? -ne 0 ]; then
+      #   echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
+      #   exit 1;
+      #
+      #   # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
+      #   # tricky to do because the git repo name is stored in build-image.sh
+      # fi
+
+    fi
+
+  done;
+
 }
 
 # fetch the current branch name of the checked out git repo, and then sanitize it for acceptable characters for a docker tag
@@ -130,7 +162,7 @@ function build_image_compiled() {
     --volume $BUILD_RESULT_DIR:/build \
     --volume $PROJECT_LOCAL_REPO:/src \
     --volume $DOCKER_SETUP_DIR:/scripts \
-	  --volume $DOCKER_SETUP_DIR/..:/shared \
+	  --volume $FLATRACK:/flatrack \
 	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
@@ -188,9 +220,9 @@ function build_rails_passenger_image() {
   rm $PROJECT_LOCAL_REPO/Dockerfile
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-  						--volume $DOCKER_SETUP_DIR/..:/shared \
+  						--volume $FLATRACK:/flatrack \
   						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
-  							'cp /shared/run-helpers.sh /scripts/* /root/;
+  							'cp /flatrack/run-helpers.sh /scripts/* /root/;
   					     cat /root/version.txt || echo missing')
 
   docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
@@ -254,9 +286,9 @@ function build_rails_ember_images() {
   rm $PROJECT_LOCAL_REPO/.dockerignore
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-  						--volume $DOCKER_SETUP_DIR/..:/shared \
+  						--volume $FLATRACK:/flatrack \
   						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
-  							'cp /shared/run-helpers.sh /scripts/* /root/;
+  							'cp /flatrack/run-helpers.sh /scripts/* /root/;
   					     cat /root/version.txt')
 
   docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
@@ -303,4 +335,4 @@ function build_image_non_compiled() {
 
 
 # execute as subshell if this script is not being sourced
-[[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"
+# [[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"

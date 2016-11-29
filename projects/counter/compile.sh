@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /shared/compile-helpers.sh
+source /flatrack/compile-helpers.sh
 
 compile_prepare
 # TODO: actually build PHP app, not java!

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /dockerfiles/tests/test-helpers.sh
+source /flatrack/test-helpers.sh
 
 wait_and_curl nedapi:8080 /v1/service/config "NED"
 

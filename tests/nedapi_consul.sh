@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /dockerfiles/tests/test-helpers.sh
+source /flatrack/test-helpers.sh
 
 wait_and_curl http://consulserver:8500 /v1/catalog/service/ned "CONSUL"
 

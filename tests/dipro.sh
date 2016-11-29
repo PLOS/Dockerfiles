@@ -2,7 +2,7 @@
 
 set -x
 
-source /dockerfiles/tests/test-helpers.sh
+source /flatrack/test-helpers.sh
 
 wait_for_web_service contentrepo:8080 "Content repo"
 wait_for_web_service rhino:8080 "Rhino"
