@@ -1,8 +1,6 @@
 
 # This script containes helpers/knowledge about the dockerfiles structure and docker compose files
 
-# TODO: error if DOCKERFILES not set
-
 function list_projects {
   echo "$(find $DOCKERFILES/projects/*/build-image.sh | awk -F/ '{print $(NF-1)}')"
 }

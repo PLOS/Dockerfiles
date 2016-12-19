@@ -8,24 +8,21 @@ To keep your host clean, all projects are built and tested in disposable contain
 
 Requirements
 ------------
-* docker >= 1.12
-* docker-compose >= 1.8
-* git
+This requires the 'flatrack' project and follows its conventions.
 
-It is recommended you configure Docker to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
 
 Quick Start
 -----------
 
 To make sure you are setup correctly, I recommend building a minimal stack and seeing that the tests pass for it.
 
-    ./build.sh stack solr
-    tests/run.sh solr
+    ./fr build stack solr
+    ./fr test solr
 
 For a slightly more complex stack try bringing up the content repo.
 
-    ./build.sh stack contentrepo
-    ./stack.sh contentrepo
+    ./fr build stack contentrepo
+    ./fr stack contentrepo
 
 This one might take some time to finish because building mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
 
@@ -64,24 +61,15 @@ This way (workspace)/Dockerfiles/projects/wombat/ knows where to find the source
 
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
 
-Building images
----------------
-
-The _build.sh_ script can be used to build single images or whole stacks.
-
-Note that images are tagged with the git branch you have checked out for that project. For example if you build rhino while you have the development branch checked out, it will create a rhino:development image. configurations files refer to specific branches.... (finish this)
-
-Image builds will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
-
 
 Running a stack
 ---------------
 
-The _stack.sh_ script is a wrapper around docker-compose. It can be used to bring stacks up and down.
+The `fr stack` command is a wrapper around docker-compose. It can be used to bring stacks up and down.
 
 Here is how you would run one stack:
 
-    ./stack.sh wombat
+    ./fr stack wombat
 
 Now, in the case above you can visit some pages to see they are up:
 
@@ -92,39 +80,14 @@ Now, in the case above you can visit some pages to see they are up:
 Note, that before running one of these docker-compose files you need to make sure you have built the images it depends on (see above).
 
 
-Testing
--------
-
-See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything. Tests themselves run in the 'testrunner' container so testing requirements are isolated from the host.
-
-
-Development Conventions
------------------------
-
-For each project the images created for it should be tagged with a version number and with the name of the git branch.
-
-In each image, create a file at /root/version.txt that contains the version number representing the built artifacts. For example, "0.5.0-SNAPSHOT".
-
-Here are some of the files you will find in each of the project directories, and what they are used for:
-
-__build-image.sh__ - Builds an image from the source code of the project
-
-__compile.sh__ - An intermediate build container is used before the final image is created. This script performs inside that container what is needed to turn your project source code into its compiled assets (commonly .war files) and then collects additional files (commonly config files and database migrations) into a common place so the runnable image can grab them.
-
-__Dockerfile__ - The Dockerfile for the runable image of the project
-
-__run.sh__ - The script that is run in the foreground inside your container. This commonly consists of seeding the database, processing configuration templates, and running a service like tomcat.
-
-__(configuration templates)__ - You will see various files (ie - context.xml) in project directories. These are specific to that project and are simple templates that are processed at run time with whatever environment variables were set (most commonly in the docker-compose file).
-
 Scaling/Load Balancing
 ----------------------
 
 There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
 
-* Start stack: `./stack.sh nedapi_consul`
+* Start stack: `./fr stack nedapi_consul`
 * See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./stack.sh nedapi_consul scale nedapi=4`
+* Run more NED instances: `./fr stack nedapi_consul scale nedapi=4`
 * Refresh the consul UI to see the added services
 * Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
 * Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
@@ -143,7 +106,7 @@ To use our registry make sure you have configured your Docker daemon such that i
 As an example, here is how you would run the new Ambra stack from the repo:
 
     ./registry.sh pull_stack configurations/web_delivery.yml
-    ./stack.sh web_delivery.yml
+    ./fr stack web_delivery.yml
 
 To see the Wombat home page, visit:
     http://localhost:8081

@@ -3,7 +3,7 @@
 export GIT_REMOTE_BASE=git@github.com:PLOS
 
 # this is the path to the flatrack project. you can set it here, or export it before this script exeutes
-export FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/flatrack
+# export FLATRACK=/path/to/flatrack
 
 # default paths to directories in your dockerfiles directory
 export PROJECTS=$DOCKERFILES/projects

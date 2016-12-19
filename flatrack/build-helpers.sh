@@ -79,7 +79,7 @@ function get_local_src_dir {
 function check_local_src {
 
 	PROJECT_DIR=$1
-  REPO_BASE=${2:-git@github.com:PLOS}
+  # REPO_BASE=${2:-git@github.com:PLOS}
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
@@ -90,7 +90,7 @@ function check_local_src {
     echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
     git --version > /dev/null || die "git is not installed"
 
-    git clone ${REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
+    git clone ${GIT_REMOTE_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
 
     if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
   fi
