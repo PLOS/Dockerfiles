@@ -6,18 +6,17 @@
 
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-STACK=configurations/$1.yml
-
 export DOCKERFILES=$(pwd)
 
-function _get_images_from_config {
-  CONFIG_FILE=$1
-  echo $(docker-compose -f $CONFIG_FILE config | grep '^ *image:' | sed 's/.*image: *\([^ ][^ ]*\).*$/\1/')
-}
+source flatrack-config.sh
+
+STACK=$DOCKERFILES/configurations/$1.yml
+
+source $FLATRACK/stack-helpers.sh
 
 if [ "$#" -eq 0 ]; then
   echo Choose a stack:
-  echo "$(find configurations/*.yml -exec basename -s .yml -a {} +)"
+  list_stacks
 else
   shift
 

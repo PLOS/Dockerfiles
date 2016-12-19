@@ -6,9 +6,9 @@ set -x
 
 # TODO: make these build methods more DRY
 
-DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
+FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
-FLATRACK=$DOCKERFILES/flatrack  # TODO: handle other locations
+DOCKERFILES=$FLATRACK/.. # HACK
 
 # utility function for failing with a messsage
 function die() {
@@ -16,7 +16,7 @@ function die() {
   exit 1
 }
 
- # given the name of a project directory in Dockerfiles, build it
+# given the name of a project directory in Dockerfiles, build it
 function build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
@@ -25,7 +25,7 @@ function build_image {
   # fi
 }
 
- # given an array of images and tags, build them
+# given an array of images and tags, build them
 function build_images {
   IMAGES=$1
 
@@ -35,23 +35,27 @@ function build_images {
 
     if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
 
-      # TODO: check the current git brach. if it does not match the tag, error out
+      echo Trying to build $IMAGE
 
       build_image $PROJECT
 
-      # docker inspect $IMAGE > /dev/null
-      # if [ $? -ne 0 ]; then
-      #   echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
-      #   exit 1;
-      #
-      #   # TODO: check the git branch and error out there instead. make a method for this in build-helpers.sh since we are importing it
-      #   # tricky to do because the git repo name is stored in build-image.sh
-      # fi
+      docker inspect $IMAGE > /dev/null
+      if [ $? -ne 0 ]; then
+        echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
+        exit 1;
+
+        # TODO: look at the git branch and error out there instead. tricky to do because the git repo name is stored in build-image.sh
+      fi
 
     fi
 
   done;
 
+}
+
+function branch_name_to_docker_tag {
+  BRANCH=$1
+  echo $(echo $BRANCH|sed -e 's/[^a-zA-Z0-9_.\-]/_/g')
 }
 
 # fetch the current branch name of the checked out git repo, and then sanitize it for acceptable characters for a docker tag

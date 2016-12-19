@@ -12,6 +12,8 @@
 # $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../flatrack/build-helpers.sh \
 #   build_image_maven plos-solr solr
 
-source $FLATRACK/build-helpers.sh || source "$( dirname "${BASH_SOURCE[0]}" )"/../../flatrack/build-helpers.sh
+source "$( dirname "${BASH_SOURCE[0]}" )"/../../flatrack-config.sh
+
+source $FLATRACK/build-helpers.sh #|| source "$( dirname "${BASH_SOURCE[0]}" )"/../../flatrack/build-helpers.sh
 
 build_image_maven plos-solr solr
