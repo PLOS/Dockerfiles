@@ -5,14 +5,10 @@
 # set -x
 
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
 export DOCKERFILES=$(pwd)
-
 source flatrack-config.sh
 
-STACK=$DOCKERFILES/configurations/$1.yml
-
-source $FLATRACK/stack-helpers.sh
+STACK=$1
 
 if [ "$#" -eq 0 ]; then
   echo Choose a stack:
@@ -26,7 +22,7 @@ else
     args="up"
   fi
 
-  CMD="docker-compose -f $STACK $args"
+  CMD="docker-compose -f $CONFIGURATIONS/$STACK.yml $args"
   echo $CMD
   $CMD
 

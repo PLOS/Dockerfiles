@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-export DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-# TODO: set from env?
-export FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/flatrack
-
-export TESTS=$DOCKERFILES/tests
+cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+export DOCKERFILES=$(pwd)
+source flatrack-config.sh
 
 bash $FLATRACK/test.sh $@

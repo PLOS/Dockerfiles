@@ -5,32 +5,13 @@
 # set -x
 
 cd $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-export DOCKERFILES=$(pwd) # HACK: for now
-
-FLATRACK=flatrack # HACK
-
-source $FLATRACK/build-helpers.sh
-source $FLATRACK/stack-helpers.sh
+export DOCKERFILES=$(pwd)
+source flatrack-config.sh
 
 COMMAND=$1
 NAME=$2
-# DRYRUN=false
 
-USAGE="usage: $0 image|stack|all name [--dry-run]"
-
-# function _build_image {
-#   PROJECT=$1
-#   echo Building image $PROJECT ...
-#   if [ "$DRYRUN" == "false" ]; then
-#     build_image $PROJECT
-#     # $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
-#   fi
-# }
-
-# if [[ "$3" == "--dry-run" ]]; then
-#   DRYRUN=true
-# fi
+USAGE="usage: $0 image|stack|all name"
 
 if [ "$#" -eq 0 ]; then
   echo $USAGE
@@ -49,9 +30,7 @@ elif [ "$COMMAND" == "stack" ]; then
     echo Choose a stack to build:
     list_stacks
   else
-    STACK=configurations/$NAME.yml
-
-    IMAGES=$(get_images_from_config $STACK)
+    IMAGES=$(get_images_from_config $CONFIGURATIONS/$NAME.yml)
 
     build_images $IMAGES
   fi

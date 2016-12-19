@@ -2,7 +2,7 @@
 
 # This script is used to help create runnable docker images of your application. it is the starting point for using intermediate build containers to create clean runnable images.
 
-set -x
+# set -x
 
 # TODO: make these build methods more DRY
 
@@ -21,7 +21,7 @@ function build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
   # if [ "$DRYRUN" == "false" ]; then
-    $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+    $PROJECTS/$PROJECT/build-image.sh || exit 1
   # fi
 }
 
@@ -33,7 +33,7 @@ function build_images {
 
     PROJECT=$(echo $IMAGE | cut -d':' -f1)
 
-    if [ -d "$DOCKERFILES/projects/$PROJECT" ]; then
+    if [ -d "$PROJECTS/$PROJECT" ]; then
 
       echo Trying to build $IMAGE
 
@@ -51,11 +51,6 @@ function build_images {
 
   done;
 
-}
-
-function branch_name_to_docker_tag {
-  BRANCH=$1
-  echo $(echo $BRANCH|sed -e 's/[^a-zA-Z0-9_.\-]/_/g')
 }
 
 # fetch the current branch name of the checked out git repo, and then sanitize it for acceptable characters for a docker tag
@@ -144,7 +139,7 @@ function build_image_compiled() {
 
 	BUILD_RESULT_DIR=${IMAGE_NAME}_build
 
-  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
 
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
@@ -312,7 +307,7 @@ function build_image_non_compiled() {
 	PROJECT_DIR=$1
 	IMAGE_NAME=$2
 
-  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
   check_local_src $PROJECT_DIR

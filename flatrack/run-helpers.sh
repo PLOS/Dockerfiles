@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# this script is to be run inside the test container
+
 # set -x
 
 MYSQL_ROOT="mysql --default-character-set=utf8 -h ${MYSQL_HOSTNAME} -u root --password=${MYSQL_ROOT_PASSWORD}"
