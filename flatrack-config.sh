@@ -3,7 +3,7 @@
 export GIT_REMOTE_BASE=git@github.com:PLOS
 
 # this is the path to the flatrack project. you can set it here, or export it before this script exeutes
-export FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/flatrack
+# export FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/flatrack
 
 # default paths to directories in your dockerfiles directory
 export PROJECTS=$DOCKERFILES/projects
@@ -24,6 +24,10 @@ export CONFIGURATIONS=$DOCKERFILES/configurations
   echo "Error: DOCKERFILES environment variable not set.";
   exit 6;
 }
+
+# echo FLATRACK: $FLATRACK
+# echo DOCKERFILES: $DOCKERFILES
+# echo CONFIGURATIONS: $CONFIGURATIONS
 
 source $FLATRACK/build-helpers.sh
 source $FLATRACK/stack-helpers.sh
