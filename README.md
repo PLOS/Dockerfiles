@@ -115,8 +115,8 @@ Note: The above example requires you to have Ambra templates and plos-themes che
 
 You can use the included registry.yml file to bring up the registry on your server.
 
-Status/Todo
------------
+Todo/Outstanding
+----------------
 
 * Akita and Lemur apps will have problems with CAS because of this bug:
 https://github.com/dlindahl/omniauth-cas/issues/41

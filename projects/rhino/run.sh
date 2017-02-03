@@ -46,5 +46,5 @@ $HOME/build_config_rhino.py                \
 # HACK: inject NED username. needed because username is hardcoded in config
 sed -i "s/authorizationAppName:\s*dipro.*/authorizationAppName: $USER_API_USER/" $AMBRA_CONF/rhino.yaml
 
-
+export JAVA_OPTS="-Drhino.configDir=$AMBRA_CONF"
 start_tomcat
