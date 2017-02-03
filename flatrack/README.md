@@ -3,11 +3,11 @@ Docker Flatrack
 
 Docker provides a way of running applications in an isolated and dependable environment. Flatrack takes this isolation a step further and helps you run your docker image builds and tests in isolation as well.
 
-This can be helpful for when the environment building your images is not under your controll and your build step has dependencies as well (ie - JDK). This uses docker at build time to help create
+This can be helpful for when the environment building your images is not under your control and your build step has dependencies as well (ie - JDK). This uses docker at build time to help create
 
-For example with flatrack lets say you need the whole JDK to build your image, but your only the JRE to run it. Flatpack allows you to define a JDK image that is used in an intermediate step to build that final runnable JRE image.
+For example with flatrack lets say you need the whole JDK to build your image, but your only the JRE to run it. Flatrack allows you to define a JDK image that is used in an intermediate step to build that final runnable JRE image.
 
-It does the same for testing, by allowing you to pull whatever test libraries you need into a container and run those tests there insead of poluting the host.
+It does the same for testing, by allowing you to pull whatever test libraries you need into a container and run those tests there instead of polluting the host.
 
 Additionally Flatrack is most helpful for managing a group of projects instead of a single one. It follows a structural project layout....
 
@@ -41,7 +41,7 @@ In the config you should set GIT_REMOTE_BASE and FLATRACK. If you dont want to s
 Use
 ---
 
-After installtion the `fr` script in your project can be used to build images, build a stack, test a stack, or control a stack. Run the `fr` script for a list of options.
+After installation the `fr` script in your project can be used to build images, build a stack, test a stack, or control a stack. Run the `fr` script for a list of options.
 
 
 Sample
@@ -79,7 +79,7 @@ __build-image.sh__ - Builds an image from the source code of the project
 
 __compile.sh__ - An intermediate build container is used before the final image is created. This script performs inside that container what is needed to turn your project source code into its compiled assets (commonly .war files) and then collects additional files (commonly config files and database migrations) into a common place so the runnable image can grab them.
 
-__Dockerfile__ - The Dockerfile for the runable image of the project
+__Dockerfile__ - The Dockerfile for the runnable image of the project
 
 __run.sh__ - The script that is run in the foreground inside your container. This commonly consists of seeding the database, processing configuration templates, and running a service like tomcat.
 
