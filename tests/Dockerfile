@@ -1,10 +1,7 @@
-FROM alpine
+FROM testrunner:flatrack
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
-
-RUN apk update && apk add curl bash docker python py-pip && \
-    pip install 'docker-compose==1.8.0'
 
 # install what common libraries our tests need to run
 ADD https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 /bin/jq

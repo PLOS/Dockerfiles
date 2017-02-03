@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
+source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../flatrack-config.sh
   build_image_maven indexer-minion indexerminion

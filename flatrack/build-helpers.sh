@@ -6,7 +6,9 @@
 
 # TODO: make these build methods more DRY
 
-DOCKERFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/..
+# FLATRACK=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# DOCKERFILES=$FLATRACK/.. # HACK
 
 # utility function for failing with a messsage
 function die() {
@@ -14,12 +16,41 @@ function die() {
   exit 1
 }
 
+# given the name of a project directory in Dockerfiles, build it
 function build_image {
   PROJECT=$1
   echo Building image $PROJECT ...
   # if [ "$DRYRUN" == "false" ]; then
-    $DOCKERFILES/projects/$PROJECT/build-image.sh || exit 1
+    $PROJECTS/$PROJECT/build-image.sh || exit 1
   # fi
+}
+
+# given an array of images and tags, build them
+function build_images {
+  IMAGES=$1
+
+  for IMAGE in $IMAGES; do
+
+    PROJECT=$(echo $IMAGE | cut -d':' -f1)
+
+    if [ -d "$PROJECTS/$PROJECT" ]; then
+
+      echo Trying to build $IMAGE
+
+      build_image $PROJECT
+
+      docker inspect $IMAGE > /dev/null
+      if [ $? -ne 0 ]; then
+        echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
+        exit 1;
+
+        # TODO: look at the git branch and error out there instead. tricky to do because the git repo name is stored in build-image.sh
+      fi
+
+    fi
+
+  done;
+
 }
 
 # fetch the current branch name of the checked out git repo, and then sanitize it for acceptable characters for a docker tag
@@ -48,7 +79,7 @@ function get_local_src_dir {
 function check_local_src {
 
 	PROJECT_DIR=$1
-  REPO_BASE=${2:-git@github.com:PLOS}
+  # REPO_BASE=${2:-git@github.com:PLOS}
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
@@ -59,7 +90,7 @@ function check_local_src {
     echo "Source directory not found $PROJECT_LOCAL_REPO; fetching the project from github ..."
     git --version > /dev/null || die "git is not installed"
 
-    git clone ${REPO_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
+    git clone ${GIT_REMOTE_BASE}/${PROJECT_NAME} $PROJECT_LOCAL_REPO
 
     if [ ! -d $PROJECT_LOCAL_REPO ]; then die "git clone failed"; fi
   fi
@@ -108,7 +139,7 @@ function build_image_compiled() {
 
 	BUILD_RESULT_DIR=${IMAGE_NAME}_build
 
-  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
 
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
@@ -130,7 +161,7 @@ function build_image_compiled() {
     --volume $BUILD_RESULT_DIR:/build \
     --volume $PROJECT_LOCAL_REPO:/src \
     --volume $DOCKER_SETUP_DIR:/scripts \
-	  --volume $DOCKER_SETUP_DIR/..:/shared \
+	  --volume $FLATRACK:/flatrack \
 	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
@@ -188,9 +219,9 @@ function build_rails_passenger_image() {
   rm $PROJECT_LOCAL_REPO/Dockerfile
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-  						--volume $DOCKER_SETUP_DIR/..:/shared \
+  						--volume $FLATRACK:/flatrack \
   						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
-  							'cp /shared/run-helpers.sh /scripts/* /root/;
+  							'cp /flatrack/run-helpers.sh /scripts/* /root/;
   					     cat /root/version.txt || echo missing')
 
   docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
@@ -254,9 +285,9 @@ function build_rails_ember_images() {
   rm $PROJECT_LOCAL_REPO/.dockerignore
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
-  						--volume $DOCKER_SETUP_DIR/..:/shared \
+  						--volume $FLATRACK:/flatrack \
   						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
-  							'cp /shared/run-helpers.sh /scripts/* /root/;
+  							'cp /flatrack/run-helpers.sh /scripts/* /root/;
   					     cat /root/version.txt')
 
   docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
@@ -276,7 +307,7 @@ function build_image_non_compiled() {
 	PROJECT_DIR=$1
 	IMAGE_NAME=$2
 
-  DOCKER_SETUP_DIR=$DOCKERFILES/projects/$IMAGE_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
   check_local_src $PROJECT_DIR
@@ -303,4 +334,4 @@ function build_image_non_compiled() {
 
 
 # execute as subshell if this script is not being sourced
-[[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"
+# [[ "${BASH_SOURCE[0]}" == "${0}" ]] && "$@"

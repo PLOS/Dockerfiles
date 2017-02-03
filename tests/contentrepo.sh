@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /dockerfiles/tests/test-helpers.sh
+source /flatrack/test-helpers.sh
 
 SVC_URL=contentrepo:8080
 SVC_NAME="contentrepo"

@@ -31,4 +31,5 @@ $HOME/build_config_wombat.py $ROOT_PAGE_PATH $DISABLE_COMMENTS_ARG \
 
 # TODO: handle Akita URL for create account page
 
+export JAVA_OPTS="-Dwombat.configDir=$AMBRA_CONF"
 start_tomcat
