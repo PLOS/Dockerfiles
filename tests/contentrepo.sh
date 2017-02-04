@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /flatrack/test-helpers.sh
+source /envoy/test-helpers.sh
 
 SVC_URL=contentrepo:8080
 SVC_NAME="contentrepo"

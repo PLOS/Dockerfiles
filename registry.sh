@@ -2,7 +2,7 @@
 
 # set -x
 
-# TODO: get this working again and move to flatrack
+# TODO: get this working again and move to envoy
 
 if [ -z $DOCKER_REPO_HOST ]; then
   DOCKER_REPO_HOST=sfo-namedparty-devbox01.int.plos.org

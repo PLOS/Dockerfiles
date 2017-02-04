@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /flatrack/test-helpers.sh
+source /envoy/test-helpers.sh
 
 wait_and_curl nedapi:8080 /v1/service/config "NED"
 

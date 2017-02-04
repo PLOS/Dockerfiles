@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source /flatrack/test-helpers.sh
+source /envoy/test-helpers.sh
 
 wait_and_curl http://consulserver:8500 /v1/catalog/service/ned "CONSUL"
 

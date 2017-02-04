@@ -333,10 +333,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
-  # TODO: move this into flatrack, or out of compose completely
+  # TODO: move this into envoy, or out of compose completely
   testrunner:
     image: testrunner:custom
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DOCKERFILES}:/dockerfiles:ro
-      - ${FLATRACK}:/flatrack:ro
+      - ${ENVOY}:/envoy:ro

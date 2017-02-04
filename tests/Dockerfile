@@ -1,4 +1,4 @@
-FROM testrunner:flatrack
+FROM testrunner:envoy
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
