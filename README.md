@@ -8,7 +8,7 @@ To keep your host clean, all projects are built and tested in disposable contain
 
 Requirements
 ------------
-This requires the 'envoy' project and follows its conventions.
+This requires the [Docker Envoy](https://github.com/jonocodes/envoy) project and follows its conventions.
 
 
 Quick Start
@@ -16,13 +16,13 @@ Quick Start
 
 To make sure you are setup correctly, I recommend building a minimal stack and seeing that the tests pass for it.
 
-    ./ev build stack solr
-    ./ev test solr
+    ./nv build stack solr
+    ./nv test solr
 
 For a slightly more complex stack try bringing up the content repo.
 
-    ./ev build stack contentrepo
-    ./ev stack contentrepo
+    ./nv build stack contentrepo
+    ./nv stack contentrepo
 
 This one might take some time to finish because building mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
 
@@ -65,11 +65,11 @@ If you want docker images to build for certain versions of a project, make sure 
 Running a stack
 ---------------
 
-The `ev stack` command is a wrapper around docker-compose. It can be used to bring stacks up and down.
+The `nv stack` command is a wrapper around docker-compose. It can be used to bring stacks up and down.
 
 Here is how you would run one stack:
 
-    ./ev stack wombat
+    ./nv stack wombat
 
 Now, in the case above you can visit some pages to see they are up:
 
@@ -85,9 +85,9 @@ Scaling/Load Balancing
 
 There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
 
-* Start stack: `./ev stack nedapi_consul`
+* Start stack: `./nv stack nedapi_consul`
 * See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./ev stack nedapi_consul scale nedapi=4`
+* Run more NED instances: `./nv stack nedapi_consul scale nedapi=4`
 * Refresh the consul UI to see the added services
 * Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
 * Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
@@ -106,7 +106,7 @@ To use our registry make sure you have configured your Docker daemon such that i
 As an example, here is how you would run the new Ambra stack from the repo:
 
     ./registry.sh pull_stack configurations/web_delivery.yml
-    ./ev stack web_delivery.yml
+    ./nv stack web_delivery.yml
 
 To see the Wombat home page, visit:
     http://localhost:8081
