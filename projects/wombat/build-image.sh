@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../flatrack-config.sh
+source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../envoy-config.sh
 
 # HACK: copy python scripts over from ploth-themes
 check_local_src plos-themes
