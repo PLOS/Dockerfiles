@@ -8,7 +8,7 @@ To keep your host clean, all projects are built and tested in disposable contain
 
 Requirements
 ------------
-This requires the [Docker Envoy](https://github.com/jonocodes/envoy) project and follows its conventions.
+This requires the [Docker Envoy](https://github.com/jonocodes/envoy) project and follows its conventions. It is already already included here, so you should not need to do anything to bring it in.
 
 
 Quick Start

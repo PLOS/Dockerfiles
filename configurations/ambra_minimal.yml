@@ -1,0 +1,34 @@
+version: '2'
+
+# TODO: test ingestion and make sure content repo works in filesystem mode without mogile
+
+services:
+
+  wombat:
+    extends:
+      file: common.yml
+      service: wombat
+    volumes:
+      - $HOME/data/plos-example-themes:/root/themes
+
+  rhino:
+    extends:
+      file: common.yml
+      service: rhino
+
+  ambradb:
+    extends:
+      file: common.yml
+      service: ambradb
+    ports:
+      - "3307:3306"
+
+  contentrepo:
+    extends:
+      file: common.yml
+      service: contentrepo
+
+  repodb:
+    extends:
+      file: common.yml
+      service: repodb
