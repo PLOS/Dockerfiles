@@ -40,7 +40,7 @@ services:
     #   - aktia-lb
 
   akita-proxyable:
-    image: akita:develop
+    image: plos/akita:develop
     volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
       - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
@@ -98,7 +98,7 @@ services:
     #   - nedcas-lb
 
   nedcas-proxyable:
-    image: nedcas:develop
+    image: plos/nedcas:develop
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -134,7 +134,7 @@ services:
       - 8081:8080
 
   nedapi-proxyable:
-    image: nedapi:develop
+    image: plos/nedapi:develop
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -199,7 +199,7 @@ services:
     image: plosthemes:master
 
   wombat:
-    image: wombat:master
+    image: plos/wombat:master
     # volumes:
     #   - ${DOCKERFILES}/../plos-themes:/root/themes
     #   - $HOME/data/plos-example-themes:/root/themes
@@ -217,7 +217,7 @@ services:
       # - ROOT_PAGE_PATH=/root/themes/content/rootPage.html
 
   rhino:
-    image: rhino:master
+    image: plos/rhino:master
     ports:
       - 8080:8080
     volumes:
@@ -240,7 +240,7 @@ services:
 # RUN: ./stack.sh common run --rm indexerminion
 # DEBUG: ./stack.sh common run -p 8000:8000 --rm indexerminion
   indexerminion:
-    image: indexerminion:accman
+    image: plos/indexerminion:accman
     volumes:
       - /tmp/indexerminion:/cache   # caches between runs
     environment:
@@ -261,7 +261,7 @@ services:
       - DEBUG_FLAGS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n # needed for running in debug mode
 
   counter:
-    image: counter:master
+    image: plos/counter:master
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ambra
@@ -270,7 +270,7 @@ services:
       - MYSQL_DATABASE=plosreports
 
   plosqueue:
-    image: plosqueue:master
+    image: plos/plosqueue:master
     environment:
       - SOLR_URL=http://solr:8080/solr
       - RHINO_SERVICE=http://rhino:8080
@@ -291,14 +291,14 @@ services:
       - MYSQL_ROOT_PASSWORD=root
 
   solr:
-    image: solr:master
+    image: plos/solr:master
     ports:
       - "8983:8080"
     # volumes:
     #   - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
   contentrepo:
-    image: contentrepo:master
+    image: plos/contentrepo:master
     ports:
       - "8085:8080"
     environment:
@@ -307,7 +307,7 @@ services:
       - MYSQL_USER_PASSWORD=
       - MYSQL_HOSTNAME=repodb
       - MYSQL_DATABASE=repo
-      - MOGILE_TRACKERS=mogiletracker:7001
+      - MOGILE_TRACKERS=acker:7001
 
   repodb:
     image: percona:5.6
@@ -317,7 +317,7 @@ services:
       - "3305:3306"
 
   mogiletracker:
-    image: mogiletracker
+    image: plos/mogiletracker
     environment:
       - MYSQL_HOSTNAME=mogiledb
       - MYSQL_ROOT_PASSWORD=root
@@ -327,7 +327,7 @@ services:
       - MOG_NODE_HOST=mogilenode
 
   mogilenode:
-    image: mogilenode
+    image: plos/mogilenode
 
   mogiledb:
     image: percona:5.6

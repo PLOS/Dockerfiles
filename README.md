@@ -127,6 +127,7 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * plos-themes and apache-conf (and patch so we can use environment vars for run time config)
 * Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
 * Make haproxy config more generic so we can pass in service names and not create special versions needed for each service. (https://github.com/hashicorp/consul-template/issues/532)
+* Fix queue, since we need a new way of starting it as the exec was removed here: https://github.com/PLOS/plos-queue/commit/95fc42ef7155ed03a8bbc42a590607fa12709b36
 
 Troubleshooting
 ---------------
