@@ -4,6 +4,7 @@ version: '2'
 
 services:
 
+  # TODO: add wombat back once lockss issue is resolved: https://developer.plos.org/jira/browse/DPRO-3383?filter=-2
   # wombat:
   #   extends:
   #     file: common.yml
@@ -16,7 +17,7 @@ services:
     extends:
       file: common.yml
       service: rhino
-    # image: plos/rhino:2.2.0
+    image: plos/rhino:2.2.0
 
   ambradb:
     extends:
@@ -29,8 +30,12 @@ services:
     extends:
       file: common.yml
       service: contentrepo
-    # image: plos/contentrepo:1.2.0
-# TODO: set up repo to use local file system instead of mogile
+    image: plos/contentrepo:1.2.0
+    volumes:
+      - /repodata
+    environment:
+      - STORE_TYPE=FileSystem
+      - FS_DIRECTORY=/repodata
 
   repodb:
     extends:

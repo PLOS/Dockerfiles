@@ -15,12 +15,16 @@ set_db_grants
 
 # wait until Mogile tracker is up
 
-while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
-  echo -e "\nMogile tracker not ready ... waiting"
-  sleep 3
-done;
+if [[ "$STORE_TYPE" == "Mogile" ]]; then
 
-echo "Mogile is ready"
+  while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
+    echo -e "\nMogile tracker not ready ... waiting"
+    sleep 3
+  done;
+
+  echo "Mogile is ready"
+
+fi
 
 process_env_template $CATALINA_HOME/conf/context.xml
 

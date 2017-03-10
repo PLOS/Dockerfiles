@@ -307,6 +307,10 @@ services:
       - MYSQL_USER_PASSWORD=
       - MYSQL_HOSTNAME=repodb
       - MYSQL_DATABASE=repo
+      # - STORE_TYPE=FileSystem
+      # - FS_DIRECTORY=/repodata
+      - STORE_TYPE=Mogile
+      - MOGILE_DOMAIN=maindomain
       - MOGILE_TRACKERS=mogiletracker:7001
 
   repodb:
