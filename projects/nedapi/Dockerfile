@@ -18,4 +18,6 @@ COPY migrations $HOME/migrations
 COPY named-entity-service-*.war $CATALINA_HOME/webapps/v1.war
 COPY context.xml $CATALINA_HOME/conf/
 
+# TODO: use context file from src/deb instead
+
 CMD bash $HOME/run.sh

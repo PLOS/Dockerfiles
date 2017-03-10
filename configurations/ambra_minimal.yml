@@ -4,17 +4,19 @@ version: '2'
 
 services:
 
-  wombat:
-    extends:
-      file: common.yml
-      service: wombat
-    volumes:
-      - $HOME/data/plos-example-themes:/root/themes
+  # wombat:
+  #   extends:
+  #     file: common.yml
+  #     service: wombat
+  #   # image: plos/wombat:3.3.0
+  #   volumes:
+  #     - $HOME/data/plos-example-themes:/root/themes
 
   rhino:
     extends:
       file: common.yml
       service: rhino
+    # image: plos/rhino:2.2.0
 
   ambradb:
     extends:
@@ -27,6 +29,8 @@ services:
     extends:
       file: common.yml
       service: contentrepo
+    # image: plos/contentrepo:1.2.0
+# TODO: set up repo to use local file system instead of mogile
 
   repodb:
     extends:
