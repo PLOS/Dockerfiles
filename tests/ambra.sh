@@ -17,6 +17,8 @@ ARTICLE_RHINO=rhino:8080/articles/10.1371++journal.$ARTICLE
 
 ARTICLE_SOLR="$SOLR_BASE/select?q=10.1371%2Fjournal.$ARTICLE&wt=json&indent=true"
 
+test_up rhino:8080/journals "Rhino journals"
+
 # ingest an article
 
 curl -X POST --form "archive=@/dockerfiles/tests/test_data/accman/$ARTICLE.zip" rhino:8080/articles  > /dev/null

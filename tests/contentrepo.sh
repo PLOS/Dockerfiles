@@ -22,13 +22,13 @@ curl $SVC_URL/config
 test_up $SVC_URL/config $SVC_NAME
 
 # create a bucket
-BUCKET=bucket_`date +%N`
+BUCKET=bucket_`date +%s`
 
 curl --data "name=$BUCKET" http://$SVC_URL/buckets
 	test_true "create bucket"
 
 # create an object
-OBJECT=object_`date +%N`
+OBJECT=object_`date +%s`
 
 THISSCRIPT=${BASH_SOURCE[0]}
 

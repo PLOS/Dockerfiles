@@ -40,7 +40,7 @@
             maxIdleConnections="1"
             maxIdleTimeMillis="100"
             dataDirectory="${FS_DIRECTORY:-/tmp}"
-            reproxyBaseUrl="${FS_REPROXY_URL}"
+            ${FS_REPROXY_CLAUSE}
             awsAccessKey="${AWS_ACCESS_KEY}"
             awsSecretKey="${AWS_SECRET_KEY}"
             />

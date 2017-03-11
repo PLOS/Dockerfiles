@@ -28,10 +28,11 @@ cp -r $HOME/ingest/* $HOME/datastores/ingest/
 
 wait_for_web_service $REPO_LOCATION/config "contentrepo"
 
-curl -X POST $REPO_LOCATION/buckets --data name=corpus
+# create the bucket if it doesnt exist
+curl $REPO_LOCATION/buckets/$CORPUS_BUCKET | grep -i "bucket not found"
+[ $? -eq 0 ] && curl -X POST $REPO_LOCATION/buckets --data name=$CORPUS_BUCKET
 
 process_env_template $AMBRA_CONF/context.xml
-# process_env_template $AMBRA_CONF/ambra.xml      # TODO: figure out if ambra.xml is needed still
 
 # TODO: fetch rhino.yaml from salt (https://github.com/PLOS-Formulas/rhino-formula/blob/dev/rhino/conf/opt/plos/rhino/conf/rhino.yaml)? or better yet from the rhino repo if it gets added to the deb
 process_env_template $AMBRA_CONF/rhino.yaml
