@@ -14,9 +14,11 @@ RUN mkdir -p $AMBRA_CONF $HOME/datastores/ingested $HOME/datastores/ingest && \
   rm -rf $CATALINA_HOME/conf && \
   ln -s $AMBRA_CONF $CATALINA_HOME/conf
 
-# TODO: see if we can replace the sql script with this for the general case: https://plos.github.io/ambraproject/example/ambra-schema.sql
+# TODO: see if we can replace the ambra_pre_migrations.sql script with this for the general case: https://plos.github.io/ambraproject/example/ambra-schema.sql
 COPY run*.sh *.sql *.py dbschema $HOME
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
+
+# TODO: replace rhino.yaml with one eventually provided in the deb package: https://developer.plos.org/jira/browse/DPRO-3411 
 COPY context.xml rhino.yaml $AMBRA_CONF
 
 CMD bash $HOME/run.sh

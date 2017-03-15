@@ -28,8 +28,8 @@ fi
 
 # TODO: make this work when a reproxy url is supplied
 # hack to deal with empty string reproxy values
-if [[ "$FS_REPROXY_URL" -ne "" ]]; then
-  export FS_REPROXY_CLAUSE=reproxyBaseUrl="${FS_REPROXY_URL}"
+if [[ "$FS_REPROXY_URL" != "" ]]; then
+  export FS_REPROXY_CLAUSE=reproxyBaseUrl=\"${FS_REPROXY_URL}\"
 fi
 
 process_env_template $CATALINA_HOME/conf/context.xml

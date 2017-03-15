@@ -24,7 +24,7 @@ For a slightly more complex stack try bringing up the content repo.
     ./nv build stack contentrepo
     ./nv stack contentrepo
 
-This one might take some time to finish because building mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
+This one might take some time to finish because building Mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
 
 See Troubleshooting below if you have problem with Maven running too slow.
 
@@ -118,6 +118,7 @@ You can use the included registry.yml file to bring up the registry on your serv
 Todo/Outstanding
 ----------------
 
+* Update compose files to use schema version 3. Compose 1.9 allows for default environment values as well.
 * Akita and Lemur apps will have problems with CAS because of this bug:
 https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
@@ -132,7 +133,7 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 Troubleshooting
 ---------------
 
-Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
+Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in the PLOS network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
 
 To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf

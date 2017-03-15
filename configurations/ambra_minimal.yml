@@ -17,7 +17,7 @@ services:
     extends:
       file: common.yml
       service: rhino
-    image: plos/rhino:2.2.0
+    # image: plos/rhino:2.2.0
 
   ambradb:
     extends:
@@ -30,12 +30,13 @@ services:
     extends:
       file: common.yml
       service: contentrepo
-    image: plos/contentrepo:1.2.0
+    # image: plos/contentrepo:1.2.0
     volumes:
       - /repodata
     environment:
       - STORE_TYPE=FileSystem
       - FS_DIRECTORY=/repodata
+      # - FS_REPROXY_URL=urlhere
 
   repodb:
     extends:
