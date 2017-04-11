@@ -71,22 +71,24 @@ services:
     extends:
       service: haproxy
     ports:
-      - "8443:443"
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+      # - "8443:443"
+      - "8082:8080"
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
     # depends_on:           # must be specified in extending file, not here
     #   - "consulserver"
 
-  nedcas-ssl:
-    extends:
-      service: haproxy
-    ports:
-      - "8443:443"
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    # depends_on:           # must be specified in extending file, not here
-    #   - "nedcas-proxyable"
+  # nedcas-ssl:
+  #   extends:
+  #     service: haproxy
+  #   ports:
+  #     - "8443:443"
+  #   volumes:
+  #     - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+  #     - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  #   # depends_on:           # must be specified in extending file, not here
+  #   #   - "nedcas-proxyable"
+
 
   nedcas-consultemplate:
     extends:
@@ -96,6 +98,11 @@ services:
       - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
     #   - nedcas-lb
+
+  nedcas:
+    extends: nedcas-proxyable
+    ports:
+      - "8082:8080"
 
   nedcas-proxyable:
     image: plos/nedcas:develop
