@@ -1,12 +1,12 @@
 # file came from : https://github.com/PLOS-Formulas/wombat-formula/blob/dev/wombat/conf/opt/plos/wombat/conf/wombat.yaml
 
-server: http://{{ env_props.get('rhino-ingest') }}:8006/{{ env_props.get('rhino-context-path') }}/
+server: ${SERVER}
 # URL of the server for the service API ("Rhino")
 
-solrServer: http://{{ env_props.get('solr') }}:8011/solr/select/
+solrServer: ${SOLR}
 # URL of the Solr server.
 
-mailServer: plos-org.mail.protection.outlook.com
+mailServer: ${EMAIL}
 # Hostname of the SMTP email server.
 
 compiledAssetDir: /opt/plos/wombat/var/compiledAssets
@@ -31,21 +31,21 @@ cache:
 # all three are required.
 
 cas:
-  casUrl: https://register.plos.org/cas
-  loginUrl: https://register.plos.org/cas/login
-  logoutUrl: https://register.plos.org/cas/logout
+  casUrl: ${CAS}/cas
+  loginUrl: ${CAS}/cas/login
+  logoutUrl: ${CAS}/cas/logout
 
 commentsDisabled: False
 # Set to true to disable comment creation
 
-rootPagePath: /opt/plos/wombat/var/themes/content/rootPage.html
+rootPagePath: ${ROOT_PAGE_PATH}
 # local filesystem path to an HTML document that will be displayed at the root
 # page (journals.plos.org/) If excluded or set to null, the root page will be
 # the Wombat debug page
 
 themeSources:
   - type: filesystem
-    path: /opt/plos/wombat/var/themes/
+    path: ${ROOT}
 
 
 

@@ -17,4 +17,6 @@ RUN mkdir $AMBRA_CONF && \
 COPY run*.sh *.py $HOME
 COPY wombat-*.war $CATALINA_HOME/webapps/ROOT.war
 
+COPY wombat.yaml $AMBRA_CONF
+
 CMD bash $HOME/run.sh
