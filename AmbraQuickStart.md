@@ -4,7 +4,7 @@
 
 * Fetch the sample themes
     ```
-    wget -O - http://downloads.ambraproject.org/releases/plos-example-themes.tar.gz | tar xz -C /tmp
+    wget -O - https://plos.github.io/ambraproject/example/themes.tar.gz | tar xz -C /tmp
 
     ```
 * Bring up the stack
@@ -13,12 +13,14 @@
       cd Dockerfiles
       ./nv stack ambra_minimal
 
+  Wait a minute until you see the messages that wombat is starting up.
+
 * To see which ports your services are running on, in another terminal run
     ```
     ./nv stack ambra_minimal ps
     ```
   For example you can visit the Wombat frontend via
-  https://localhost:8082
+  http://localhost:8082
 
   If you are not using Linux, Docker is probably running through docker-machine, and instead of visiting localhost, you would use your docker host IP.
 
