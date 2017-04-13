@@ -207,8 +207,8 @@ services:
 
   wombat:
     image: plos/wombat:master
-    # volumes:
-    #   - ${DOCKERFILES}/../plos-themes:/root/themes
+    volumes:
+      - ${DOCKERFILES}/../plos-themes:/root/themes
     # volumes_from:
     #   - plosthemes    # this must be specified in the inheriting file if you want it.
     ports:
@@ -233,6 +233,7 @@ services:
     volumes:
       - $HOME/datastores/ingest:/root/ingest
     environment:
+      - MODE=plos
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ambra
       - MYSQL_USER_PASSWORD=ambra

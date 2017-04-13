@@ -1,21 +1,18 @@
 # Ambra Quick Start
 
-* [Set up Docker](https://github.com/PLOS/Dockerfiles/tree/develop/envoy#requirements)
+* Install Docker ([see envoy requirements](https://github.com/PLOS/Dockerfiles/tree/develop/envoy#requirements))
 
 * Fetch the sample themes
     ```
     wget -O - http://downloads.ambraproject.org/releases/plos-example-themes.tar.gz | tar xz -C /tmp
-    ```
-* Pull down PLOS Dockerfiles
-    ```
-    git clone git@github.com:PLOS/Dockerfiles.git
+
     ```
 * Bring up the stack
-    ```
-    cd Dockerfiles
-    ./nv build stack ambra_minimal
-    ./nv stack ambra_minimal
-    ```
+
+      git clone git@github.com:PLOS/Dockerfiles.git
+      cd Dockerfiles
+      ./nv stack ambra_minimal
+
 * To see which ports your services are running on, in another terminal run
     ```
     ./nv stack ambra_minimal ps

@@ -8,10 +8,10 @@ services:
     extends:
       file: common.yml
       service: wombat
-    # image: plos/wombat:3.3.0
+    image: plos/wombat:3.3.2
     volumes:
-      # - $HOME/data/plos-example-themes:/root/themes
-      - $HOME/configs/ambra_minimal/themes:/root/themes
+      # - /tmp/plos-example-themes:/root/themes
+      - /tmp/themes:/root/themes
 
   memcached:
     extends:
@@ -22,7 +22,7 @@ services:
     extends:
       file: common.yml
       service: rhino
-    # image: plos/rhino:2.2.0
+    image: plos/rhino:2.2.2
     environment:
       - MODE=example
 
@@ -37,7 +37,7 @@ services:
     extends:
       file: common.yml
       service: contentrepo
-    # image: plos/contentrepo:1.2.0
+    image: plos/contentrepo:1.2.0
     volumes:
       - /repodata
     environment:

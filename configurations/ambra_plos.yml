@@ -15,11 +15,11 @@ services:
     extends:
       file: common.yml
       service: rhino
-
-  plosthemes:
-    extends:
-      file: common.yml
-      service: plosthemes
+  #
+  # plosthemes:
+  #   extends:
+  #     file: common.yml
+  #     service: plosthemes
 
   plosqueue:
     extends:
@@ -58,19 +58,19 @@ services:
       file: common.yml
       service: repodb
 
-  mogiletracker:
-    extends:
-      file: common.yml
-      service: mogiletracker
-
-  mogilenode:
-    extends:
-      file: common.yml
-      service: mogilenode
-    # ports:
-    #   - "7500:7500"
-
-  mogiledb:
-    extends:
-      file: common.yml
-      service: mogiledb
+  # mogiletracker:
+  #   extends:
+  #     file: common.yml
+  #     service: mogiletracker
+  #
+  # mogilenode:
+  #   extends:
+  #     file: common.yml
+  #     service: mogilenode
+  #   # ports:
+  #   #   - "7500:7500"
+  #
+  # mogiledb:
+  #   extends:
+  #     file: common.yml
+  #     service: mogiledb
