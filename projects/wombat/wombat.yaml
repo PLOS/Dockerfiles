@@ -9,7 +9,7 @@ solrServer: ${SOLR}
 mailServer: ${EMAIL}
 # Hostname of the SMTP email server.
 
-compiledAssetDir: /opt/plos/wombat/var/compiledAssets
+compiledAssetDir: null
 # The local directory to which to write compiled JavaScript and CSS assets.
 #
 # If null, JavaScript and CSS code will not be compiled, so it will show up
@@ -24,7 +24,7 @@ httpConnectionPool:
 # http://hc.apache.org/httpcomponents-client-ga/tutorial/html/connmgmt.html
 
 cache:
-  memcachedHost: localhost
+  memcachedHost: ${MEMCACHEDHOST}
   memcachedPort: 11211
   cacheAppPrefix: wombat
 # Parameters for Memcached. Set all to null to disable Memcached. Otherwise,

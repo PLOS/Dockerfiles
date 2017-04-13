@@ -3,9 +3,9 @@ FROM plos/tomcat:7
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk add python py-pip
-COPY requirements.txt $HOME
-RUN pip install -r $HOME/requirements.txt
+# RUN apk add python py-pip
+# COPY requirements.txt $HOME
+# RUN pip install -r $HOME/requirements.txt
 
 HEALTHCHECK CMD curl -f http://localhost:8080/ || exit 1
 

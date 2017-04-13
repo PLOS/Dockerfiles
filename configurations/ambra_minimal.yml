@@ -4,14 +4,19 @@ version: '2'
 
 services:
 
-  # TODO: add wombat back once lockss issue is resolved: https://developer.plos.org/jira/browse/DPRO-3383?filter=-2
   wombat:
     extends:
       file: common.yml
       service: wombat
     # image: plos/wombat:3.3.0
     volumes:
-      - $HOME/data/plos-example-themes:/root/themes
+      # - $HOME/data/plos-example-themes:/root/themes
+      - $HOME/configs/ambra_minimal/themes:/root/themes
+
+  memcached:
+    extends:
+      file: common.yml
+      service: memcached
 
   rhino:
     extends:
