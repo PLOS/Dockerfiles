@@ -1,6 +1,6 @@
 # Ambra Quick Start
 
-* Install Docker ([see envoy requirements](https://github.com/PLOS/Dockerfiles/tree/develop/envoy#requirements))
+* Install Docker ([see envoy requirements section only](https://github.com/PLOS/Dockerfiles/tree/develop/envoy#requirements))
 
 * Fetch the sample themes and bring up the stack
 
