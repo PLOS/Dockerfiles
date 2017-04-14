@@ -2,9 +2,10 @@
 
 * Install Docker ([see envoy requirements section only](https://github.com/PLOS/Dockerfiles/tree/develop/envoy#requirements))
 
-* Fetch the sample themes and bring up the stack
+* Fetch the sample themes and bring up the basic stack
 
-      wget -O - https://plos.github.io/ambraproject/example/themes.tar.gz | tar xz -C /tmp
+      mkdir $HOME/ambra_demo
+      wget -O - https://plos.github.io/ambraproject/example/themes.tar.gz | tar xz -C $HOME/ambra_demo
       git clone git@github.com:PLOS/Dockerfiles.git
       cd Dockerfiles
       ./nv stack ambra_minimal

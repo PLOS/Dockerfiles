@@ -11,7 +11,8 @@ services:
     image: plos/wombat:3.3.2
     volumes:
       # - /tmp/plos-example-themes:/root/themes
-      - /tmp/themes:/root/themes
+      # - /tmp/themes:/root/themes
+      - $HOME/ambra_demo/themes:/root/themes
 
   memcached:
     extends:
