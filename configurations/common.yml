@@ -72,7 +72,7 @@ services:
       service: haproxy
     ports:
       # - "8443:443"
-      - "8082:8080"
+      - "8880:8080"
     # volumes:
     #   - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
     # depends_on:           # must be specified in extending file, not here
@@ -102,7 +102,7 @@ services:
   nedcas:
     extends: nedcas-proxyable
     ports:
-      - "8082:8080"
+      - "8880:8080"
 
   nedcas-proxyable:
     image: plos/nedcas:develop
@@ -122,7 +122,7 @@ services:
     extends:
       service: haproxy
     ports:
-      - "8081:8080"
+      - "8888:8080"
     # depends_on:           # must be specified in extending file, not here
     #   - "consulserver"
 
@@ -138,7 +138,7 @@ services:
   nedapi:
     extends: nedapi-proxyable
     ports:
-      - 8081:8080
+      - 8888:8080
 
   nedapi-proxyable:
     image: plos/nedapi:develop
@@ -154,12 +154,12 @@ services:
       - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
 
   neddb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    volumes:    # enable to persist database between runs
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
+    volumes:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
-    #   - /var/lib/mysql
 
 
   haproxy-template:
@@ -200,7 +200,7 @@ services:
   mailcatcher:
     image: schickling/mailcatcher
     ports:
-      - 1080:1080
+      - "1080:1080"
 
   plosthemes:
     image: plosthemes:master
@@ -212,7 +212,7 @@ services:
     # volumes_from:
     #   - plosthemes    # this must be specified in the inheriting file if you want it.
     ports:
-      - 8082:8080
+      - "8015:8080"
     environment:
       - SERVER=http://rhino:8080
       - SOLR=http://solr:8080/select
@@ -229,7 +229,7 @@ services:
   rhino:
     image: plos/rhino:master
     ports:
-      - 8080:8080
+      - "8006:8080"
     volumes:
       - $HOME/datastores/ingest:/root/ingest
     environment:
@@ -290,16 +290,16 @@ services:
       - COUNTER_DATABASE_PASSWORD=ambra
 
   ambradb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-  #  ports:
-  #    - 3306:3306
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
 
   counterdb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
 
   solr:
     image: plos/solr:master
@@ -325,9 +325,10 @@ services:
       - MOGILE_TRACKERS=mogiletracker:7001
 
   repodb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3305:3306"
 
@@ -345,6 +346,12 @@ services:
     image: plos/mogilenode
 
   mogiledb:
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
+
+  mysql:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
