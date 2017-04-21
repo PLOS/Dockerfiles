@@ -1,3 +1,5 @@
+# this config is for load balancing CAS against multiple backends
+
 global
 	log /dev/log	local0
 	log /dev/log	local1 notice
@@ -10,7 +12,8 @@ defaults
 	mode http
 
 frontend front
-	bind *:443 ssl crt /etc/ssl/cert.pem
+  bind *:8080
+#	bind *:443 ssl crt /etc/ssl/cert.pem
 	log	global
 	option	httplog
 	option	dontlognull

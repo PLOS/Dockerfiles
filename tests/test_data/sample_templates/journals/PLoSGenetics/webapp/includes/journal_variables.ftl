@@ -1,1 +1,0 @@
-<#assign twitterUsername>@plosgenetics</#assign>

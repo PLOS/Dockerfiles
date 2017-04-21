@@ -1,4 +1,5 @@
 FROM tomcat:8-jre8-alpine
+# FROM plos/tomcat:7
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
@@ -14,16 +15,21 @@ ADD https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip /ro
 WORKDIR /root
 RUN unzip consul*.zip
 
+ENV HOME /root/
+
+RUN mkdir -p $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=cas/login"/>' > $CATALINA_HOME/webapps/ROOT/index.html
+
+
 RUN mkdir /etc/consul.d && echo '{"service": {"name": "nedcas", "port": 8080, "check": {"name":"basic request", "http": "http://localhost:8080/cas/login", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
 
-COPY run*.sh *.sql ./
+HEALTHCHECK --interval=2m --timeout=3s \
+  CMD curl -f http://localhost:8080/cas/login || exit 1
 
-RUN mkdir $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=cas/login"/>' > $CATALINA_HOME/webapps/ROOT/index.html
-
+COPY run*.sh *.sql $HOME
 COPY ned-cas-*.war $CATALINA_HOME/webapps/cas.war
 
 RUN mkdir /etc/cas
 COPY log4j2.xml /etc/cas
 COPY cas.properties /etc/cas
 
-CMD bash /root/run.sh
+CMD bash $HOME/run.sh

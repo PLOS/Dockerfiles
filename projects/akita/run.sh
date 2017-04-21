@@ -1,23 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # set -x
 
 NGINX_DIR=/etc/nginx
 NGINX_CONF=nginx.conf
 
-BUILD_DIR=/root
-source $BUILD_DIR/run-helpers.sh
+source $HOME/run-helpers.sh
 
-if [ "$SSL" == "existingkeys" ]; then
-  NGINX_CONF=nginx-ssl.conf
-  # assumes you have placed/mountd a cert and key in $NGINX_DIR/ssl/
-fi
+require_envs NED_SERVICE MAILER_ADDRESS MAILER_PORT NED_USERAPP NED_PASSWORD CAS_URL
 
-ln -s /root/$NGINX_CONF $NGINX_DIR/sites-available/
-ln -s /root/$NGINX_CONF $NGINX_DIR/conf.d/
+ln -s $HOME/$NGINX_CONF $NGINX_DIR/sites-available/
+ln -s $HOME/$NGINX_CONF $NGINX_DIR/conf.d/
 
-start_consul_agent
+start_consul_agent &
 
 service nginx start
-bundle exec puma -C /root/puma.rb --daemon
+bundle exec puma -C $HOME/puma.rb --daemon
 tail -f /src/log/* /var/log/nginx/error.log

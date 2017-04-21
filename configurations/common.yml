@@ -2,39 +2,47 @@ version: '2'
 
 services:
 
-  akitaproxy:
+  akita-lb:
     extends:
-      file: common.yml
       service: haproxy
     ports:
       - "443:443"
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
-  akitaconsultemplate:
+  akita-ssl:
     extends:
-      file: common.yml
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akitaproxy_1"
-    volumes:
-      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - aktiaproxy
-
-  akita:
-    extends:
-      file: common.yml
-      service: akita-proxyable
+      service: haproxy
     ports:
       - "443:443"
-    environment:
-      - SSL= existingkeys
+      - "80:80"
     volumes:
-      - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
-      - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
+      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+      - ${DOCKERFILES}/projects/akita/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "akita-proxyable"
+
+
+
+  # TODO: pass in service name so the name can by dynamic
+  #
+  # https://github.com/hashicorp/consul-template/issues/532
+
+  akita-consultemplate:
+    extends:
+      service: consultemplate
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akita-lb_1"
+    volumes:
+      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
+    # volumes_from:   # you have to specify this value in the extended config
+    #   - aktia-lb
 
   akita-proxyable:
-    image: akita:develop
+    image: plos/akita:develop
+    volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
+      - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
@@ -54,39 +62,50 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
-      - SSL=none  # options = none, existingkeys
+      # - SSL=none  # options = none, existingkeys
     # volumes:    # when using SSL=existingkeys
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
-  casproxy:
+  nedcas-lb:
     extends:
-      file: common.yml
       service: haproxy
     ports:
-      - "8443:443"
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+      # - "8443:443"
+      - "8880:8080"
+    # volumes:
+    #   - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
-  casconsultemplate:
+  # nedcas-ssl:
+  #   extends:
+  #     service: haproxy
+  #   ports:
+  #     - "8443:443"
+  #   volumes:
+  #     - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
+  #     - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  #   # depends_on:           # must be specified in extending file, not here
+  #   #   - "nedcas-proxyable"
+
+
+  nedcas-consultemplate:
     extends:
-      file: common.yml
       service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_casproxy_1"
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedcas-lb_1"
     volumes:
       - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
-    #   - casproxy
+    #   - nedcas-lb
 
   nedcas:
-    extends:
-      file: common.yml
-      service: nedcas-proxyable
-    # ports:
-    #   - "8443:8080"
+    extends: nedcas-proxyable
+    ports:
+      - "8880:8080"
 
   nedcas-proxyable:
-    image: nedcas:2.0.0-SNAPSHOT
+    image: plos/nedcas:2.0.0-SNAPSHOT
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -96,34 +115,33 @@ services:
       - CAS_DATABASE=cas
       - NED_SERVICE=http://nedapi:8080/v1
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
+      - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
-    # volumes:
-    #   - ${DOCKERFILES}/projects/selfsigned.jks:/root/web.jks:ro
 
-  nedproxy:
+  nedapi-lb:
     extends:
-      file: common.yml
       service: haproxy
     ports:
-      - "8081:8080"
+      - "8888:8080"
+    # depends_on:           # must be specified in extending file, not here
+    #   - "consulserver"
 
-  nedconsultemplate:
+  nedapi-consultemplate:
     extends:
-      file: common.yml
       service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedproxy_1" # $$(docker ps -q -f name=nedproxy)
+    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedapi-lb_1" # $$(docker ps -q -f name=nedapi-lb)
     volumes:
       - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
     # volumes_from:
-    #   - nedproxy
+    #   - nedapi-lb
 
   nedapi:
-    extends: ned-proxyable
+    extends: nedapi-proxyable
     ports:
-      - 8081:8080
+      - 8888:8080
 
-  ned-proxyable:
-    image: nedapi:develop
+  nedapi-proxyable:
+    image: plos/nedapi:develop
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -136,12 +154,25 @@ services:
       - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
 
   neddb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-    # volumes:    # enable to persist database between runs
-    #   - /var/lib/mysql
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
 
+
+  haproxy-template:
+    image: haproxy-template
+    environment:
+      - FRONTEND_PORT=433
+      - BACKEND=hostname:80
+      # - MODE=ssl or loadbalance
+    # volumes:
+    #   - /usr/local/etc/haproxy
+    #   - /dev/log:/dev/log
+
+  # TODO: make a dockerfile for this so we can set some env vars and cover the two common cases. SSL and LB
   haproxy:
     image: haproxy:alpine
     # ports:
@@ -169,56 +200,64 @@ services:
   mailcatcher:
     image: schickling/mailcatcher
     ports:
-      - 1080:1080
+      - "1080:1080"
 
-  ambra:
-    image: ambra:master
-    ports:
-      - "80:8080"
-    volumes:
-      - ../../templates:/root/templates
-      # - ../tests/test_data/sample_templates:/root/templates
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=ambra
-      - MYSQL_USER_PASSWORD=ambra
-      - MYSQL_HOSTNAME=ambradb
-      - MYSQL_DATABASE=ambra
-      - REPO_SERVICE=http://contentrepo:8080
+  plosthemes:
+    image: plosthemes:master
 
   wombat:
-    image: wombat:master
+    image: plos/wombat:master
     volumes:
-      - ../../plos-themes:/root/themes
+      - ${DOCKERFILES}/../plos-themes:/root/themes
+    # volumes_from:
+    #   - plosthemes    # this must be specified in the inheriting file if you want it.
     ports:
-      - 8081:8080
+      - "8015:8080"
     environment:
-      - RHINO_SERVICE=http://rhino:8080
+      - SERVER=http://rhino:8080
+      - SOLR=http://solr:8080/select
+      - CAS=https://localhost:8443/cas
+      - EMAIL=plos-org.mail.protection.outlook.com
+      - ROOT=/root/themes/
+      - MEMCACHEDHOST=memcached
+      # - DISABLE_COMMENTS=true
+      # - ROOT_PAGE_PATH=/root/themes/content/rootPage.html
+
+  memcached:
+    image: memcached:alpine
 
   rhino:
-    image: rhino:master
+    image: plos/rhino:master
     ports:
-      - 8080:8080
+      - "8006:8080"
     volumes:
       - $HOME/datastores/ingest:/root/ingest
     environment:
+      - MODE=plos
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ambra
       - MYSQL_USER_PASSWORD=ambra
       - MYSQL_HOSTNAME=ambradb
       - MYSQL_DATABASE=ambra
-      - REPO_SERVICE=http://contentrepo:8080
-      # - SOLR_URL=http://solr:8080/solr    # TODO: add to ambra.xml
-      - PLOS_QUEUE=tcp://plosqueue:61616
+      - REPO_LOCATION=http://contentrepo:8080
+      - CORPUS_BUCKET=corpus
+      - EDITORIAL_BUCKET=cms
+      - QUEUE_LOCATION=tcp://plosqueue:61616
+      - USER_API_SERVER=http://nedapi:8080
+      - USER_API_USER=dev
+      - USER_API_AUTH=dev
+      # - SOLR_URL=http://solr:8080/solr
 
-# RUN: ./stack.sh common run indexerminion
-# DEBUG: ./stack.sh common run -p 8000:8000 -e JAVA_DEBUG_PORT=8000 indexerminion
+# RUN: ./stack.sh common run --rm indexerminion
+# DEBUG: ./stack.sh common run -p 8000:8000 --rm indexerminion
   indexerminion:
-    image: indexerminion:accman
+    image: plos/indexerminion:accman
     volumes:
       - /tmp/indexerminion:/cache   # caches between runs
     environment:
       - RHINO_SERVICE=http://rhino:8080
+      - ALM_URL=http://alm-101.soma.plos.org
+      - ALM_KEY=
       - COUNTER_DATABASE_URL=jdbc:mysql://counterdb/plosreports
       - COUNTER_DATABASE=plosreports
       - COUNTER_HOSTNAME=counterdb
@@ -229,11 +268,11 @@ services:
       - SOLR_SOURCE=http://api.plos.org
       - SOLR_SOURCE_REQUEST_HANDLER=/search # required for api.plos.org
       - SOLR_TARGETS=http://solr:8080/solr
-      # - ARTICLE_LIST=10.1371/journal.pone.0099781, 10.1371/journal.pone.0098406
-      - ARTICLE_LIST=10.1371/journal.pone.0099781 #, 10.1371/journal.pone.0161688
+      - ARTICLE_LIST=10.1371/journal.pone.0099781
+      - DEBUG_FLAGS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n # needed for running in debug mode
 
   counter:
-    image: counter:master
+    image: plos/counter:master
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ambra
@@ -242,35 +281,35 @@ services:
       - MYSQL_DATABASE=plosreports
 
   plosqueue:
-    image: plosqueue:accman
+    image: plos/plosqueue:master
     environment:
-      - SOLR_URL=http://solr:8080/solr/update
+      - SOLR_URL=http://solr:8080/solr
       - RHINO_SERVICE=http://rhino:8080
       - COUNTER_DATABASE_URL=jdbc:mysql://counterdb/plosreports
       - COUNTER_DATABASE_USER=ambra
       - COUNTER_DATABASE_PASSWORD=ambra
 
   ambradb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-  #  ports:
-  #    - 3306:3306
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
 
   counterdb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
 
   solr:
-    image: solr:master
+    image: plos/solr:master
     ports:
       - "8983:8080"
     # volumes:
     #   - "$HOME/datastores/solr:/usr/local/tomcat/solr/home/data"
 
   contentrepo:
-    image: contentrepo:master
+    image: plos/contentrepo:master
     ports:
       - "8085:8080"
     environment:
@@ -279,36 +318,48 @@ services:
       - MYSQL_USER_PASSWORD=
       - MYSQL_HOSTNAME=repodb
       - MYSQL_DATABASE=repo
+      # - STORE_TYPE=FileSystem
+      # - FS_DIRECTORY=/repodata
+      - STORE_TYPE=Mogile
+      - MOGILE_DOMAIN=maindomain
       - MOGILE_TRACKERS=mogiletracker:7001
 
   repodb:
-    image: percona:5.6
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3305:3306"
 
   mogiletracker:
-    image: mogiletracker
+    image: plos/mogiletracker
     environment:
       - MYSQL_HOSTNAME=mogiledb
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=mogile
       - MYSQL_USER_PASSWORD=mogile
+      # - MYSQL_DATABASE=mogilefs         # TODO: include this
       - MOG_NODE_HOST=mogilenode
 
   mogilenode:
-    image: mogilenode
+    image: plos/mogilenode
 
   mogiledb:
+    extends: mysql
+    # image: percona:5.6
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=root
+
+  mysql:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
+  # TODO: move this into envoy, or out of compose completely
   testrunner:
-    image: testrunner
+    image: testrunner:custom
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock #/tmp/docker.sock
-      - ${DOCKERFILES}/testsInContainer:/tests
-      - ${DOCKERFILES}/projects:/projects
-      - ${DOCKERFILES}:/dockerfiles
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DOCKERFILES}:/dockerfiles:ro
+      - ${ENVOY}:/envoy:ro

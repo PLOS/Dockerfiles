@@ -2,38 +2,28 @@ version: '2'
 
 services:
 
-  akitaproxy:
+  akita-ssl:
     extends:
       file: common.yml
-      service: akitaproxy
+      service: akita-ssl
+    depends_on:
+      - akita-proxyable
 
-  akitaconsultemplate:
-    extends:
-      file: common.yml
-      service: akitaconsultemplate
-    volumes_from:
-      - akitaproxy
-
-  akita:
+  akita-proxyable:
     extends:
       file: common.yml
       service: akita-proxyable
     environment:
-      - CAS_URL=https://casproxy:443
+      - CAS_URL=https://nedcas-ssl:443
 
-  casproxy:
+  nedcas-ssl:
     extends:
       file: common.yml
-      service: casproxy
+      service: nedcas-ssl
+    depends_on:
+      - nedcas-proxyable
 
-  casconsultemplate:
-    extends:
-      file: common.yml
-      service: casconsultemplate
-    volumes_from:
-      - casproxy
-
-  nedcas:
+  nedcas-proxyable:
     extends:
       file: common.yml
       service: nedcas-proxyable
@@ -42,11 +32,6 @@ services:
     extends:
       file: common.yml
       service: nedapi
-
-  consulserver:
-    extends:
-      file: common.yml
-      service: consulserver
 
   neddb:
     extends:

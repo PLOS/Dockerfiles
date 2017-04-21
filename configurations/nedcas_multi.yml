@@ -2,17 +2,17 @@ version: '2'
 
 services:
 
-  casproxy:
+  nedcas-lb:
     extends:
       file: common.yml
-      service: casproxy
+      service: nedcas-lb
 
-  casconsultemplate:
+  nedcas-consultemplate:
     extends:
       file: common.yml
-      service: casconsultemplate
+      service: nedcas-consultemplate
     volumes_from:
-      - casproxy
+      - nedcas-lb
 
   consulserver:
     extends:

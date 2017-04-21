@@ -1,21 +1,12 @@
-################################ System Config ################################
-
-prettyPrintJson: true
-# enable to use Gson pretty print JSON output
-
 contentRepo:
   editorial:
     # Editorial content written by Lemur.
-#    address: http://sfo-cms-devbox01.int.plos.org:8080/repo/
-#    bucket:  plive-stage
-    address: ${REPO_SERVICE}
-    bucket:  cms
+    address: ${REPO_LOCATION}
+    bucket:  ${CORPUS_BUCKET}
   corpus:
     # Main corpus of articles.
-#    address: http://sfo-perf-plosrepo01.int.plos.org:8002/v1/
-#    bucket:  perf-repo
-    address: ${REPO_SERVICE}
-    bucket:  corpus
+    address: ${REPO_LOCATION}
+    bucket:  ${EDITORIAL_BUCKET}
 
 httpConnectionPool:
   maxTotal:           100
@@ -24,10 +15,10 @@ httpConnectionPool:
 # (including content repo and taxonomy server).
 
 taxonomy:
-  server:    https://plos.accessinn.com:9138/servlet/dh
-  thesaurus: plosthes.2016-3
-  categoryBlacklist:
-    - "/Earth sciences/Geography/Locations/"
+  server:    null
+  thesaurus: null
+  # categoryBlacklist:
+  #   - "/Earth sciences/Geography/Locations/"
 # Configuration related to the taxonomic classification of articles.
 #
 # "server" and "thesaurus" specify the remote taxonomy server that will
@@ -42,54 +33,25 @@ taxonomy:
 # sciences". See <https://developer.plos.org/jira/browse/AMEC-100>
 
 userApi:
-  server:                http://localhost/
-  authorizationAppName:  dipro
-  authorizationPassword: asdfsadfasdfsdfs
+  server:                ${USER_API_SERVER}
+  authorizationAppName:  ${USER_API_USER}
+  authorizationPassword: ${USER_API_AUTH}
 # Configuration for the API for user data (Named Entity Database, NED).
 
 queue:
-  solrUpdate: activemq:plos.solr.article.index?transacted=false
-  solrDelete: activemq:plos.solr.article.delete?transacted=false
-# Queue destination keys. (For now, the queue address is still set in ambra.xml
-# at ambra.services.activemq. To be moved here.
+  brokerUrl:        ${QUEUE_LOCATION}
+  # ActiveMQ address.
 
-manuscriptCustomMeta:
-  revisionDate:     "Publication Update"
-  publicationStage: "PLOS Publication Stage"
-# Values to look for in manuscripts as "<custom-meta><meta-name>...</meta-name
-# ></custom-meta>" XML elements, where programmatically signficant data will be
-# found.
+  solrUpdate:       activemq:plos.solr.article.index?transacted=false
+  solrDelete:       activemq:plos.solr.article.delete?transacted=false
+  # Queue destination keys.
 
+  syndicationRange: 30
+  # Number of days in the past to syndicate.
 
-#................................................................................
-#................................................................................
-#................................................................................
-#.........................7IIIII:................................................
-#................  =$II7777$7$7II???I=........:777III............................
-#........ .7$7$Z$$77III?IIII+???77II7777777$$7II+??++=?+.........................
-#....... $$$II7?I+?++?+I+????I??+II?I?+?????+=+++===+++~=+I......................
-#......$$7I?+???+++++++?=I?==?++?+=?+=====~~+~~=~===+==+=???I....................
-#....+Z7??+++=?=====?+?+=+=~+?+~=~=+?~:~:::~===~,:====:~~=+??++..................
-#....Z$I???+?+?++=++7I?++I=++++=+=+++=::,,:::~+=~~~~~,~~~==+==++I................
-#...Z8?I+I+??++=+?+7$??+===+??===+++=:,=~~::~~=~::~~~~:==:~=:~===+....,I+........
-#...Z7II??++?=++=IID77++I??+?++~==+?=~+~=,~==~~~:~:~:~~=?====~:=++II?I+=.........
-#..?O$I?++?++++???IDO$7$II?I?7???+I??+====:~$?===:+:~===+I?=+==???777I?..........
-#..+8II??+7?++++I+7$MZZ$$$I7I7$7III?II?=~++I7?+==:==,++III+Z~~~=?7?7$............
-#..,N7I?7II7++I77II$NO$7$$7$$77$7?$I77??I+IZ7I~~:~~+=+I?$$7Z+=+~~=?I?............
-#..7+7II7I7I????IIII88O$Z$$Z7$$I$III7777ZI$O7?+~~~~~+=?II7$$?I==+??7?............
-#..:.777I7???II?I7I7ND8OOO$$Z$$Z77Z777ZI$7D$7?+======?II7$D$I7I???$7?............
-#.,..Z$$$7I?IIIII$7ZDD8OO8OOZZOZ$Z7$$$$$78DZ77?+=~=+=II$ZZDZ$7777I$77$...........
-#....ZZ$7III???I7$D$...OOOOO88ZOOOZOZZZO888Z$7II+==+?I$8ZO8$$7I777$$$77..........
-#.....OZ$Z7I+?7ZOO.........OOOOOOOOO88OOO88OZ$Z$7?II7888ODZOO77IZ7$Z$$$OZ$.......
-#.....ZZZ$$I$OOD............................OZZ7I?I$Z7...IZ7OOO$7Z$8DNZZO....?7..
-#....OZOZ$$II$8..............................ZZZ7??77$.......ZZ$8I7$$Z77Z$8Z77...
-#...:ZOOZZ7I7D................................O$$+?7O........Z7$ZZ$7O$7O$8$$O....
-#...:ZZZ$$$$Z.................................OZ7+IZ..........OZZOOZZZZZ$8O=.....
-#....ZZZ$$ZO..................................O$7$ZZ............ZZ$Z$$$OOO.......
-#....O777ZZ...................................7ZIZO,.............88$7OMD ........
-#....ZI??Z7,...................................ZIZO............... ZNZ8,.........
-#....7??7I$Z$.................................O$IZOZ................. ...........
-#...7$I?IO77OO................................OO$77OZ............................
-#.......,......................................,:IOO,............................
-#................................................................................
-#................................................................................
+# manuscriptCustomMeta:
+#   revisionDate:     "Publication Update"
+#   publicationStage: "PLOS Publication Stage"
+# # Values to look for in manuscripts as "<custom-meta><meta-name>...</meta-name
+# # ></custom-meta>" XML elements, where programmatically signficant data will be
+# # found.

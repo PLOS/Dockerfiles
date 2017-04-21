@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-BUILD_DIR=/root
+# set -x
 
-source $BUILD_DIR/run-helpers.sh
+source $HOME/run-helpers.sh
+
+require_mysql_envs
+require_envs RINGGOLD_DATABASE
 
 wait_until_db_service_up
 
@@ -16,14 +19,16 @@ fi
 
 set_db_grants
 
-bash flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
-    -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:migrations migrate
+bash $HOME/flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
+    -user=${MYSQL_USER} -password=${MYSQL_USER_PASSWORD} -locations=filesystem:$HOME/migrations migrate
 
 # ringgold DB
 
 if ! check_db_exists ${RINGGOLD_DATABASE}; then
   create_db ${RINGGOLD_DATABASE}
 fi
+
+# TODO: seed ringgold
 
 # seed NED with dev data as needed
 
@@ -38,8 +43,8 @@ fi
 
 echo "SELECT count(*) as user_count FROM namedEntities.individualProfiles;" | $MYSQL_ROOT
 
-process_template ${CATALINA_HOME}/conf/context.xml
+process_env_template ${CATALINA_HOME}/conf/context.xml
 
-start_consul_agent
+start_consul_agent &
 
 start_tomcat

@@ -1,16 +1,51 @@
 PLOS Dockerfiles
 ================
 
+This repo contains the dockerizations for PLOS projects. It provides complete stacks which are runnable combinations of PLOS services. For example with one command you can start up a stack containing Rhino, Wombat, Content Repo, MySQL, Solr, Plos Queue, and MogileFS.
+
+To keep your host clean, all projects are built and tested in disposable containers.
+
+
 Requirements
 ------------
-* docker >= 1.10
-* docker-compose >= 1.6
-* git  (optional, for checking out missing project sources if they are not found)
+This requires the [Docker Envoy](https://github.com/jonocodes/envoy) project and follows its conventions. It is already already included here, so you should not need to do anything to bring it in.
 
-Status
+
+Quick Start
+-----------
+
+To make sure you are setup correctly, I recommend building a minimal stack and seeing that the tests pass for it.
+
+    ./nv build stack solr
+    ./nv test solr
+
+For a slightly more complex stack try bringing up the content repo.
+
+    ./nv build stack contentrepo
+    ./nv stack contentrepo
+
+This one might take some time to finish because building Mogile from CPAN can be slow. However, after the first time it will be cached so subsequent builds will be fast.
+
+See Troubleshooting below if you have problem with Maven running too slow.
+
+Images
 ------
-* Article ingestion might be broken due to schema updates
-* Some registry functionality might not work due to compose schema
+
+An _image_ is built for every project or service (ie - rhino). When you start an image that service should be up and running in a container that you can access from the host.
+
+All images are production grade and designed in a [Twelve-Factor](https://12factor.net/) style. They are setup to be configured at run time using environment variables.
+
+
+Configurations
+--------------
+
+Generally these images cannot run on their own since, like most apps, they depend on additional services like a database. This is where docker-compose comes in.
+
+Compose lets you specify a combination of services in a yaml file and allows you to specify the environment variables needed to wire your services together. It uses an isolated bridged/NAT network by default.
+
+In the configurations/ directory you can these yaml files. _common.yml_ contains the definition of every service and some default setups for them. The other files (ie - contentrepo.yml) inherit common.yml to specify only the services needed for a contentrepo _stack_ and overrides defaults as needed.
+
+Note that these are only sample configurations. You should create your own depending on the combination of services you require. The samples mostly include top to bottom stacks, but you are not required to do this. For example we bring up a CAS server in the Akita stack. But you can set environment variables to point to production CAS instead of bringing up that service. Feel free to mix and match.
 
 
 Setup
@@ -27,29 +62,14 @@ This way (workspace)/Dockerfiles/projects/wombat/ knows where to find the source
 If you want docker images to build for certain versions of a project, make sure to switch to that branch or tag in the source directory of the project before building the docker images.
 
 
-Building images
+Running a stack
 ---------------
 
-To build a docker image for a project, run the build script. For example:
+The `nv stack` command is a wrapper around docker-compose. It can be used to bring stacks up and down.
 
-    projects/wombat/build-image.sh
-    projects/rhino/build-image.sh
-    projects/content-repo/build-image.sh
-    projects/plos-solr/build-image.sh
+Here is how you would run one stack:
 
-Or build them all with:
-
-    projects/build-all.sh
-
-This will only work for projects you have the source code locally checked out for, but the builder script will do its best to clone git project repos that it needs source code for.
-
-
-Running
--------
-
-To see a list of sample stacks that combine the use of these images run stack.sh. Here is how you would run one stack:
-
-    ./stack.sh wombat
+    ./nv stack wombat
 
 Now, in the case above you can visit some pages to see they are up:
 
@@ -60,28 +80,14 @@ Now, in the case above you can visit some pages to see they are up:
 Note, that before running one of these docker-compose files you need to make sure you have built the images it depends on (see above).
 
 
-Testing
--------
-
-See the tests/ directory. These are not exhaustive service tests. They are supposed to test your containers, such that you can update the Dockerfiles and be sure that it does not break anything. Tests themselves run in the 'testrunner' container so testing requirements are isolated from the host.
-
-
-Development/Conventions
------------------------
-
-For each project the images created for it should be tagged with a version number and with the name of the git branch.
-
-In each image, create a file at /root/version.txt that contains the version number representing the built artifacts. For example, "0.5.0-SNAPSHOT".
-
-
 Scaling/Load Balancing
 ----------------------
 
 There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
 
-* Start stack: `./stack.sh nedapi_consul`
+* Start stack: `./nv stack nedapi_consul`
 * See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./stack.sh nedapi_consul scale nedapi=4`
+* Run more NED instances: `./nv stack nedapi_consul scale nedapi=4`
 * Refresh the consul UI to see the added services
 * Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
 * Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
@@ -91,6 +97,8 @@ There is a scaling demo that runs multiple instances of NED using Consul. Here i
 Docker Registry
 ---------------
 
+Note: Some registry functionality might currently not work due to compose schema.
+
 The Docker registry is a place to host images. Images can be pushed and pulled from our local Docker Registry (2.0). If an image is there you, you can pull from it instead of having to build it.
 
 To use our registry make sure you have configured your Docker daemon such that it can talk to our repo (see confluence doc).
@@ -98,7 +106,7 @@ To use our registry make sure you have configured your Docker daemon such that i
 As an example, here is how you would run the new Ambra stack from the repo:
 
     ./registry.sh pull_stack configurations/web_delivery.yml
-    ./stack.sh web_delivery.yml
+    ./nv stack web_delivery.yml
 
 To see the Wombat home page, visit:
     http://localhost:8081
@@ -107,23 +115,25 @@ Note: The above example requires you to have Ambra templates and plos-themes che
 
 You can use the included registry.yml file to bring up the registry on your server.
 
-Status/Todo
------------
+Todo/Outstanding
+----------------
 
+* Update compose files to use schema version 3. Compose 1.9 allows for default environment values as well.
 * Akita and Lemur apps will have problems with CAS because of this bug:
 https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
 * Dockerize: ploscli, AricleAdmin
-- Replace tomcat:6-jre8 with tomcat:7-jre8-alpine for smaller images
-* Use a bash testing system like https://github.com/sstephenson/bats
+* plos-themes and apache-conf (and patch so we can use environment vars for run time config)
+* Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
+* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service. (https://github.com/hashicorp/consul-template/issues/532)
+* Fix queue, since we need a new way of starting it as the exec was removed here: https://github.com/PLOS/plos-queue/commit/95fc42ef7155ed03a8bbc42a590607fa12709b36
 
+Troubleshooting
+---------------
 
-Tips
-----
-
-Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
+Some of our projects make use of PLOS's maven repository, and there is a different route to it if you are in the PLOS network. New containers copy the host's resolve.conf file into the container. However, in Ubuntu 14, it seems this file is managed differently on the host.
 
 To allow resolve.conf to populate as it used to I had to open
 /etc/NetworkManager/NetworkManager.conf
@@ -131,3 +141,5 @@ To allow resolve.conf to populate as it used to I had to open
 and comment out this line:
 
     dns=dnsmasq
+
+Then restart the NetworkManager service.

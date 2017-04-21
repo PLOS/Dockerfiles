@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../build-helpers.sh \
-  build_java_service_images maven:3.3-jdk-8 ned-cas nedcas
+source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../envoy-config.sh
+  build_image_maven ned-cas nedcas
