@@ -24,6 +24,10 @@ services:
     # depends_on:           # must be specified in extending file, not here
     #   - "akita-proxyable"
 
+  akita:
+    extends: akita-proxyable
+    ports:
+      - "80:80"
 
 
   # TODO: pass in service name so the name can by dynamic
