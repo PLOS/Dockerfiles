@@ -33,6 +33,11 @@ services:
   #     file: common.yml
   #     service: nedcas-proxyable
 
+  nedcas:
+    extends:
+      file: common.yml
+      service: nedcas
+
   nedapi:
     extends:
       file: common.yml

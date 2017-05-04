@@ -53,7 +53,7 @@ services:
       - MAILER_PORT=1025
       - NED_USERAPP=dev
       - NED_PASSWORD=dev
-      - CAS_URL=https://nedcas:8443
+      - CAS_URL=http://nedcas:8080
       - SECRET_KEY_BASE=secretgoeshere
       - EXACTTARGET_ID=
       - EXACTTARGET_SECRET=
