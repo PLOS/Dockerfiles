@@ -4,6 +4,8 @@ FROM ruby:2.2-slim
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
+ENV HOME /root/
+
 WORKDIR /root
 
 RUN apt-get update -qq && \
@@ -26,12 +28,16 @@ RUN mkdir /src
 WORKDIR /src
 
 # pre-bundle, as an optimization
-COPY Gemfile /src/
-COPY Gemfile.lock /src/
+COPY rails/Gemfile /src/
+COPY rails/Gemfile.lock /src/
 RUN bundle install
 
-COPY . /src
-COPY dist /src/ember
+COPY rails /src
+COPY ember /src/ember
+
+COPY nginx.conf $HOME
+COPY puma.rb $HOME
+COPY run.sh $HOME
 
 # RUN echo `ruby -rjson -e 'puts JSON.parse(File.read("/src/frontend/package.json"))["version"]'` > $HOME/version.txt
 #
@@ -45,4 +51,4 @@ COPY dist /src/ember
 RUN mkdir /var/log/akita /etc/nginx/ssl && chmod 777 /var/log/akita && \
 		rm -f /etc/nginx/sites-enabled/default
 
-# CMD bash $HOME/run.sh
+CMD bash $HOME/run.sh
