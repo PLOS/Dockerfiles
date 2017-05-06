@@ -45,8 +45,6 @@ services:
 
   akita-proxyable:
     image: plos/akita:develop
-    volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
-      - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
