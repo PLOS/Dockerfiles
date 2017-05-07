@@ -18,8 +18,8 @@ HEALTHCHECK --interval=2m --timeout=3s \
 
 # WORKDIR /src
 
-RUN apk --update add git unzip wget curl bash nginx tzdata \
-    --virtual .ruby-builddeps ruby-json build-base libxml2-dev libxslt-dev ruby-dev && \
+RUN apk --update add git unzip wget curl bash nginx tzdata && \
+    apk add --virtual .ruby-builddeps ruby-json build-base libxml2-dev libxslt-dev ruby-dev && \
     bundle config --global build.nokogiri "--use-system-libraries" && \
     wget -O consul.zip https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip consul.zip && \
 
@@ -34,8 +34,9 @@ RUN apk --update add git unzip wget curl bash nginx tzdata \
     echo 'gem: --no-document' >> ~/.gemrc && \
     cp ~/.gemrc /etc/gemrc && \
     chmod uog+r /etc/gemrc && \
-       cd /src && bundle install && apk del ruby-json build-base libxml2-dev libxslt-dev ruby-dev
-       #apk del .ruby-builddeps
+       cd /src && bundle install && \
+       #&& apk del ruby-json build-base libxml2-dev libxslt-dev ruby-dev
+       apk del .ruby-builddeps
 
 
 
