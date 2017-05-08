@@ -39,7 +39,7 @@ COPY nginx-akita.conf /etc/nginx/conf.d/akita.conf
 COPY puma.rb $HOME
 COPY run.sh $HOME
 
-# COPY run*.sh $HOME
+COPY run*.sh $HOME
 
 COPY rails /src
 COPY ember /src/ember
