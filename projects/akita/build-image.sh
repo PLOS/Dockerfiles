@@ -5,4 +5,6 @@ source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../envoy-config.sh
 
 # bash $ENVOY/builders/rails.sh akita akita
 
-bash $ENVOY/builders/ember_rails.sh akita akita
+# bash $ENVOY/builders/ember_rails.sh akita akita
+
+bash $ENVOY/builders/ember_rails_nobuild.sh akita akita
