@@ -6,10 +6,11 @@ LABEL vendor="Public Library of Science"
 # TODO: pin library libsys-syscall-perl 0.23-1
 # TODO: pin the Mogile version to something specific
 
-RUN apk update && apk add bash curl \
-  wget make gcc g++ git patch perl perl-dev && \
+RUN apk --no-cache add bash curl perl wget && \
+  apk --no-cache add --virtual .build-deps make gcc g++ git patch perl-dev && \
   curl -L https://cpanmin.us | perl - App::cpanminus && \
-  cpanm install --force MogileFS::Server
+  cpanm install --force MogileFS::Server && \
+  apk del .build-deps
 
 RUN mkdir -p /node/device/dev1
 WORKDIR /node

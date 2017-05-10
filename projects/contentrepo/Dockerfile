@@ -5,7 +5,7 @@ LABEL vendor="Public Library of Science"
 
 ENV HOME /root/
 
-# TODO: move gcc and tools into build step instead of prod image somehow
+# TODO: reduce perl footprint perhaps? install with no tests?
 
 HEALTHCHECK CMD curl -f http://localhost:8080/config || exit 1
 
