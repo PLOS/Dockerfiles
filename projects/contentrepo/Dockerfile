@@ -7,11 +7,13 @@ ENV HOME /root/
 
 # TODO: move gcc and tools into build step instead of prod image somehow
 
-RUN apk update && apk add wget make gcc g++ git patch perl perl-dev && \
-  curl -L https://cpanmin.us | perl - App::cpanminus && \
-  cpanm install --force MogileFS::Utils
-
 HEALTHCHECK CMD curl -f http://localhost:8080/config || exit 1
+
+RUN apk --no-cache add wget perl && \
+  apk --no-cache add --virtual .build-deps make gcc g++ git patch perl-dev && \
+  curl -L https://cpanmin.us | perl - App::cpanminus && \
+  cpanm install --force MogileFS::Utils && \
+  apk del .build-deps
 
 COPY run*.sh *.mysql $HOME
 
