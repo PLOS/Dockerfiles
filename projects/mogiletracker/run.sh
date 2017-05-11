@@ -29,7 +29,7 @@ echo "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USER}'@'%' WITH GRANT OPTION; FLUS
 # TODO: only do dbsetup if the database is not setup already
 mogdbsetup --yes --dbhost=$MYSQL_HOSTNAME --dbname=mogilefs --dbuser=$MYSQL_USER --dbpassword=$MYSQL_USER_PASSWORD --dbrootpassword=$MYSQL_ROOT_PASSWORD
 
-useradd -g nogroup -s /bin/false -d /var/mogdata mogilefs
+adduser -D -G nogroup -s /bin/false -h /var/mogdata mogilefs
 sudo -u mogilefs mogilefsd -c mogilefsd.conf
 echo mogadm host add stored --ip=$MOG_NODE_HOST --port=7500 --status=alive
 mogadm host add stored --ip=$MOG_NODE_HOST --port=7500 --status=alive
