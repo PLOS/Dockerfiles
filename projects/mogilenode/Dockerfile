@@ -9,8 +9,8 @@ LABEL vendor="Public Library of Science"
 RUN apk --no-cache add bash curl perl wget && \
   apk --no-cache add --virtual .build-deps make gcc g++ git patch perl-dev && \
   curl -L https://cpanmin.us | perl - App::cpanminus && \
-  cpanm install --force MogileFS::Server && \
-  apk del .build-deps
+  cpanm install --notest --force MogileFS::Server && \
+  apk del .build-deps && rm -rf /root/.cpanm
 
 RUN mkdir -p /node/device/dev1
 WORKDIR /node

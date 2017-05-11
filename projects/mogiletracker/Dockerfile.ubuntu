@@ -8,7 +8,7 @@ RUN apt-get update && \
     cpanm install --force MogileFS::Server && \
     cpanm install DBD::mysql && \
     cpanm install MogileFS::Utils && \
-    apt-get remove -y build-essential && \
+    apt-get remove -y build-essential gcc && apt-get autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /tracker
