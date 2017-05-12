@@ -325,6 +325,8 @@ services:
       - STORE_TYPE=Mogile
       - MOGILE_DOMAIN=maindomain
       - MOGILE_TRACKERS=mogiletracker:7001
+      # - TOMCAT_HTTP_PORT=8081   # for host networking mode
+      # - TOMCAT_CONTROL_PORT=8007
 
   repodb:
     extends: mysql

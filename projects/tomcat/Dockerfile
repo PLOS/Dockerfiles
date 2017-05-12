@@ -17,5 +17,8 @@ RUN apk update && apk add bash curl openssl mysql-client && \
   rm -rf /tmp/consul*.zip && \
   find /root/flyway-*/drivers ! -name 'mariadb*' -type f -exec rm -f {} +
 
+COPY start_tomcat.sh $CATALINA_HOME/bin/
+
 # remove stock tomcat app
-RUN rm -rf $CATALINA_HOME/webapps/*
+RUN rm -rf $CATALINA_HOME/webapps/* && \
+  chmod +x $CATALINA_HOME/bin/start_tomcat.sh
