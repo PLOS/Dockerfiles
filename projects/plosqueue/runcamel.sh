@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# this file was coppied over from old plos-queue (https://github.com/PLOS/plos-queue/blob/ffbffdb34e3138be75822f411962c85a4884f5fa/src/main/bin/runcamel.sh) since it appears this is no longer in the repo since it was moved to an init script (https://github.com/PLOS-Formulas/camel-formula/blob/dev/camel/conf/etc/init.d/plos-queue) in a salt formula. I'm not quite sure.
+# this file was coppied over from camel-formula here: https://github.com/PLOS-Formulas/camel-formula/blob/dev/camel/conf/opt/plos/plos-queue/run/runcamel.sh
 
 if [ -z "$JAVA_HOME" ] ; then
   echo "Error: JAVA_HOME is not defined"
@@ -54,10 +54,8 @@ if [ ! -x "$JAVACMD" ] ; then
   exit 1
 fi
 
-if [ -z "$PLOS_CAMEL_OPTS" ] ; then
-  PLOS_CAMEL_OPTS="-Dhawtio.port=61617 -Xmx512M -server -showversion -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false"
-fi
+PLOS_CAMEL_OPTS="-Dhawtio.port=61617 -Dlog4j.configuration=file:/opt/plos/plos-queue/conf/camel-log4j.properties -Dplos.camel.activemq.persistentStoreDir=/opt/plos/plos-queue/run/activemq-data -Dcamel.configuration=file:/opt/plos/plos-queue/conf/camel.properties -Xmx512M -server -showversion -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false"
 
 PLOS_CAMEL_CLASSPATH="${PLOS_CAMEL_HOME}/*:${PLOS_CAMEL_HOME}/lib/*"
 
-exec "$JAVACMD" $PLOS_CAMEL_OPTS -cp $PLOS_CAMEL_CLASSPATH org.plos.camel.Main
+exec "$JAVACMD" $PLOS_CAMEL_OPTS -cp $PLOS_CAMEL_CLASSPATH org.apache.camel.spring.Main

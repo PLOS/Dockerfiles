@@ -14,6 +14,11 @@ services:
     environment:
       - CAS=https://register.plos.org/cas
 
+  memcached:
+    extends:
+      file: common.yml
+      service: memcached
+
   rhino:
     extends:
       file: common.yml
