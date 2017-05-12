@@ -9,7 +9,7 @@ ENV AMBRA_CONF /etc/ambra/
 ENV HOME /root/
 
 # install mysql client, jdbc connectors, flyway, and consul
-RUN apk update && apk add bash curl openssl mysql-client && \
+RUN apk --no-cache add bash curl openssl mysql-client && \
   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
   wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar && \
   wget -O - https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/4.0.3/flyway-commandline-4.0.3.tar.gz | tar xz -C /root && \

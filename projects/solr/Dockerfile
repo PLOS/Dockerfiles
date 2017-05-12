@@ -1,11 +1,13 @@
 FROM tomcat:7-jre8-alpine
+# FROM plos/tomcat:7  # not doing this because of the lib bloat
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk update && apk add bash openssl
+ENV AMBRA_CONF /etc/ambra/
 
-RUN wget -O $CATALINA_HOME/lib/slf4j-log4j12-1.6.1.jar \
+RUN apk --no-cache add bash openssl && \
+    wget -O $CATALINA_HOME/lib/slf4j-log4j12-1.6.1.jar \
       https://search.maven.org/remotecontent?filepath=org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar && \
     wget -O $CATALINA_HOME/lib/slf4j-api-1.6.1.jar \
       https://search.maven.org/remotecontent?filepath=org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar && \
@@ -14,7 +16,6 @@ RUN wget -O $CATALINA_HOME/lib/slf4j-log4j12-1.6.1.jar \
     wget -O  $CATALINA_HOME/lib/jcl-over-slf4j-1.6.1.jar \
       https://search.maven.org/remotecontent?filepath=org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar
 
-ENV AMBRA_CONF /etc/ambra/
 # ENV JAVA_OPTS "$JAVA_OPTS -Dsolr.solr.home=$CATALINA_HOME/solr/home"
 # ENV JAVA_OPTS "$JAVA_OPTS -Dsolr.data.dir=$CATALINA_HOME/solr/home/data"
 
