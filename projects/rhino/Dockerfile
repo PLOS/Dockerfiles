@@ -3,7 +3,7 @@ FROM plos/tomcat:7
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk add python py-mysqldb py-pip
+RUN apk --no-cache add python py-mysqldb py-pip
 # COPY requirements.txt $HOME
 # RUN pip install -r $HOME/requirements.txt
 
@@ -18,7 +18,7 @@ RUN mkdir -p $AMBRA_CONF $HOME/datastores/ingested $HOME/datastores/ingest && \
 COPY run*.sh *.sql *.py dbschema $HOME
 COPY rhino.war $CATALINA_HOME/webapps/ROOT.war
 
-# TODO: replace rhino.yaml with one eventually provided in the deb package: https://developer.plos.org/jira/browse/DPRO-3411 
+# TODO: replace rhino.yaml with one eventually provided in the deb package: https://developer.plos.org/jira/browse/DPRO-3411
 COPY context.xml rhino.yaml $AMBRA_CONF
 
 CMD bash $HOME/run.sh

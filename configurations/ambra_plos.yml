@@ -24,11 +24,6 @@ services:
       file: common.yml
       service: rhino
 
-  # plosthemes:
-  #   extends:
-  #     file: common.yml
-  #     service: plosthemes
-
   plosqueue:
     extends:
       file: common.yml
