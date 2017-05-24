@@ -1,14 +1,12 @@
 version: '2'
 
-# TODO: test ingestion and make sure content repo works in filesystem mode without mogile
-
 services:
 
   wombat:
     extends:
       file: common.yml
       service: wombat
-    image: plos/wombat:3.3.2
+    image: plos/wombat:3.3.3
     volumes:
       # - $HOME/ambra_demo/themes:/root/themes
       - $DOCKERFILES/themes/minimal:/root/themes
@@ -26,6 +24,7 @@ services:
     environment:
       - MODE=example
       - MYSQL_HOSTNAME=ambradb_demo
+      - SOLR=http://solr_dummy:8080/select
 
   ambradb_demo:
     extends:
@@ -50,3 +49,7 @@ services:
     extends:
       file: common.yml
       service: repodb
+
+# HACK: to allow article rendering in wombat until plos-solr gets open sourced
+  solr_dummy:
+    image: solr:5-alpine
