@@ -30,11 +30,20 @@ def svc_url():
     requests.get(url)
     return url
 
-# @pytest.fixture(scope="module")
-# def stack():
-#     exec (docker-compose...)
+@pytest.fixture(scope="module")
+def stack():
+    print ('STARTING STACK')
 
-def test_get_config(svc_url):
+    from subprocess import call
+
+    call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "kill"])
+    call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "rm", "-fv"])
+    call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "up", "-d"])
+
+    return ('stackk')
+
+def test_get_config(stack): # svc_url,
+    print (stack)
     # wait_for_web_service(svc_url)
     r = requests.get(svc_url + '/config')
     log.debug( "config = %r", r.json() )

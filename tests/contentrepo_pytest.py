@@ -1,6 +1,3 @@
-
-# pytest contentrepo_pytest.py -v
-
 import requests
 import time
 import logging
@@ -8,9 +5,6 @@ import sys
 import os
 import pytest
 from retry import retry
-
-# svc_url = 'http://localhost:8085'
-# svc_url = 'http://contentrepo:8080'
 
 bucket = 'bucket_' + str(time.time())
 
@@ -25,17 +19,11 @@ log=logging.getLogger( "log" )
 def svc_url():
     # url = 'http://localhost:8085'
     url = 'http://contentrepo:8080'
-    # print("TRYING")
     log.debug("Trying to reach " + url + " ...")
     requests.get(url)
     return url
 
-# def url():
-#     wait_for_web_service('http://localhost:8085')
-#     return svc_url
-
 def test_get_config(svc_url):
-    # wait_for_web_service(svc_url)
     r = requests.get(svc_url + '/config')
     log.debug( "config = %r", r.json() )
     assert r.status_code == 200
