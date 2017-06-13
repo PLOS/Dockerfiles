@@ -8,8 +8,8 @@ import os
 
 from retry import retry
 
-from proboscis.asserts import assert_equal
-from proboscis import test
+# from proboscis.asserts import assert_equal
+# from proboscis import test
 
 # svc_url = 'http://localhost:8085'
 svc_url = 'http://contentrepo:8080'
