@@ -7,4 +7,4 @@ LABEL vendor="Public Library of Science"
 ADD https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 /bin/jq
 RUN chmod +x /bin/jq
 
-RUN pip install requests unittest proboscis
+RUN pip install requests retry proboscis

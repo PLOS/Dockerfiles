@@ -40,6 +40,3 @@ curl -I http://$SVC_URL/objects/$BUCKET?key=$OBJECT
 
 diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT > /dev/null
 	test_true "read object back"
-
-
-python contentrepo.py
