@@ -7,10 +7,18 @@ import logging
 import sys
 import os
 import pytest
+import shlex
+
+from subprocess import call
+import subprocess
 from retry import retry
 
 # svc_url = 'http://localhost:8085'
 # svc_url = 'http://contentrepo:8080'
+
+
+compose_base = 'docker-compose -f /dockerfiles/configurations/contentrepo.yml'
+
 
 bucket = 'bucket_' + str(time.time())
 
@@ -19,6 +27,9 @@ local_input_file = os.path.realpath(__file__) #'../LICENSE'  # '/usr/bin/env'
 logging.basicConfig( stream=sys.stderr )
 logging.getLogger( "log" ).setLevel( logging.DEBUG )
 log=logging.getLogger( "log" )
+
+def docker_compose(command):
+    subprocess.check_output(shlex.split(compose_base + ' ' + command))
 
 @pytest.fixture(scope="module")
 @retry(requests.exceptions.ConnectionError, tries=20, delay=3)
@@ -34,16 +45,40 @@ def svc_url():
 def stack():
     print ('STARTING STACK')
 
-    from subprocess import call
-
     call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "kill"])
     call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "rm", "-fv"])
     call(["docker-compose", "-f", "/dockerfiles/configurations/contentrepo.yml", "up", "-d"])
 
     return ('stackk')
 
-def test_get_config(stack): # svc_url,
-    print (stack)
+@pytest.fixture(scope="module")
+def my_cluster(request):
+
+    def fin():
+        # subprocess.check_output(shlex.split(compose_base + ' down'))
+        docker_compose('kill')
+        docker_compose('rm -f -v')
+
+    request.addfinalizer(fin)
+    # subprocess.check_output(shlex.split(compose_base + ' up -d'))
+    docker_compose('kill')
+    docker_compose('rm -f -v')
+    docker_compose('up -d')
+
+@pytest.fixture(scope="module")
+def my_cluster2(request):
+
+    docker_compose('kill')
+    docker_compose('rm -f -v')
+    docker_compose('up -d')
+    yield
+
+    docker_compose('kill')
+    docker_compose('rm -f -v')
+
+
+def test_get_config(my_cluster2): # svc_url,
+    # print (stack)
     # wait_for_web_service(svc_url)
     r = requests.get(svc_url + '/config')
     log.debug( "config = %r", r.json() )
