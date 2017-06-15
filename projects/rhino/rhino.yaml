@@ -2,11 +2,11 @@ contentRepo:
   editorial:
     # Editorial content written by Lemur.
     address: ${REPO_LOCATION}
-    bucket:  ${CORPUS_BUCKET}
+    bucket:  ${EDITORIAL_BUCKET}
   corpus:
     # Main corpus of articles.
     address: ${REPO_LOCATION}
-    bucket:  ${EDITORIAL_BUCKET}
+    bucket:  ${CORPUS_BUCKET}
 
 httpConnectionPool:
   maxTotal:           100

@@ -24,6 +24,10 @@ services:
     # depends_on:           # must be specified in extending file, not here
     #   - "akita-proxyable"
 
+  akita:
+    extends: akita-proxyable
+    ports:
+      - "80:80"
 
 
   # TODO: pass in service name so the name can by dynamic
@@ -41,15 +45,13 @@ services:
 
   akita-proxyable:
     image: plos/akita:develop
-    volumes:    # TEMP FOR TESTING NGINX REDIRECTS, REMOVE BEFORE MERGE!!!!!
-      - ${DOCKERFILES}/projects/akita/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
     environment:
       - NED_SERVICE=http://nedapi:8080/v1
       - MAILER_ADDRESS=mailcatcher
       - MAILER_PORT=1025
       - NED_USERAPP=dev
       - NED_PASSWORD=dev
-      - CAS_URL=https://nedcas:8443
+      - CAS_URL=http://nedcas:8080
       - SECRET_KEY_BASE=secretgoeshere
       - EXACTTARGET_ID=
       - EXACTTARGET_SECRET=
@@ -62,6 +64,7 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
+      - KEYS_DIR=$DOCKERFILES/../akita/dev/
       # - SSL=none  # options = none, existingkeys
     # volumes:    # when using SSL=existingkeys
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
@@ -323,6 +326,8 @@ services:
       - STORE_TYPE=Mogile
       - MOGILE_DOMAIN=maindomain
       - MOGILE_TRACKERS=mogiletracker:7001
+      # - TOMCAT_HTTP_PORT=8081   # for host networking mode
+      # - TOMCAT_CONTROL_PORT=8007
 
   repodb:
     extends: mysql

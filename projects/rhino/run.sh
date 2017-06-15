@@ -23,7 +23,7 @@ fi
 
 set_db_grants
 
-# NOTE: these modes do not play well with eachother. you need to clear the db between switching modes
+# NOTE: these modes do not play well with eachother. you need to clear the db between switching modes and after ingesting articles?
 
 # HACK: until dipro migrations get figured out, we smash some journal data in
 if [[ "$MODE" == "plos" ]]; then

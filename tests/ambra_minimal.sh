@@ -4,42 +4,39 @@ set -x
 
 source /envoy/test-helpers.sh
 
-SVC_URL=contentrepo:8080
-SVC_NAME="contentrepo"
+wait_for_web_service contentrepo:8080 "Content repo"
+wait_for_web_service rhino:8080 "Rhino"
 
-wait_for_web_service $SVC_URL $SVC_NAME
+# begin tests
 
-curl $SVC_URL/config
-test_up $SVC_URL/config $SVC_NAME
+ARTICLE=pone.0153419
 
-# create a bucket
-BUCKET=bucket_`date +%s`
+ARTICLE_RHINO=rhino:8080/articles/10.1371++journal.$ARTICLE
 
-curl --data "name=$BUCKET" http://$SVC_URL/buckets
-	test_true "create bucket"
+test_up rhino:8080/journals "Rhino journals"
 
-# create an object
-OBJECT=object_`date +%s`
+# ingest an article
 
-THISSCRIPT=${BASH_SOURCE[0]}
+curl -X POST --form "archive=@/dockerfiles/tests/test_data/demo/$ARTICLE.zip" rhino:8080/articles > /dev/null
+# TODO: should return 201 ?
 
-curl -F "create=new" -F "key=$OBJECT" -F "bucketName=$BUCKET" -F "file=@$THISSCRIPT" http://$SVC_URL/objects
-	test_true "create object"
+# TODO; check return code of POST, and other POSTs in this test
 
-# read it back
-curl -I http://$SVC_URL/objects/$BUCKET?key=$OBJECT
+[[ $(curl $ARTICLE_RHINO | jq .ingestions.\"1\") != "null" ]]
+	test_true "Article ingestion"
 
-diff -s <(curl http://$SVC_URL/objects/$BUCKET?key=$OBJECT) $THISSCRIPT > /dev/null
-	test_true "read object back"
+# create a revision
 
+curl -X POST $ARTICLE_RHINO/revisions?ingestion=1 # > /dev/null
 
+curl $ARTICLE_RHINO
+curl $ARTICLE_RHINO | jq .revisions.\"1\"
 
-# TODO: import rhino tests somehow?
-#
-# wait_for_web_service rhino:8080 "Rhino"
-#
-#
-# test_up rhino:8080/journals "Rhino journals"
-#
-#
-# test_up rhino:8080/journals "Rhino journals222"
+[ $(curl $ARTICLE_RHINO | jq .revisions.\"1\") != "null" ]
+	test_true "Article revision"
+
+wait_for_web_service wombat:8080 "wombat"
+
+# frontend test for rendering article
+
+test_up wombat:8080/article?id=10.1371/journal.$ARTICLE "Wombat article"

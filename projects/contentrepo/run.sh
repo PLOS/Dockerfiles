@@ -34,4 +34,4 @@ fi
 
 process_env_template $CATALINA_HOME/conf/context.xml
 
-start_tomcat
+start_tomcat.sh

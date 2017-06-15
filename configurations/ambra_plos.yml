@@ -6,20 +6,23 @@ services:
     extends:
       file: common.yml
       service: wombat
-    volumes_from:
-      - plosthemes
+    # volumes_from:
+      # - plosthemes
+    volumes:
+      # - $DOCKERFILES/themes/minimal:/root/themes
+      - $DOCKERFILES/themes/plos-themes:/root/themes
     environment:
       - CAS=https://register.plos.org/cas
+
+  memcached:
+    extends:
+      file: common.yml
+      service: memcached
 
   rhino:
     extends:
       file: common.yml
       service: rhino
-  
-  # plosthemes:
-  #   extends:
-  #     file: common.yml
-  #     service: plosthemes
 
   plosqueue:
     extends:
@@ -52,6 +55,9 @@ services:
     extends:
       file: common.yml
       service: contentrepo
+    environment:
+      - STORE_TYPE=FileSystem
+      - FS_DIRECTORY=/repodata
 
   repodb:
     extends:

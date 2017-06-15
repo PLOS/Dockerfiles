@@ -4,10 +4,12 @@ MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
 RUN apt-get update && \
-    apt-get install -y cpanminus build-essential libmysqlclient-dev mysql-client && \
+    apt-get install --no-install-recommends -y cpanminus build-essential libmysqlclient-dev mysql-client && \
     cpanm install --force MogileFS::Server && \
     cpanm install DBD::mysql && \
-    cpanm install MogileFS::Utils
+    cpanm install MogileFS::Utils && \
+    apt-get remove -y build-essential gcc && apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /tracker
 WORKDIR /tracker
