@@ -64,6 +64,7 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
+      - KEYS_DIR=$DOCKERFILES/../akita/dev/
       # - SSL=none  # options = none, existingkeys
     # volumes:    # when using SSL=existingkeys
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
