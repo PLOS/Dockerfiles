@@ -8,7 +8,7 @@ ENV HOME /root/
 WORKDIR /root
 
 HEALTHCHECK --interval=2m --timeout=3s \
-  CMD curl -f http://localhost/flanders/status || exit 1
+  CMD curl -f http://localhost/flanders/status/more || exit 1
 
 RUN apk --no-cache add git unzip wget curl bash nginx tzdata libxslt-dev && \
 
