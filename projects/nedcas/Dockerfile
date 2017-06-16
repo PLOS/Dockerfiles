@@ -1,6 +1,3 @@
-# FROM tomcat:8-jre8-alpine
-# FROM plos/tomcat:7
-
 FROM plos/tomcat:8
 
 MAINTAINER Jono <jfinger@plos.org>

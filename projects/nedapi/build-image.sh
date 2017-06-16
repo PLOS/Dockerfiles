@@ -5,6 +5,6 @@
 
 source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../envoy-config.sh
 
-build_image tomcat
+build_image tomcat7
 
 bash $ENVOY/builders/maven.sh named-entity.service nedapi
