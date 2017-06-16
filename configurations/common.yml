@@ -363,10 +363,10 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
-  # TODO: move this into envoy, or out of compose completely
-  testrunner:
-    image: testrunner:custom
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${DOCKERFILES}:/dockerfiles:ro
-      - ${ENVOY}:/envoy:ro
+  # # NOTE: this is used by cmd.test but not cmd.testpy
+  # testrunner:
+  #   image: testrunner:custom
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ${DOCKERFILES}:/dockerfiles:ro
+  #     - ${ENVOY}:/envoy:ro
