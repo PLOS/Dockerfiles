@@ -44,4 +44,8 @@ COPY run*.sh $HOME
 COPY rails /src
 COPY ember /src/ember
 
+# HACK: to deal with status controller
+RUN mkdir /src/frontend
+COPY package.json /src/frontend/
+
 CMD bash $HOME/run.sh

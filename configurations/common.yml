@@ -64,9 +64,10 @@ services:
       - SALESFORCE_CONSUMER_PASSWORD=
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
-      - KEYS_DIR=$DOCKERFILES/../akita/dev/
+      - KEYS_DIR=/akita_keys
       # - SSL=none  # options = none, existingkeys
-    # volumes:    # when using SSL=existingkeys
+    volumes:
+      - ${DOCKERFILES}/../akita/dev/:/akita_keys:ro
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
@@ -108,7 +109,7 @@ services:
       - "8880:8080"
 
   nedcas-proxyable:
-    image: plos/nedcas:2.0.0-SNAPSHOT
+    image: plos/nedcas:develop
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=ned
@@ -120,6 +121,7 @@ services:
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
+      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # todo: move these options into akita run.sh or Dockerfile
 
   nedapi-lb:
     extends:

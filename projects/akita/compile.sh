@@ -16,4 +16,6 @@ ls dist || ./node_modules/.bin/ember build --environment=production
 
 cp -r dist $BUILDDIR/ember
 
+cp package.json $BUILDDIR
+
 echo `node -e "var fs = require('fs');console.log(JSON.parse(fs.readFileSync('package.json', 'utf8'))['version']);"` > $BUILDDIR/version.txt

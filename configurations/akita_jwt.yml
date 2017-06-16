@@ -1,0 +1,31 @@
+version: '2'
+
+services:
+
+  akita:
+    image: plos/akita:PLT-1093
+    extends:
+      file: common.yml
+      service: akita
+
+  nedcas:
+    extends:
+      file: common.yml
+      service: nedcas
+
+  nedapi:
+    extends:
+      file: common.yml
+      service: nedapi
+
+  neddb:
+    extends:
+      file: common.yml
+      service: neddb
+    ports:
+      - "3307:3306"
+
+  mailcatcher:
+    extends:
+      file: common.yml
+      service: mailcatcher
