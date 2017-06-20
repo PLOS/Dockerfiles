@@ -11,6 +11,7 @@ services:
     #   - "81:80"
 
   nedcas:
+    image: plos/nedcas:PLT-1093
     extends:
       file: common.yml
       service: nedcas

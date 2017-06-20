@@ -22,6 +22,8 @@ HEALTHCHECK --interval=2m --timeout=3s \
 
 COPY run*.sh *.sql $HOME
 COPY ned-cas-*.war $CATALINA_HOME/webapps/cas.war
+
+# TODO: fetch cas.properties from <src>/setup/ so it does not get out of sync
 COPY cas.properties $CATALINA_HOME/conf/
 COPY log4j2.xml $CATALINA_HOME/conf/
 COPY migrations $HOME/migrations

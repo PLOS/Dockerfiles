@@ -65,6 +65,7 @@ services:
       - MOODLE_TOKEN=
       - RECAPTCHA_SECRET=
       - KEYS_DIR=/akita_keys
+      - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
       # - SSL=none  # options = none, existingkeys
     volumes:
       - ${DOCKERFILES}/../akita/dev/:/akita_keys:ro
@@ -121,6 +122,7 @@ services:
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
+      - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
       - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # todo: move these options into akita run.sh or Dockerfile
 
   nedapi-lb:
