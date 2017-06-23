@@ -117,7 +117,9 @@ services:
       - MYSQL_USER_PASSWORD=ned
       - MYSQL_HOSTNAME=neddb
       - MYSQL_DATABASE=namedEntities
-      - CAS_DATABASE=cas
+      - CAS_DB_NAME=cas
+      - CAS_DB_USER=ned
+      - CAS_DB_PASSWORD=ned
       - NED_SERVICE=http://nedapi:8080/v1
       - REGISTRATION_BASE_URL=http://localhost   # TODO: fix this
       - COOKIE_DOMAIN=nedcas

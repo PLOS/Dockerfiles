@@ -4,26 +4,22 @@ services:
 
   akita:
     image: plos/akita:PLT-1093
+    # environment:
+      # - CAS_URL=http://ned-201.soma.plos.org:8880
     extends:
       file: common.yml
       service: akita
-    # ports:
-    #   - "81:80"
 
   nedcas:
     image: plos/nedcas:PLT-1093
     extends:
       file: common.yml
       service: nedcas
-    # ports:
-    #   - "8881:8080"
 
   nedapi:
     extends:
       file: common.yml
       service: nedapi
-    # ports:
-    #   - 8889:8080
 
   neddb:
     extends:
@@ -36,5 +32,3 @@ services:
     extends:
       file: common.yml
       service: mailcatcher
-    # ports:
-    #   - "1081:1080"
