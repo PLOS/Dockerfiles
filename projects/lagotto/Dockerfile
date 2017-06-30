@@ -37,4 +37,5 @@ RUN chown -R app:app $SRC && chmod -R 755 $SRC
 
 RUN echo "require './config/initializers/version.rb'; puts Lagotto::VERSION" | ruby > /root/version.txt
 
-RUN ls frontend/node_modules || npm install
+WORKDIR $SRC/frontend
+RUN ls node_modules || npm install

@@ -1,8 +1,8 @@
 defaults: &defaults
   solr_url: http://api.plos.org/search
-  cas_host: register.plos.org
-  cas_port: 443
-  cas_logout_url: https://register.plos.org/cas/logout
+  cas_host: <%= ENV["CAS_HOST"] %>
+  cas_port: <%= ENV["CAS_PORT"] %>
+  cas_logout_url: <%= ENV["CAS_LOGOUT_URL"] %>
 
 # TODO: turn these values into environment vars
 

@@ -14,7 +14,10 @@ services:
       - MYSQL_USER_PASSWORD=tracker
       - MYSQL_HOSTNAME=curationdb
       - MYSQL_DATABASE=mediaTracker
-      - CAS_URL=https://register.plos.org
+      # - CAS_URL=https://register.plos.org
+      - CAS_HOST=172.17.0.1
+      - CAS_PORT=8880
+      - CAS_LOGOUT_URL=http://172.17.0.1:8880/cas/logout
     volumes:
       - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
       - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
