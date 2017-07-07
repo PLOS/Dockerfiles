@@ -147,7 +147,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   mailcatcher:
-    image: schickling/mailcatcher
+    # image: schickling/mailcatcher
+    image: tophfr/mailcatcher
     ports:
       - "1080:1080"
 

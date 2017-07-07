@@ -14,12 +14,13 @@ services:
       file: common.yml
       service: akita-proxyable
     environment:
-      - CAS_URL=http://localhost:8880
+      # - CAS_URL=http://localhost:8880
+      - CAS_URL=http://nedcas:8080
 
   nedcas:
     extends:
       file: common.yml
-      service: nedcas-proxyable
+      service: nedcas
 
   nedapi:
     extends:

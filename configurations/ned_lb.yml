@@ -6,13 +6,16 @@ services:
     extends:
       file: common.yml
       service: nedcas
+    environment:
+      - NED_SERVICE=http://nedapi-lb:80/v1
 
   nedapi-lb:
     extends:
       file: common.yml
       service: nedapi-lb
     links:
-      - nedapiA,nedapiB
+      - nedapiA
+      - nedapiB
 
   # nedapi:
   #   extends:
