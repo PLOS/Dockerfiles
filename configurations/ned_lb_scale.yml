@@ -2,29 +2,26 @@ version: '2'
 
 services:
 
-  akita:
-    extends:
-      file: common.yml
-      service: akita
-
   nedcas:
     extends:
       file: common.yml
       service: nedcas
+    environment:
+      - NED_SERVICE=http://nedapi-lb:80/v1
+
+  nedapi-lb:
+    extends:
+      file: common.yml
+      service: nedapi-lb
+    links:
+      - nedapi
 
   nedapi:
     extends:
       file: common.yml
-      service: nedapi
+      service: nedapi-proxyable
 
   neddb:
     extends:
       file: common.yml
       service: neddb
-    ports:
-      - "3307:3306"
-
-  mailcatcher:
-    extends:
-      file: common.yml
-      service: mailcatcher

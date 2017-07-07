@@ -73,8 +73,8 @@ Here is how you would run one stack:
 
 Now, in the case above you can visit some pages to see they are up:
 
-    http://localhost:8001/DesktopPlosOne  # wombat
-    http://localhost:8080                 # rhino
+    http://localhost:8015/DesktopPlosOne  # wombat
+    http://localhost:8006                 # rhino
     http://localhost:8085                 # content repo
 
 Note, that before running one of these docker-compose files you need to make sure you have built the images it depends on (see above).
@@ -83,14 +83,12 @@ Note, that before running one of these docker-compose files you need to make sur
 Scaling/Load Balancing
 ----------------------
 
-There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
+There is a scaling demo that runs multiple instances of NED using HAProxy. Here is roughly how you would use it.
 
-* Start stack: `./nv stack nedapi_consul`
-* See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./nv stack nedapi_consul scale nedapi=4`
-* Refresh the consul UI to see the added services
-* Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
-* Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
+* Start stack: `./nv stack ned_lb_scale`
+* Run more NED instances: `./nv stack ned_lb_scale scale nedapi=4`
+* Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers (not sure if this still works)
+* Visit NED proxy at http://localhost:8880/v1/service/config while watching that log is spanning requests
 * You can see proxy stats at http://localhost:1936/ but it wont be accurate since scaling restarts haproxy which reset the values to 0
 
 

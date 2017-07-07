@@ -13,14 +13,11 @@ services:
     extends:
       file: common.yml
       service: nedapi-lb
+    ports:
+      - "1936:1936"
     links:
       - nedapiA
       - nedapiB
-
-  # nedapi:
-  #   extends:
-  #     file: common.yml
-  #     service: nedapi-proxyable
 
   nedapiA:
     extends:
