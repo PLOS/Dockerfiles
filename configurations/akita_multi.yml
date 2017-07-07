@@ -2,38 +2,19 @@ version: '2'
 
 services:
 
-  # TODO: add depends_on for these
-
   akita-lb:
     extends:
       file: common.yml
       service: akita-lb
-
-  akita-consultemplate:
-    extends:
-      file: common.yml
-      service: akita-consultemplate
-    volumes_from:
-      - akita-lb
+    links:
+      - akita
 
   akita:
     extends:
       file: common.yml
       service: akita-proxyable
     environment:
-      - CAS_URL=https://nedcas-lb:443
-
-  nedcas-lb:
-    extends:
-      file: common.yml
-      service: nedcas-lb
-
-  nedcas-consultemplate:
-    extends:
-      file: common.yml
-      service: nedcas-consultemplate
-    volumes_from:
-      - nedcas-lb
+      - CAS_URL=http://localhost:8880
 
   nedcas:
     extends:
@@ -44,11 +25,6 @@ services:
     extends:
       file: common.yml
       service: nedapi
-
-  consulserver:
-    extends:
-      file: common.yml
-      service: consulserver
 
   neddb:
     extends:

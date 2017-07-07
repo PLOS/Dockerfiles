@@ -16,6 +16,4 @@ fi
 bash $HOME/flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${CAS_DB_NAME}?useUnicode=true&amp;characterEncoding=utf8" \
     -user=${CAS_DB_USER} -password=${CAS_DB_PASSWORD} -locations=filesystem:$HOME/migrations migrate
 
-start_consul_agent &
-
 start_tomcat

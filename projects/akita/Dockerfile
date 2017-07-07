@@ -13,10 +13,6 @@ HEALTHCHECK --interval=2m --timeout=3s \
 RUN apk --no-cache add git unzip wget curl bash nginx tzdata libxslt-dev && \
 
     bundle config --global build.nokogiri "--use-system-libraries" && \
-    wget -O consul.zip https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip consul.zip && \
-
-    mkdir /etc/consul.d && \
-    echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/status", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json && \
 
     mkdir /var/log/akita /etc/nginx/ssl && \
     chmod 777 /var/log/akita && \
