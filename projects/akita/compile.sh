@@ -10,6 +10,8 @@ mv /root/src/* $BUILDDIR/rails
 
 cd /tmp/frontend
 
+npm install -g yarn
+
 # only run the setup if the dependencies are missing
 ls node_modules || bin/setup
 ls dist || ./node_modules/.bin/ember build --environment=production
