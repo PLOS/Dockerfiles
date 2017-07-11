@@ -73,8 +73,8 @@ Here is how you would run one stack:
 
 Now, in the case above you can visit some pages to see they are up:
 
-    http://localhost:8001/DesktopPlosOne  # wombat
-    http://localhost:8080                 # rhino
+    http://localhost:8015/DesktopPlosOne  # wombat
+    http://localhost:8006                 # rhino
     http://localhost:8085                 # content repo
 
 Note, that before running one of these docker-compose files you need to make sure you have built the images it depends on (see above).
@@ -83,14 +83,11 @@ Note, that before running one of these docker-compose files you need to make sur
 Scaling/Load Balancing
 ----------------------
 
-There is a scaling demo that runs multiple instances of NED using Consul. Here is roughly how you would use it.
+There is a scaling demo that runs multiple instances of NED using HAProxy. Here is roughly how you would use it.
 
-* Start stack: `./nv stack nedapi_consul`
-* See the consul UI: http://localhost:8500/ui
-* Run more NED instances: `./nv stack nedapi_consul scale nedapi=4`
-* Refresh the consul UI to see the added services
-* Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers
-* Visit NED proxy at http://localhost:8081/v1/service/config while watching that log is spanning requests
+* Start stack: `./nv stack ned_lb_scale`
+* Run more NED instances: `./nv stack ned_lb_scale scale nedapi=4`
+* Visit NED proxy at http://localhost:8880/v1/service/config while watching that log is spanning requests
 * You can see proxy stats at http://localhost:1936/ but it wont be accurate since scaling restarts haproxy which reset the values to 0
 
 
@@ -124,10 +121,9 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
-* Dockerize: ploscli, AricleAdmin
+* Dockerize: ploscli, ArticleAdmin
 * plos-themes and apache-conf (and patch so we can use environment vars for run time config)
-* Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
-* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service. (https://github.com/hashicorp/consul-template/issues/532)
+* Consider an extra common container for gathering things like mysql-connector-java, and mogile. Can do this with a multistage build.
 * Fix queue, since we need a new way of starting it as the exec was removed here: https://github.com/PLOS/plos-queue/commit/95fc42ef7155ed03a8bbc42a590607fa12709b36
 
 Troubleshooting

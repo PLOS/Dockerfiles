@@ -1,54 +1,33 @@
 version: '2'
 
 services:
-  #
-  # nedapi-lb:
-  #   extends:
-  #     file: common.yml
-  #     service: nedapi-lb
-  #
-  # nedapi-consultemplate:
-  #   extends:
-  #     file: common.yml
-  #     service: nedapi-consultemplate
-  #   volumes_from:
-  #     - nedapi-lb
-  #
-  # nedcas-ssl:
-  #   extends:
-  #     file: common.yml
-  #     service: nedcas-ssl
-  #   depends_on:
-  #     - nedcas-proxyable
-  #
-  # nedcas-proxyable:
-  #   extends:
-  #     file: common.yml
-  #     service: nedcas-proxyable
 
   nedcas:
     extends:
       file: common.yml
       service: nedcas
+    environment:
+      - NED_SERVICE=http://nedapi-lb:80/v1
 
   nedapi-lb:
-    image: dockercloud/haproxy
-    links:
-      - nedapi
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    extends:
+      file: common.yml
+      service: nedapi-lb
     ports:
-      - 80:80
+      - "1936:1936"
+    links:
+      - nedapiA
+      - nedapiB
 
-  nedapi:
+  nedapiA:
     extends:
       file: common.yml
       service: nedapi-proxyable
-  #
-  # consulserver:
-  #   extends:
-  #     file: common.yml
-  #     service: consulserver
+
+  nedapiB:
+    extends:
+      file: common.yml
+      service: nedapi-proxyable
 
   neddb:
     extends:

@@ -3,45 +3,18 @@ version: '2'
 services:
 
   akita-lb:
-    extends:
-      service: haproxy
+    extends: haproxy-lb
     ports:
-      - "443:443"
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-    # depends_on:           # must be specified in extending file, not here
-    #   - "consulserver"
+      - 80:80
+    # links:     # must be specified in extending file
+    #   - akita
 
-  akita-ssl:
-    extends:
-      service: haproxy
-    ports:
-      - "443:443"
-      - "80:80"
-    volumes:
-      - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-      - ${DOCKERFILES}/projects/akita/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    # depends_on:           # must be specified in extending file, not here
-    #   - "akita-proxyable"
+    # TODO: figure out why akita-lb is not working? it sees akita but is not putting it in /haproxy.cfg. perhaps akita is not ready at the right time?
 
   akita:
     extends: akita-proxyable
     ports:
       - "80:80"
-
-
-  # TODO: pass in service name so the name can by dynamic
-  #
-  # https://github.com/hashicorp/consul-template/issues/532
-
-  akita-consultemplate:
-    extends:
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_akita-lb_1"
-    volumes:
-      - ${DOCKERFILES}/projects/akita/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:   # you have to specify this value in the extended config
-    #   - aktia-lb
 
   akita-proxyable:
     image: plos/akita:develop
@@ -73,36 +46,11 @@ services:
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
   nedcas-lb:
-    extends:
-      service: haproxy
+    extends: haproxy-lb
     ports:
-      # - "8443:443"
-      - "8880:8080"
-    # volumes:
-    #   - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-    # depends_on:           # must be specified in extending file, not here
-    #   - "consulserver"
-
-  # nedcas-ssl:
-  #   extends:
-  #     service: haproxy
-  #   ports:
-  #     - "8443:443"
-  #   volumes:
-  #     - ${DOCKERFILES}/projects/selfsigned.pem:/etc/ssl/cert.pem:ro
-  #     - ${DOCKERFILES}/projects/nedcas/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-  #   # depends_on:           # must be specified in extending file, not here
-  #   #   - "nedcas-proxyable"
-
-
-  nedcas-consultemplate:
-    extends:
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedcas-lb_1"
-    volumes:
-      - ${DOCKERFILES}/projects/nedcas/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - nedcas-lb
+      - "8880:80"
+    # links:     # must be specified in extending file
+    #   - nedapi
 
   nedcas:
     extends: nedcas-proxyable
@@ -127,22 +75,13 @@ services:
       - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
       - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # todo: move these options into akita run.sh or Dockerfile
 
-  nedapi-lb:
-    extends:
-      service: haproxy
-    ports:
-      - "8888:8080"
-    # depends_on:           # must be specified in extending file, not here
-    #   - "consulserver"
 
-  nedapi-consultemplate:
-    extends:
-      service: consultemplate
-    command: -consul=consulserver:8500 -wait=5s -template="/tmp/haproxy.cfg.ctmpl:/usr/local/etc/haproxy/haproxy.cfg:docker restart configurations_nedapi-lb_1" # $$(docker ps -q -f name=nedapi-lb)
-    volumes:
-      - ${DOCKERFILES}/projects/nedapi/haproxy.cfg.ctmpl:/tmp/haproxy.cfg.ctmpl:ro
-    # volumes_from:
-    #   - nedapi-lb
+  nedapi-lb:
+    extends: haproxy-lb
+    ports:
+      - 8888:80
+    # links:     # must be specified in extending file
+    #   - nedapi
 
   nedapi:
     extends: nedapi-proxyable
@@ -164,52 +103,19 @@ services:
 
   neddb:
     extends: mysql
-    # image: percona:5.6
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
     volumes:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
 
 
-  haproxy-template:
-    image: haproxy-template
-    environment:
-      - FRONTEND_PORT=433
-      - BACKEND=hostname:80
-      # - MODE=ssl or loadbalance
-    # volumes:
-    #   - /usr/local/etc/haproxy
-    #   - /dev/log:/dev/log
-
-  # TODO: make a dockerfile for this so we can set some env vars and cover the two common cases. SSL and LB
-  haproxy:
-    image: haproxy:alpine
-    # ports:
-    #   - "1936:1936"
+  haproxy-lb:
+    image: dockercloud/haproxy
     volumes:
-      - /usr/local/etc/haproxy
-      - /dev/log:/dev/log
-
-  consulserver:
-    image: gliderlabs/consul-server
-    command: -bootstrap -ui
-    ports:
-      - "8300:8300"
-      - "8400:8400"
-      - "8500:8500"
-      - "8600:53/udp"
-
-  consultemplate:
-    image: avthart/consul-template
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-    # environment:
-    #   - CONSUL_TEMPLATE_LOG=debug
-
+      - /var/run/docker.sock:/var/run/docker.sock
+      
   mailcatcher:
-    image: schickling/mailcatcher
+    image: tophfr/mailcatcher
     ports:
-      - "1080:1080"
+      - "1080:80"
 
   plosthemes:
     image: plosthemes:master
@@ -300,15 +206,9 @@ services:
 
   ambradb:
     extends: mysql
-    # image: percona:5.6
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
 
   counterdb:
     extends: mysql
-    # image: percona:5.6
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
 
   solr:
     image: plos/solr:master
@@ -337,9 +237,6 @@ services:
 
   repodb:
     extends: mysql
-    # image: percona:5.6
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3305:3306"
 
@@ -358,9 +255,6 @@ services:
 
   mogiledb:
     extends: mysql
-    # image: percona:5.6
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=root
 
   mysql:
     image: percona:5.6

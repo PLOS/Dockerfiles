@@ -2,10 +2,24 @@ version: '2'
 
 services:
 
+  akita-lb:
+    extends:
+      file: common.yml
+      service: akita-lb
+    ports:
+      - "1936:1936"
+    links:
+      - akita
+    # environment:
+    #   - DEBUG=True
+
   akita:
     extends:
       file: common.yml
-      service: akita
+      service: akita-proxyable
+    environment:
+      # - CAS_URL=http://localhost:8880
+      - CAS_URL=http://nedcas:8080
 
   nedcas:
     extends:

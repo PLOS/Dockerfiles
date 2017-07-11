@@ -25,10 +25,7 @@ RUN apt-get update -qq && \
     curl -sL https://deb.nodesource.com/setup_0.12 | bash - && \
     apt-get install -y nodejs && \
     gem install bundler && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    wget -O consul.zip https://releases.hashicorp.com/consul/0.6.4/consul_0.6.4_linux_amd64.zip && unzip consul.zip
-
-RUN mkdir /etc/consul.d && echo '{"service": {"name": "akita", "port": 80, "check": {"name":"basic request", "http": "http://localhost/flanders/status", "interval": "10s", "timeout":"2s"}}}' > /etc/consul.d/web.json
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # build assets
 RUN mkdir /src
