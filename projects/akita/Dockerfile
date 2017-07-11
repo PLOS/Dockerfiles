@@ -44,4 +44,7 @@ COPY ember /src/ember
 RUN mkdir /src/frontend
 COPY package.json /src/frontend/
 
+# expose needed for discovery by dockercloud/haproxy
+EXPOSE 80
+
 CMD bash $HOME/run.sh

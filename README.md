@@ -87,7 +87,6 @@ There is a scaling demo that runs multiple instances of NED using HAProxy. Here 
 
 * Start stack: `./nv stack ned_lb_scale`
 * Run more NED instances: `./nv stack ned_lb_scale scale nedapi=4`
-* Run `journalctl -f` on host to watch haproxy log to see its spanning requests to different containers (not sure if this still works)
 * Visit NED proxy at http://localhost:8880/v1/service/config while watching that log is spanning requests
 * You can see proxy stats at http://localhost:1936/ but it wont be accurate since scaling restarts haproxy which reset the values to 0
 
@@ -122,10 +121,9 @@ https://github.com/dlindahl/omniauth-cas/issues/41
 * Setup Postgres helper method for Lemur
 * Lemur needs to separate app and db config
 * Figure out why Lemur frontend needs specific npm and bower versions
-* Dockerize: ploscli, AricleAdmin
+* Dockerize: ploscli, ArticleAdmin
 * plos-themes and apache-conf (and patch so we can use environment vars for run time config)
-* Consider an extra common container for gathering things like consul, mysql-connector-java, and mogile.
-* Make haproxy config more generic so we can pass in service names and not create special versions needed for each service. (https://github.com/hashicorp/consul-template/issues/532)
+* Consider an extra common container for gathering things like mysql-connector-java, and mogile. Can do this with a multistage build.
 * Fix queue, since we need a new way of starting it as the exec was removed here: https://github.com/PLOS/plos-queue/commit/95fc42ef7155ed03a8bbc42a590607fa12709b36
 
 Troubleshooting
