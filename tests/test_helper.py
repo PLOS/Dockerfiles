@@ -14,12 +14,9 @@ logging.getLogger("log").setLevel( logging.DEBUG )
 log=logging.getLogger("log")
 
 def docker_compose(compose_config, command):
-  env = os.environ.copy()
-  env[b'DOCKERFILES'] = b'/dockerfiles'
-  # env[b'DOCKERFILES'] = b'/home/jfinger/src/Dockerfiles'
-  compose = 'docker-compose -f /dockerfiles/configurations/'+compose_config+'.yml'
+  # compose = 'docker-compose -f /dockerfiles/configurations/'+compose_config+'.yml'
   # log.debug("RUN: " + compose + ' ' + command)
-  subprocess.check_output(shlex.split(compose + ' ' + command), env=env)
+  subprocess.check_output(shlex.split('docker-compose -f /dockerfiles/configurations/'+compose_config+'.yml ' + command))
 
 @retry(requests.exceptions.ConnectionError, tries=30, delay=3)
 def wait_for_web_service(url):
