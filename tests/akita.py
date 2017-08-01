@@ -16,9 +16,9 @@ wait_urls = [nedapi + '/v1/service/config',
 class Test():
 
   def test_rails_to_ned(self, stack):
-    assert_status(akita + '/flanders/v1/types/countries', 200)
-    assert_status(akita + '/flanders/status/more', 200)
+    assert_status(akita + '/flanders/v1/types/countries')
+    assert_status(akita + '/flanders/status/more')
 
   def test_frontend(self, stack):
-    req = assert_status(akita, 200)
+    req = assert_status(akita)
     assert 'akita' in req.text

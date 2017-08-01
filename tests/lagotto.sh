@@ -1,3 +1,5 @@
+# NOTE: This file should be converted into python and then removed
+
 #!/usr/bin/env bash
 
 source /envoy/test-helpers.sh

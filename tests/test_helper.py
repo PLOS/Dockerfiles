@@ -5,29 +5,30 @@ import os
 import pytest
 import shlex
 from singledispatch import singledispatch
-
 from subprocess import call
 import subprocess
 from retry import retry
+
+# TODO: perhaps this file should be moved to envoy?
 
 logging.basicConfig(stream=sys.stderr )
 logging.getLogger("log").setLevel( logging.DEBUG )
 log=logging.getLogger("log")
 
 @singledispatch
-def assert_status(req, status_code):
+def assert_status(req, status_code=200):
   log.error('input type unmatched')
   assert False  # since input type unmatched
 
 @assert_status.register(str)
-def _(url, status_code):
+def _(url, status_code=200):
   req = requests.get(url)
-  assert req.status_code == status_code, r.text
+  assert req.status_code == status_code, req.text
   return req
 
 @assert_status.register(requests.Response)
-def _(req, status_code):
-  assert req.status_code == status_code, r.text
+def _(req, status_code=200):
+  assert req.status_code == status_code, req.text
   return req
 
 def docker_compose(compose_config, command):
@@ -35,10 +36,13 @@ def docker_compose(compose_config, command):
   log.debug("RUN: " + compose + ' ' + command)
   subprocess.check_output(shlex.split(compose + ' ' + command))
 
-@retry(requests.exceptions.ConnectionError, tries=30, delay=3)
+@retry(tries=30, delay=3)
 def wait_for_web_service(url):
   log.debug("Trying to reach " + url + " ...")
-  return requests.get(url)
+  req = requests.get(url)
+  if req.status_code != 200:
+    raise Exception(req.status_code)
+  return req
 
 @pytest.fixture(scope="class")
 def stack(request):

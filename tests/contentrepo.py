@@ -1,58 +1,50 @@
-import unittest
+from test_helper import stack, log, assert_status
 import requests
 import time
-import logging
-import sys
 import os
-# from retrying import retry
+import MySQLdb
 
-from retry import retry
+compose_config = 'contentrepo'
+repo = 'http://contentrepo:8080'
+wait_urls = [repo + '/config']
 
-# from proboscis.asserts import assert_equal
-# from proboscis import test
+class TestContentRepo():
 
-# svc_url = 'http://localhost:8085'
-svc_url = 'http://contentrepo:8080'
+  bucket = 'bucket_' + str(time.time())
+  obj_name = 'object_' + str(time.time())
+  local_input_file = os.path.realpath(__file__)
 
-bucket = 'bucket_' + str(time.time())
+  def test_get_config(self, stack):
+    assert_status(repo + '/config')
 
-obj_name = 'object_' + str(time.time())
-local_input_file = os.path.realpath(__file__) #'../LICENSE'  # '/usr/bin/env'
-logging.basicConfig( stream=sys.stderr )
-logging.getLogger( "log" ).setLevel( logging.DEBUG )
-log=logging.getLogger( "log" )
+  def test_create_bucket(self, stack):
+    assert_status(
+      requests.post(repo + '/buckets',data={'name':self.bucket}), 201)
 
-class AppTests(unittest.TestCase):
+  def test_create_object(self, stack):
+    assert_status(requests.post(repo + '/objects',
+      data={'create':'new', 'key':self.obj_name ,'bucketName':self.bucket},
+      files={'file': open(self.local_input_file)}), 201)
 
-    # def setUp(self):
-    #     self.app = app.test_client()
-    #
-    # def tearDown(self):
-    #     pass
+  def test_read_object_db(self, stack):
+    db = MySQLdb.connect(host="repodb", user="repouser", passwd="", db="repo")
 
-    @retry(requests.exceptions.ConnectionError, tries=30, delay=3)
-    def wait_for_web_service(self, url):
-    	log.debug("Trying to reach " + url + " ...")
-    	return requests.get(url)
+    cursor = db.cursor()
+    cursor.execute("SELECT objkey FROM objects")
 
-    def test_1_get_config(self):
-        self.wait_for_web_service(svc_url)
-        r = requests.get(svc_url + '/config')
-        log.debug( "config= %r", r.json() )
-        self.assertEqual(r.status_code, 200)
+    numrows = cursor.rowcount
+    assert numrows == 1
 
-    def test_2_create_bucket(self):
-        r = requests.post(svc_url + '/buckets', data={'name':bucket})
-        self.assertEqual(r.status_code, 201)
+    data = cursor.fetchone()
+    assert data[0] == self.obj_name
 
-    def test_3_create_object(self):
-        r = requests.post(svc_url + '/objects', data={'create':'new', 'key':obj_name ,'bucketName':bucket}, files={'file': open(local_input_file)})
-        self.assertEqual(r.status_code, 201)
+  def test_read_object(self, stack):
+    r = assert_status(
+      repo + '/objects/' + self.bucket + "?key=" + self.obj_name)
+    assert open(self.local_input_file).read() == r.text
 
-    def test_4_read_object(self):
-        r = requests.get(svc_url + '/objects/' + bucket + "?key=" + obj_name)
-        self.assertEqual(r.status_code, 200)
-        self.assertEqual(open(local_input_file).read(), r.text)
 
-if __name__ == "__main__":
-    unittest.main()
+class TestAnotherContentRepo():
+
+  def test_get_config(self, stack):
+    assert_status(repo + '/config')
