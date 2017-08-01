@@ -1,4 +1,4 @@
-from test_helper import stack, log
+from test_helper import stack, log, assert_status
 import requests
 import time
 import os
@@ -21,20 +21,17 @@ class Test():
   article_solr = solr + '/select?q=10.1371%2Fjournal.' + article +  '&wt=json&indent=true'
 
   def test_post_article(self, stack):
-    r = requests.post(rhino + '/articles', files={'archive': open('/dockerfiles/tests/test_data/demo/'+ self.article +'.zip', 'rb')})
-    assert r.status_code == 201, r.text
+    assert_status(requests.post(rhino + '/articles',
+      files={'archive': open('/dockerfiles/tests/test_data/demo/'+ self.article +'.zip', 'rb')}), 201)
 
-    r = requests.get(self.article_rhino)
-    assert r.status_code == 200
+    r = assert_status(self.article_rhino, 200)
     assert r.json()['ingestions']['1'] == [], r.json()
 
   def test_create_revision(self, stack):
-    r = requests.post(self.article_rhino + '/revisions?ingestion=1')
-    assert r.status_code == 201
+    assert_status(
+      requests.post(self.article_rhino + '/revisions?ingestion=1'), 201)
 
-    r = requests.get(self.article_rhino)
-    assert r.json()['revisions']['1'] == 1, r.text
+    assert requests.get(self.article_rhino).json()['revisions']['1'] == 1
 
   def test_article_render(self, stack):
-    r = requests.get(wombat + '/article?id=10.1371/journal.' + self.article)
-    assert r.status_code == 200, r.text
+    assert_status(wombat + '/article?id=10.1371/journal.' + self.article, 200)

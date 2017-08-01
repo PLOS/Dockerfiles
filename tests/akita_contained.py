@@ -1,4 +1,4 @@
-from test_helper import stack, log
+from test_helper import stack, log, assert_status
 import requests
 import time
 import os
@@ -16,14 +16,9 @@ wait_urls = [nedapi + '/v1/service/config',
 class Test():
 
   def test_rails_to_ned(self, stack):
-    r = requests.get(akita + '/flanders/v1/types/countries')
-    assert r.status_code == 200
-
-    r = requests.get(akita + '/flanders/status/more')
-    log.debug( "config = %r", r )
-    assert r.status_code == 200
+    assert_status(akita + '/flanders/v1/types/countries', 200)
+    assert_status(akita + '/flanders/status/more', 200)
 
   def test_frontend(self, stack):
-    r = requests.get(akita)
-    assert r.status_code == 200
-    assert 'akita' in r.text
+    req = assert_status(akita, 200)
+    assert 'akita' in req.text

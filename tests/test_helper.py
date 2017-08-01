@@ -4,6 +4,7 @@ import sys
 import os
 import pytest
 import shlex
+from singledispatch import singledispatch
 
 from subprocess import call
 import subprocess
@@ -12,6 +13,22 @@ from retry import retry
 logging.basicConfig(stream=sys.stderr )
 logging.getLogger("log").setLevel( logging.DEBUG )
 log=logging.getLogger("log")
+
+@singledispatch
+def assert_status(req, status_code):
+  log.error('input type unmatched')
+  assert False  # since input type unmatched
+
+@assert_status.register(str)
+def _(url, status_code):
+  req = requests.get(url)
+  assert req.status_code == status_code, r.text
+  return req
+
+@assert_status.register(requests.Response)
+def _(req, status_code):
+  assert req.status_code == status_code, r.text
+  return req
 
 def docker_compose(compose_config, command):
   compose = 'docker-compose -f /dockerfiles/configurations/'+compose_config+'.yml'

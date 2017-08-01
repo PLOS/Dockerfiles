@@ -1,4 +1,4 @@
-from test_helper import stack, log
+from test_helper import stack, log, assert_status
 import requests
 import time
 import os
@@ -11,5 +11,4 @@ wait_urls = [solr]
 class Test():
 
   def test_solr_up(self, stack):
-    r = requests.get(solr + '/solr/')
-    assert r.status_code == 200
+    assert_status(solr + '/solr/', 200)
