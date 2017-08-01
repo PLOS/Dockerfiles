@@ -29,7 +29,7 @@ RUN cp $CATALINA_HOME/conf/* $AMBRA_CONF && \
 
 COPY run*.sh /root/
 COPY log4j.xml $CATALINA_HOME/lib/
-COPY solr.war $CATALINA_HOME/webapps/
+COPY solr*.war $CATALINA_HOME/webapps/solr.war
 
 WORKDIR /root
 
