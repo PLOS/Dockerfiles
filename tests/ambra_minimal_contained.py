@@ -12,7 +12,7 @@ wait_urls = [repo, rhino + '/journals', solr, wombat]
 
 class Test():
 
-  article = 'pone.0099781'
+  article = 'pone.0153419'
 
   solr_base = solr +'/solr/collection1'
 
@@ -22,8 +22,20 @@ class Test():
 
   def test_post_article(self, stack):
 
-    files = {'file': open('/dockerfiles/tests/test_data/accman/'+ self.article +'.zip', 'rb')}
+    r = requests.post(rhino + '/articles', files={'archive': open('/dockerfiles/tests/test_data/demo/'+ self.article +'.zip', 'rb')})
+    assert r.status_code == 201, r.text
 
-    r = requests.post(rhino + '/articles?bucket=corpus', files=files)
+    r = requests.get(self.article_rhino)
     assert r.status_code == 200
-    # ......
+    assert r.json()['ingestions']['1'] == [], r.json()
+
+  def test_create_revision(self, stack):
+    r = requests.post(self.article_rhino + '/revisions?ingestion=1')
+    assert r.status_code == 201
+
+    r = requests.get(self.article_rhino)
+    assert r.json()['revisions']['1'] == 1, r.text
+
+  def test_article_render(self, stack):
+    r = requests.get(wombat + '/article?id=10.1371/journal.' + self.article)
+    assert r.status_code == 200, r.text
