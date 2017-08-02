@@ -5,7 +5,6 @@ LABEL vendor="Public Library of Science"
 
 # install what common libraries our tests need to run
 
-RUN apk --no-cache add py-mysqldb && \
-    pip install requests retry pytest singledispatch
+RUN pip3 install requests retry pytest PyMySQL singledispatch
 
 # TODO: import test_helper.py somewhere?

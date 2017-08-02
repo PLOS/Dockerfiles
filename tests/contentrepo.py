@@ -2,7 +2,8 @@ from test_helper import stack, log, assert_status
 import requests
 import time
 import os
-import MySQLdb
+# import MySQLdb
+import pymysql.cursors
 
 compose_config = 'contentrepo'
 repo = 'http://contentrepo:8080'
@@ -27,6 +28,9 @@ class TestContentRepo():
       files={'file': open(self.local_input_file)}), 201)
 
   def test_read_object_db(self, stack):
+
+    #   TODO: update this method with calls instead to https://github.com/PyMySQL/PyMySQL/
+
     db = MySQLdb.connect(host="repodb", user="repouser", passwd="", db="repo")
 
     cursor = db.cursor()
