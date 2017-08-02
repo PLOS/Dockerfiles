@@ -2,7 +2,6 @@ from test_helper import stack, log, assert_status
 import requests
 import time
 import os
-# import MySQLdb
 import pymysql.cursors
 
 compose_config = 'contentrepo'
@@ -29,18 +28,17 @@ class TestContentRepo():
 
   def test_read_object_db(self, stack):
 
-    #   TODO: update this method with calls instead to https://github.com/PyMySQL/PyMySQL/
+    db = pymysql.connect(host='repodb', user='repouser', password='', db='repo')
 
-    db = MySQLdb.connect(host="repodb", user="repouser", passwd="", db="repo")
+    try:
+      with db.cursor() as cursor:
+        cursor.execute("SELECT objkey FROM objects")
+        assert cursor.rowcount == 1
 
-    cursor = db.cursor()
-    cursor.execute("SELECT objkey FROM objects")
-
-    numrows = cursor.rowcount
-    assert numrows == 1
-
-    data = cursor.fetchone()
-    assert data[0] == self.obj_name
+        data = cursor.fetchone()
+        assert data[0] == self.obj_name
+    finally:
+      db.close()
 
   def test_read_object(self, stack):
     r = assert_status(
