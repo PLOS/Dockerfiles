@@ -41,7 +41,7 @@ def wait_for_web_service(url):
   log.debug("Trying to reach " + url + " ...")
   req = requests.get(url)
   if req.status_code != 200:
-    raise Exception(req.status_code)
+    raise Exception('status=' + str(req.status_code))
   return req
 
 @pytest.fixture(scope="class")
