@@ -4,16 +4,16 @@ import sys
 import os
 import pytest
 import shlex
-from singledispatch import singledispatch
-from subprocess import call
 import subprocess
 from retry import retry
-
-# TODO: perhaps this file should be moved to envoy?
+from singledispatch import singledispatch
+from subprocess import call
 
 logging.basicConfig(stream=sys.stderr )
 logging.getLogger("log").setLevel( logging.DEBUG )
 log=logging.getLogger("log")
+
+# ASSERTION HELPER METHODS
 
 @singledispatch
 def assert_status(req, status_code=200):
@@ -31,8 +31,10 @@ def _(req, status_code=200):
   assert req.status_code == status_code, req.text
   return req
 
+# FIXTURE HELPERS FOR USING COMPOSE
+
 def docker_compose(compose_config, command):
-  compose = 'docker-compose -f /dockerfiles/configurations/'+compose_config+'.yml'
+  compose = 'docker-compose -f ' + os.environ['CONFIGURATIONS'] + '/' + compose_config + '.yml'
   log.debug("RUN: " + compose + ' ' + command)
   subprocess.check_output(shlex.split(compose + ' ' + command))
 
