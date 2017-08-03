@@ -15,13 +15,23 @@ set_db_grants
 
 # wait until Mogile tracker is up
 
-while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
-  echo -e "\nMogile tracker not ready ... waiting"
-  sleep 3
-done;
+if [[ "$STORE_TYPE" == "Mogile" ]]; then
 
-echo "Mogile is ready"
+  while ! mogadm --trackers=$MOGILE_TRACKERS check >/dev/null 2>&1; do
+    echo -e "\nMogile tracker not ready ... waiting"
+    sleep 3
+  done;
+
+  echo "Mogile is ready"
+
+fi
+
+# TODO: make this work when a reproxy url is supplied
+# hack to deal with empty string reproxy values
+if [[ "$FS_REPROXY_URL" != "" ]]; then
+  export FS_REPROXY_CLAUSE=reproxyBaseUrl=\"${FS_REPROXY_URL}\"
+fi
 
 process_env_template $CATALINA_HOME/conf/context.xml
 
-start_tomcat
+start_tomcat.sh

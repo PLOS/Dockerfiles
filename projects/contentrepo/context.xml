@@ -33,16 +33,16 @@
 
   <Resource name="repo/objectStore"
             type="org.plos.repo.service.ObjectStore"
-            factory="org.plos.repo.config.MogileStoreFactory"
-            domain="maindomain"
+            factory="org.plos.repo.config.${STORE_TYPE}StoreFactory"
+            domain="${MOGILE_DOMAIN}"
             trackers="${MOGILE_TRACKERS}"
             maxTrackerConnections="1"
             maxIdleConnections="1"
-            maxIdleTimeMillis="100" />
-
-
-<!--   <Resource name="repo/objectStore"
-    type="org.plos.repo.service.ObjectStore"
-    factory="org.plos.repo.config.InMemoryStoreFactory" /> -->
+            maxIdleTimeMillis="100"
+            dataDirectory="${FS_DIRECTORY:-/tmp}"
+            ${FS_REPROXY_CLAUSE}
+            awsAccessKey="${AWS_ACCESS_KEY}"
+            awsSecretKey="${AWS_SECRET_KEY}"
+            />
 
 </Context>

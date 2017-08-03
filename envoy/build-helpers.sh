@@ -29,7 +29,9 @@ function build_image {
 function build_images {
   IMAGES=${@}
 
-  for IMAGE in $IMAGES; do
+  for FULL_IMAGE_NAME in $IMAGES; do
+
+    IMAGE=${FULL_IMAGE_NAME#$IMAGE_PREFIX}
 
     PROJECT=$(echo $IMAGE | cut -d':' -f1)
 
@@ -39,7 +41,7 @@ function build_images {
 
       build_image $PROJECT
 
-      docker inspect $IMAGE > /dev/null
+      docker inspect $FULL_IMAGE_NAME > /dev/null
       if [ $? -ne 0 ]; then
         echo "Error: Image $IMAGE does not exist. Perhaps you have the wrong branch of the project checked out."
         exit 1;
@@ -97,7 +99,7 @@ function check_local_src {
 }
 
 # since the builder image builds the assets, we need a way to copy from the builder to the final resulting image. this method performs the pipe that sends the data from the builder to the runner
-_builder_to_runner() {
+function _builder_to_runner() {
 
   BUILD_VOLUME=$1
   BUILD_IMAGE=$2
@@ -106,27 +108,16 @@ _builder_to_runner() {
   docker run --rm --volume $BUILD_VOLUME:/build $BUILD_IMAGE sh -c 'tar -czf - -C /build .' | docker build -t $RUN_IMAGE - || die "build failed"
 }
 
-
-#  build a docker image using maven
-function build_image_maven() {
-
-  PROJECT_DIR=$1
-  IMAGE_NAME=$2
-
-  # most of the depend on a base image so make sure it exists
-  build_image tomcat
-
-  build_image_compiled \
-      $PROJECT_DIR $IMAGE_NAME \
-      maven:3-jdk-8-alpine maven_local_repo /root/.m2
-}
-
 # This function is used to build docker images that use an intermediate builder image and uses a library cache
 function build_image_compiled() {
 
   PROJECT_DIR=$1
   IMAGE_NAME=$2
 
+  # this would include the prefix if the image is to be stored remotely
+  FULL_IMAGE_NAME=${IMAGE_PREFIX}${2}
+
+  # the builder image to use, for example maven or ruby
   BASE_IMAGE=$3
   SHARED_CACHE_NAME=$4
   SHARED_CACHE_PATH=$5
@@ -165,17 +156,31 @@ function build_image_compiled() {
 	  $BASE_IMAGE bash /scripts/compile.sh || die "compile failed"
 
 	echo "Building runnable docker image ..."
-  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$IMAGE_NAME:$BASE_TAG"
+  _builder_to_runner $BUILD_RESULT_DIR $BASE_IMAGE "$FULL_IMAGE_NAME:$BASE_TAG"
 
 	# tag docker image with asset version number
 	VERSION=$(docker run --rm --volume $BUILD_RESULT_DIR:/build $BASE_IMAGE cat /build/version.txt)
 
-	echo "image tags = $IMAGE_NAME:$BASE_TAG and $IMAGE_NAME:$VERSION"
+	echo "image tags = $FULL_IMAGE_NAME:$BASE_TAG and $FULL_IMAGE_NAME:$VERSION"
 
-	docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+	docker tag $FULL_IMAGE_NAME:$BASE_TAG $FULL_IMAGE_NAME:$VERSION
 
   # clean up
   docker volume rm $BUILD_RESULT_DIR
+}
+
+# Build a docker image using maven
+function build_image_maven() {
+
+  PROJECT_DIR=$1
+  IMAGE_NAME=$2
+
+  # most of the depend on a base image so make sure it exists
+  build_image tomcat7
+
+  build_image_compiled \
+      $PROJECT_DIR $IMAGE_NAME \
+      maven:3-jdk-8-alpine maven_local_repo /root/.m2
 }
 
 function build_rails_passenger_image() {
@@ -187,17 +192,18 @@ function build_rails_passenger_image() {
   PROJECT_DIR=$1
   IMAGE_NAME=$2
 
+  # this would include the prefix if the image is to be stored remotely
+  FULL_IMAGE_NAME=${IMAGE_PREFIX}${2}
+
   PROJECT_NAME=$(basename $PROJECT_DIR)
 
   TMP_BUILD_CONTAINER=${IMAGE_NAME}_temp_container
 
   BASE_TAG=current
 
-  # TODO: use $DOCKERFILES instead
-  DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$PROJECT_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
 
-  # perhaps they supplied an absolute path to an existing project directory
-  PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
   if [[ ${PROJECT_DIR} == \/* ]]; then
     PROJECT_LOCAL_REPO=${PROJECT_DIR}/
@@ -214,23 +220,23 @@ function build_rails_passenger_image() {
   # BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
-  time docker build -t $IMAGE_NAME:$BASE_TAG .
+  time docker build -t $FULL_IMAGE_NAME:$BASE_TAG .
   # cd $DOCKER_SETUP_DIR
   rm $PROJECT_LOCAL_REPO/Dockerfile
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
   						--volume $ENVOY:/envoy \
-  						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
-  							'cp /envoy/run-helpers.sh /scripts/* /root/;
+  						--name $TMP_BUILD_CONTAINER $FULL_IMAGE_NAME:$BASE_TAG sh -c \
+  							'cp /envoy/run-helpers.sh /scripts/* /root/ &&
   					     cat /root/version.txt || echo missing')
 
-  docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
+  docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $FULL_IMAGE_NAME:$BASE_TAG
 
   # tag docker image with asset version number
 
   # if [ "$VERSION" != "missing" ]; then
     echo tagging container with version : $VERSION
-    docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+    docker tag $FULL_IMAGE_NAME:$BASE_TAG $FULL_IMAGE_NAME:$VERSION
   # fi
 
   docker rm $TMP_BUILD_CONTAINER
@@ -238,8 +244,13 @@ function build_rails_passenger_image() {
 
 function build_rails_ember_images() {
 
+  # previously used to build Akita before I seperated the builder into its own container
+
   PROJECT_DIR=$1
   IMAGE_NAME=$2
+
+  # this would include the prefix if the image is to be stored remotely
+  FULL_IMAGE_NAME=${IMAGE_PREFIX}${2}
 
   PROJECT_NAME=$(basename $PROJECT_DIR)
 
@@ -247,10 +258,9 @@ function build_rails_ember_images() {
 
   BASE_TAG=current
 
-  # TODO: use $DOCKERFILES instead
-  DOCKER_SETUP_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/$IMAGE_NAME
+  DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
 
-  PROJECT_LOCAL_REPO=$DOCKER_SETUP_DIR/../../../${PROJECT_DIR}/
+  PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
 
   if [[ ${PROJECT_DIR} == \/* ]]; then
     PROJECT_LOCAL_REPO=${PROJECT_DIR}/
@@ -279,24 +289,24 @@ function build_rails_ember_images() {
   # BASE_TAG=$(git rev-parse --abbrev-ref HEAD|sed -e 's/[^a-zA-Z0-9_.]/_/g')
   BASE_TAG=$(get_git_branch $PROJECT_LOCAL_REPO)
 
-  time docker build -t $IMAGE_NAME:$BASE_TAG .
+  time docker build -t $FULL_IMAGE_NAME:$BASE_TAG .
   # cd $DOCKER_SETUP_DIR
   rm $PROJECT_LOCAL_REPO/Dockerfile
   rm $PROJECT_LOCAL_REPO/.dockerignore
 
   VERSION=$(docker run --volume $DOCKER_SETUP_DIR:/scripts \
   						--volume $ENVOY:/envoy \
-  						--name $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG sh -c \
+  						--name $TMP_BUILD_CONTAINER $FULL_IMAGE_NAME:$BASE_TAG sh -c \
   							'cp /envoy/run-helpers.sh /scripts/* /root/;
   					     cat /root/version.txt')
 
-  docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $IMAGE_NAME:$BASE_TAG
+  docker commit --change "CMD bash /root/run.sh" $TMP_BUILD_CONTAINER $FULL_IMAGE_NAME:$BASE_TAG
 
   # tag docker image with asset version number
 
   echo tagging container with version : $VERSION
 
-  docker tag $IMAGE_NAME:$BASE_TAG $IMAGE_NAME:$VERSION
+  docker tag $FULL_IMAGE_NAME:$BASE_TAG $FULL_IMAGE_NAME:$VERSION
 
   docker rm $TMP_BUILD_CONTAINER
 }
@@ -305,7 +315,7 @@ function build_rails_ember_images() {
 function build_image_non_compiled() {
 
 	PROJECT_DIR=$1
-	IMAGE_NAME=$2
+	IMAGE_NAME=${IMAGE_PREFIX}${2}
 
   DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)

@@ -1,18 +1,20 @@
 FROM tomcat:6-jre8
-# FROM tomcat:7-jre8-alpine
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-# RUN apk update && apk add mysql-client bash curl
+ENV HOME /root/
 
 RUN apt-get update && apt-get install -y mysql-client \
     build-essential cpanminus && \
     cpanm install --force MogileFS::Utils
 
-# TODO: figure out alpine install for mogilefs::utils
+RUN wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/org/apache/tomcat/tomcat-jdbc/7.0.21/tomcat-jdbc-7.0.21.jar && \
+  wget -P $CATALINA_HOME/lib/ http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.12/mysql-connector-java-5.1.12.jar
 
 RUN rm -rf $CATALINA_HOME/webapps/*
+
+HEALTHCHECK CMD curl -f http://localhost:8080/config || exit 1
 
 COPY run*.sh *.mysql /root/
 

@@ -3,7 +3,7 @@ version: '2'
 services:
 
   lagotto:
-    image: lagotto:4_5_plos
+    image: lagotto:develop
     ports:
       - 80:80
     environment:

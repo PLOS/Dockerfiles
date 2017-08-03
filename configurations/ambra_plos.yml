@@ -1,0 +1,82 @@
+version: '2'
+
+services:
+
+  wombat:
+    extends:
+      file: common.yml
+      service: wombat
+    # volumes_from:
+      # - plosthemes
+    volumes:
+      # - $DOCKERFILES/themes/minimal:/root/themes
+      - $DOCKERFILES/themes/plos-themes:/root/themes
+    environment:
+      - CAS=https://register.plos.org/cas
+
+  memcached:
+    extends:
+      file: common.yml
+      service: memcached
+
+  rhino:
+    extends:
+      file: common.yml
+      service: rhino
+
+  plosqueue:
+    extends:
+      file: common.yml
+      service: plosqueue
+
+  counter:
+    extends:
+      file: common.yml
+      service: counter
+
+  counterdb:
+    extends:
+      file: common.yml
+      service: counterdb
+
+  ambradb:
+    extends:
+      file: common.yml
+      service: ambradb
+    ports:
+      - "3307:3306"
+
+  solr:
+    extends:
+      file: common.yml
+      service: solr
+
+  contentrepo:
+    extends:
+      file: common.yml
+      service: contentrepo
+    environment:
+      - STORE_TYPE=FileSystem
+      - FS_DIRECTORY=/repodata
+
+  repodb:
+    extends:
+      file: common.yml
+      service: repodb
+
+  # mogiletracker:
+  #   extends:
+  #     file: common.yml
+  #     service: mogiletracker
+  #
+  # mogilenode:
+  #   extends:
+  #     file: common.yml
+  #     service: mogilenode
+  #   # ports:
+  #   #   - "7500:7500"
+  #
+  # mogiledb:
+  #   extends:
+  #     file: common.yml
+  #     service: mogiledb

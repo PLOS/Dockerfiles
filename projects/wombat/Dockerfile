@@ -1,11 +1,11 @@
-FROM tomcat:7-plos
+FROM plos/tomcat:7
 
 MAINTAINER Jono <jfinger@plos.org>
 LABEL vendor="Public Library of Science"
 
-RUN apk add python py-pip
-COPY requirements.txt $HOME
-RUN pip install -r $HOME/requirements.txt
+# RUN apk add python py-pip
+# COPY requirements.txt $HOME
+# RUN pip install -r $HOME/requirements.txt
 
 HEALTHCHECK CMD curl -f http://localhost:8080/ || exit 1
 
@@ -16,5 +16,7 @@ RUN mkdir $AMBRA_CONF && \
 
 COPY run*.sh *.py $HOME
 COPY wombat-*.war $CATALINA_HOME/webapps/ROOT.war
+
+COPY wombat.yaml $AMBRA_CONF
 
 CMD bash $HOME/run.sh

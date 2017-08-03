@@ -1,9 +1,12 @@
 Docker Envoy
 ============
 
+This readme is a work in progress...
+
+
 Docker provides a way of running applications in an isolated and dependable environment. Envoy takes this isolation a step further and helps you run your docker image builds and tests in isolation as well.
 
-This can be helpful for when the environment building your images is not under your control and your build step has dependencies as well (ie - JDK). This uses docker at build time to help create
+This can be helpful for when the environment building your images is not under your control and your build step has dependencies as well (ie - JDK). This uses docker at build time to help create...
 
 For example with envoy lets say you need the whole JDK to build your image, but your only the JRE to run it. Envoy allows you to define a JDK image that is used in an intermediate step to build that final runnable JRE image.
 
@@ -17,8 +20,21 @@ Requirements
 * docker-compose >= 1.8
 * git
 
-It is recommended you configure Docker to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
+Make sure Docker is configured to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).
 
+If you are using Ubuntu 16, these instructions should be all you need to get the above requirements setup:
+
+	sudo apt install apt-transport-https ca-certificates curl software-properties-common
+	curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	sudo apt update
+	sudo apt install -y git docker-ce
+	sudo curl -o /usr/local/bin/docker-compose -L "https://github.com/docker/compose/releases/download/1.11.2/docker-compose-$(uname -s)-$(uname -m)" && sudo chmod +x /usr/local/bin/docker-compose
+	sudo usermod -aG docker $(whoami)
+
+Log out of your session and back in as the same user in order to be added to the docker group. Alternatively you can run `newgrp docker` without logging out but this will only affect the terminal you using, and not your whole session so other terminals will not be able to run docker commands. Now, see that Docker is setup correctly:
+
+	docker-compose version && docker run hello-world
 
 Installation
 ------------
@@ -48,6 +64,8 @@ Sample
 ------
 
 TODO: import https://github.com/docker/example-voting-app perhaps?
+
+For now you can see it in action here: https://github.com/PLOS/Dockerfiles
 
 
 Building images

@@ -24,34 +24,25 @@ function require_mysql_envs {
   require_envs MYSQL_ROOT_PASSWORD MYSQL_USER MYSQL_USER_PASSWORD MYSQL_HOSTNAME MYSQL_DATABASE
 }
 
+
+# TODO: depricate in favor of start_tomcat.sh, though solr might depend on it?
 function start_tomcat {
-	${CATALINA_HOME}/bin/catalina.sh run
-}
 
-function start_consul_agent {
+  # hack to prevent port conflicts when using host networking mode
 
-  CONSULSERVER=consulserver
+  [[ -n $TOMCAT_HTTP_PORT ]] && sed -i -e "s/8080/$TOMCAT_HTTP_PORT/g" $CATALINA_HOME/conf/server.xml
 
-  MAX_TRIES=5
-  TRY_COUNT=0
+  [[ -n $TOMCAT_CONTROL_PORT ]] && sed -i -e "s/8005/$TOMCAT_CONTROL_PORT/g" $CATALINA_HOME/conf/server.xml
 
-  until check_host_up $CONSULSERVER ; do
+  # end hack. note this might break the HEALTHCHECK
 
-    sleep 1
-    ((TRY_COUNT++))
+	# ${CATALINA_HOME}/bin/catalina.sh run
 
-    echo "Attempt to contact $CONSULSERVER failed ($TRY_COUNT/$MAX_TRIES)"
-    if [ $TRY_COUNT -gt $MAX_TRIES ]; then
-      echo "Giving up on $CONSULSERVER"
-      # break
-      return
-    fi
-
-  done
-
-  wait_for_web_service consulserver:8500/v1/agent/self "consulserver"
-
-  /root/consul agent -data-dir /tmp/consul -config-dir /etc/consul.d -join consulserver &
+  if [[ -n $JPDA_OPTS ]] ; then
+    ${CATALINA_HOME}/bin/catalina.sh jpda start && tail -f $CATALINA_HOME/logs/catalina.out
+  else
+    ${CATALINA_HOME}/bin/catalina.sh run
+  fi
 }
 
 function wait_until_db_service_up {

@@ -93,7 +93,7 @@ function cmd {
       echo "If you dont specify a stack, it will default to be the same as testname."
       echo
       echo TESTS:
-      echo "$(find $TESTS -name "*.sh" ! -name "test-helpers.sh" ! -name "run.sh" -exec basename -s .sh -a {} +)"
+      echo "$(find $TESTS -name "*.py" ! -name "test-helper.py" ! -name "run.sh" -exec basename -s .py -a {} +)"
       exit 1
     fi
 
@@ -108,47 +108,28 @@ function cmd {
 
     COMPOSE="docker-compose -f $COMPOSE_FILE"
 
-    # TEST_IMAGE=testrunner
-
-    echo Running tests/$TEST.sh against $COMPOSE_FILE
+    echo Running tests/$TEST.py against $COMPOSE_FILE
 
     # build test runner images if they do not exist
-    docker images testrunner | grep -q envoy || \
+    # docker images testrunner | grep -q envoy || \
       docker build . --file $ENVOY/testrunner.dockerfile --tag testrunner:envoy || exit 2
 
     # TODO: change 'custom' to something like 'plos' so we can have more then one of these on a system
-    docker images testrunner | grep -q custom || \
+    # docker images testrunner | grep -q custom || \
       docker build $TESTS --tag testrunner:custom || exit 3
 
-
-    # kill the lingering instances and state
-    $COMPOSE kill
-    $COMPOSE rm -f -v
-
-    # start stack
-    $COMPOSE up -d
-    $COMPOSE logs --no-color > $TESTS/lasttest.log &
-
-    # TODO: is there a way to run this in the foreground perhaps so we can ^C out of it? as of now, that does not work.
-    # run_the test in the container
-    # docker-compose -f $CONFIGURATIONS/common.yml run --rm $TEST_IMAGE sh -c "source /envoy/test-helpers.sh && bash /tests/$TEST.sh"
-
-    # TODO: pass in env of TESTHELPERS as /envoy/test-helpers.sh
-
-    docker-compose -f $CONFIGURATIONS/common.yml run --rm testrunner bash /dockerfiles/tests/$TEST.sh
-
-    # TODO: get this working so we can move it out of common.yml
-    # docker run --rm --network=configurations -v $DOCKERFILES:/dockerfiles:ro -v /var/run/docker.sock:/var/run/docker.sock -v $ENVOY:/envoy:ro testrunner bash /dockerfiles/tests/$TEST.sh
+    docker run --rm --network=configurations_default \
+      -e "DOCKERFILES=$DOCKERFILES" \
+      -v $DOCKERFILES:/dockerfiles:ro \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v $ENVOY:/envoy:ro testrunner:custom \
+      pytest -p no:cacheprovider --capture=no /dockerfiles/tests/${TEST}.py -v
 
     EXIT_CODE=$?
 
-    [ $EXIT_CODE -eq 0 ] && echo "ALL TESTS PASSED"
+    # [ $EXIT_CODE -eq 0 ] && echo "ALL TESTS PASSED"
 
     echo EXIT CODE : $EXIT_CODE
-
-    # stop stack
-    $COMPOSE kill
-    $COMPOSE rm -f -v
 
     # preserve the exit code of the container test
     exit $EXIT_CODE
