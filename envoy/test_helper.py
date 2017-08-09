@@ -42,8 +42,7 @@ def docker_compose(compose_config, command):
 def wait_for_web_service(url):
   log.debug("Trying to reach " + url + " ...")
   req = requests.get(url)
-  if req.status_code != 200:
-    raise Exception('status=' + str(req.status_code))
+  req.raise_for_status()    # complain about 4XX and 5XX status
   return req
 
 @pytest.fixture(scope="class")
