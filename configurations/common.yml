@@ -107,11 +107,12 @@ services:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
 
 
+  # TODO: replace with traefik?
   haproxy-lb:
     image: dockercloud/haproxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      
+
   mailcatcher:
     image: tophfr/mailcatcher
     ports:
