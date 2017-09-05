@@ -2,6 +2,11 @@ version: '2'
 
 services:
 
+  nedapi-lb2:
+    extends:
+      file: common.yml
+      service: nedapi-lb2
+
   nedcas:
     extends:
       file: common.yml

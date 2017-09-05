@@ -7,7 +7,7 @@ LABEL vendor="Public Library of Science"
 
 RUN mkdir -p $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=cas/login"/>' > $CATALINA_HOME/webapps/ROOT/index.html
 
-HEALTHCHECK --interval=2m --timeout=3s \
+HEALTHCHECK --interval=10s \
   CMD curl -f http://localhost:8080/cas/login || exit 1
 
 COPY run*.sh *.sql $HOME

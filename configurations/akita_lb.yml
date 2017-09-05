@@ -2,6 +2,11 @@ version: '2'
 
 services:
 
+  akita-lb2:
+    extends:
+      file: common.yml
+      service: akita-lb2
+
   akita-lb:
     extends:
       file: common.yml

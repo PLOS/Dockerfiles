@@ -2,10 +2,15 @@ version: '2'
 
 services:
 
+  akita-lb2:
+    extends: traefik-lb
+    ports:
+      - "82:80"
+
   akita-lb:
     extends: haproxy-lb
     ports:
-      - 80:80
+      - "81:80"
     # links:     # must be specified in extending file
     #   - akita
 
@@ -14,7 +19,7 @@ services:
   akita:
     extends: akita-proxyable
     ports:
-      - "80:80"
+      - "81:80"
 
   akita-proxyable:
     image: plos/akita:develop
@@ -39,7 +44,9 @@ services:
       - RECAPTCHA_SECRET=
       - KEYS_DIR=/akita_keys
       - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
-      # - SSL=none  # options = none, existingkeys
+    labels:
+      - "traefik.backend=akita"
+      - "traefik.frontend.rule=PathPrefixStrip:/"
     volumes:
       - ${DOCKERFILES}/../akita/dev/:/akita_keys:ro
     #   - ${DOCKERFILES}/projects/selfsigned.key:/etc/nginx/ssl/nginx.key:ro
@@ -74,19 +81,28 @@ services:
       - CLUSTER_MEMBERS=localhost
       - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
       - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # todo: move these options into akita run.sh or Dockerfile
-
+    labels:
+      - "traefik.backend=nedcas"
+      - "traefik.frontend.rule=PathPrefixStrip:/"
 
   nedapi-lb:
     extends: haproxy-lb
     ports:
-      - 8888:80
+      - "8888:80"
+    # links:     # must be specified in extending file
+    #   - nedapi
+
+  nedapi-lb2:
+    extends: traefik-lb
+    ports:
+      - "8889:80"
     # links:     # must be specified in extending file
     #   - nedapi
 
   nedapi:
     extends: nedapi-proxyable
     ports:
-      - 8888:8080
+      - "8888:8080"
 
   nedapi-proxyable:
     image: plos/nedapi:develop
@@ -98,6 +114,9 @@ services:
       - MYSQL_DATABASE=namedEntities
       - RINGGOLD_DATABASE=ringgold
       - SEEDS=simpledev
+    labels:
+      - "traefik.backend=nedapi"
+      - "traefik.frontend.rule=PathPrefixStrip:/"
     volumes:
       - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
 
@@ -112,6 +131,16 @@ services:
     image: dockercloud/haproxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+  traefik-lb:
+    image: traefik
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    ports:
+      # - "8889:80"
+      - "8000:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
 
   mailcatcher:
     image: tophfr/mailcatcher
