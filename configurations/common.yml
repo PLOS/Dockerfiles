@@ -30,7 +30,7 @@ services:
       - NED_USERAPP=dev
       - NED_PASSWORD=dev
       - CAS_URL=http://nedcas:8080
-      - SECRET_KEY_BASE=secretgoeshere
+      - SECRET_KEY_BASE=superlongsecretgoeshere1234566789
       - EXACTTARGET_ID=
       - EXACTTARGET_SECRET=
       - SALESFORCE_HOST=
@@ -136,7 +136,6 @@ services:
     image: traefik
     command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
     ports:
-      # - "8889:80"
       - "8000:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
