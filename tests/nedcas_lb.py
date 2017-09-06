@@ -3,10 +3,11 @@ import requests
 import time
 import os
 
-compose_config = 'ned_lb'
+compose_config = 'nedcas_lb'
 
-nedapi = 'http://nedapi-lb'
-wait_urls = [nedapi + '/v1/service/config']
+nedapi = 'http://nedapi:8080'
+nedcas = 'http://nedcas-lb'
+wait_urls = [nedapi + '/v1/service/config', nedcas + '/cas/login']
 
 class Test():
 
@@ -14,4 +15,5 @@ class Test():
     assert_status(nedapi + '/v1/service/config')
     assert_status(requests.get(nedapi + '/v1/typeclasses', auth=('dev', 'dev')))
 
-  # TODO: test scaling? curl traefic api to see services listed too
+  def test_cas_home(self, stack):
+    assert_status(nedcas + '/cas/login')

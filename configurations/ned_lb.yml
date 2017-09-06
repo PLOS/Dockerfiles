@@ -2,10 +2,10 @@ version: '2'
 
 services:
 
-  nedapi-lb2:
+  nedapi-lb:
     extends:
       file: common.yml
-      service: nedapi-lb2
+      service: nedapi-lb
 
   nedcas:
     extends:
@@ -14,22 +14,7 @@ services:
     environment:
       - NED_SERVICE=http://nedapi-lb:80/v1
 
-  nedapi-lb:
-    extends:
-      file: common.yml
-      service: nedapi-lb
-    ports:
-      - "1936:1936"
-    links:
-      - nedapiA
-      - nedapiB
-
-  nedapiA:
-    extends:
-      file: common.yml
-      service: nedapi-proxyable
-
-  nedapiB:
+  nedapi:
     extends:
       file: common.yml
       service: nedapi-proxyable

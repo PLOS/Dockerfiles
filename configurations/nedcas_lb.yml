@@ -2,10 +2,13 @@ version: '2'
 
 services:
 
+  # NOTE: we use HA Proxy here only for testing HA CAS in development. elsewhere we load blanace with Traefik, because its better :-)
   nedcas-lb:
-    extends:
-      file: common.yml
-      service: nedcas-lb
+    image: dockercloud/haproxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8880:80"
     links:
       - nedcasA
       - nedcasB
@@ -16,7 +19,7 @@ services:
       service: nedcas-proxyable
     environment:
       - CLUSTER_MEMBERS=nedcasA,nedcasB
-      - CATALINA_OPTS=-Dlog4j.configurationFile=/etc/cas/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
+      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
       - JPDA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n
 
   nedcasB:
@@ -25,7 +28,7 @@ services:
       service: nedcas-proxyable
     environment:
       - CLUSTER_MEMBERS=nedcasA,nedcasB
-      - CATALINA_OPTS=-Dlog4j.configurationFile=/etc/cas/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
+      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
       - JPDA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n
 
   nedapi:

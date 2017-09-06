@@ -2,19 +2,11 @@ version: '2'
 
 services:
 
-  akita-lb2:
-    extends: traefik-lb
-    ports:
-      - "82:80"
-
   akita-lb:
-    extends: haproxy-lb
+    extends: traefik-lb
+    command: --web --logLevel=DEBUG --docker --docker.constraints=tag==akita
     ports:
       - "81:80"
-    # links:     # must be specified in extending file
-    #   - akita
-
-    # TODO: figure out why akita-lb is not working? it sees akita but is not putting it in /haproxy.cfg. perhaps akita is not ready at the right time?
 
   akita:
     extends: akita-proxyable
@@ -45,7 +37,7 @@ services:
       - KEYS_DIR=/akita_keys
       - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
     labels:
-      - "traefik.backend=akita"
+      - "traefik.tags=akita"
       - "traefik.frontend.rule=PathPrefixStrip:/"
     volumes:
       - ${DOCKERFILES}/../akita/dev/:/akita_keys:ro
@@ -53,11 +45,10 @@ services:
     #   - ${DOCKERFILES}/projects/selfsigned.crt:/etc/nginx/ssl/nginx.crt:ro
 
   nedcas-lb:
-    extends: haproxy-lb
+    extends: traefik-lb
+    command: --web --logLevel=DEBUG --docker --docker.constraints=tag==nedcas
     ports:
       - "8880:80"
-    # links:     # must be specified in extending file
-    #   - nedapi
 
   nedcas:
     extends: nedcas-proxyable
@@ -80,24 +71,16 @@ services:
       - COOKIE_DOMAIN=nedcas
       - CLUSTER_MEMBERS=localhost
       - JWT_SHARED_SECRET=db714af08c2a695ac04f7dd5d146df89330defd5219e8838f7a80e9d965a4df2
-      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # todo: move these options into akita run.sh or Dockerfile
+      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml # TODO: move these options into akita run.sh or Dockerfile
     labels:
-      - "traefik.backend=nedcas"
+      - "traefik.tags=nedcas"
       - "traefik.frontend.rule=PathPrefixStrip:/"
 
   nedapi-lb:
-    extends: haproxy-lb
+    extends: traefik-lb
+    command: --web --logLevel=DEBUG --docker --docker.constraints=tag==nedapi
     ports:
       - "8888:80"
-    # links:     # must be specified in extending file
-    #   - nedapi
-
-  nedapi-lb2:
-    extends: traefik-lb
-    ports:
-      - "8889:80"
-    # links:     # must be specified in extending file
-    #   - nedapi
 
   nedapi:
     extends: nedapi-proxyable
@@ -115,7 +98,7 @@ services:
       - RINGGOLD_DATABASE=ringgold
       - SEEDS=simpledev
     labels:
-      - "traefik.backend=nedapi"
+      - "traefik.tags=nedapi"
       - "traefik.frontend.rule=PathPrefixStrip:/"
     volumes:
       - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
@@ -125,16 +108,8 @@ services:
     volumes:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
 
-
-  # TODO: replace with traefik?
-  haproxy-lb:
-    image: dockercloud/haproxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
   traefik-lb:
     image: traefik
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
     ports:
       - "8000:8080"
     volumes:
@@ -289,11 +264,3 @@ services:
     image: percona:5.6
     environment:
       - MYSQL_ROOT_PASSWORD=root
-
-  # # NOTE: this is used by cmd.test but not cmd.testpy
-  # testrunner:
-  #   image: testrunner:custom
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ${DOCKERFILES}:/dockerfiles:ro
-  #     - ${ENVOY}:/envoy:ro
