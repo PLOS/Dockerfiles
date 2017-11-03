@@ -1,11 +1,12 @@
 FROM python:3.4-alpine
 
-RUN apk --no-cache add db db-dev openssl py-cffi && mkdir /app
+RUN apk --no-cache add bash curl db-dev openssl py-cffi py-libxslt && mkdir /app
 
 WORKDIR /app
 
 COPY requirements.txt /app/
 
+# TODO: cleanup some of these possibly unneeded build deps
 RUN apk --no-cache add --virtual .build-deps libffi-dev py-cryptography openssl-dev build-base py-lxml libxslt-dev gcc && \
   pip install -r requirements.txt && \
   apk del .build-deps
