@@ -23,20 +23,24 @@ fi
 
 set_db_grants
 
-# NOTE: these modes do not play well with eachother. you need to clear the db between switching modes and after ingesting articles?
+# NOTE: the above migrations add the PLOS specific journals. these modes do not play well with eachother. you need to clear the db between switching modes
 
 # HACK: until dipro migrations get figured out, we smash some journal data in
 if [[ "$MODE" == "plos" ]]; then
   echo "running in PLOS mode"
-  echo "DELETE FROM journal WHERE title= 'My Journal'" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
+
 elif [[ "$MODE" == "example" ]]; then
   echo "running in example mode"
   # when using this https://plos.github.io/ambraproject/Quickstart-Guide.html
-  echo "DELETE FROM journal" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
+  # echo "DELETE FROM journal" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
+
+  echo "DELETE FROM journal WHERE title LIKE 'PLOS %';" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
+
   $MYSQL_ROOT $MYSQL_DATABASE < ${HOME}/example_mode.sql
 else
-  # the user is on their own to populate the journals table/
-  echo "DELETE FROM journal" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
+  echo "running in user defined mode"
+  # the user is on their own to populate the journals tables
+  echo "DELETE FROM journal WHERE title LIKE 'PLOS %';" | $MYSQL_ROOT $MYSQL_DATABASE || exit 1
 fi
 
 
