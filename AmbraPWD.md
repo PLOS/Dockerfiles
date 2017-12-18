@@ -5,6 +5,8 @@ terms: 2
 
 [//]: # (Note: render this with pwder.io or Play With Docker classroom)
 
+[![Make document interactive using pwder.io](https://img.shields.io/badge/make%20doc%20interactive-with%20pwder.io-orange.svg)](http://pwder.io/?doc=https://github.com/PLOS/Dockerfiles/blob/develop/AmbraPWD.md)
+
 ## How to use this demo
 
 Please, validate the Google capcha to activate the shell on the right. Then, you can either copy the commands yourself, or simply click on the grey boxes to automatically copy commands into the terminal.
