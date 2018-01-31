@@ -33,5 +33,7 @@ process_env_template $AMBRA_CONF/wombat.yaml
 
 # TODO: handle Akita URL for create account page
 
+mount -v themes_nfs:/ /root/themes
+
 export JAVA_OPTS="-Dwombat.configDir=$AMBRA_CONF"
 start_tomcat
