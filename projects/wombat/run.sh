@@ -4,7 +4,7 @@
 
 source $HOME/run-helpers.sh
 
-[ -d "$ROOT" ] || die "Theme root not found"
+[ "$(ls -A $ROOT)" ] && echo "Themes found" || die "Themes not found"
 
 require_envs SERVER SOLR EMAIL ROOT CAS
 
@@ -32,8 +32,6 @@ process_env_template $AMBRA_CONF/wombat.yaml
 #     # --assets "/var/local/wombat/compiledAssets"  \
 
 # TODO: handle Akita URL for create account page
-
-mount -v themes_nfs:/ /root/themes
 
 export JAVA_OPTS="-Dwombat.configDir=$AMBRA_CONF"
 start_tomcat

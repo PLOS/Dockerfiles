@@ -2,31 +2,41 @@ version: '2'
 
 services:
 
-  akita-ssl:
+  akita:
     extends:
       file: common.yml
-      service: akita-ssl
-    depends_on:
-      - akita-proxyable
+      service: akita
 
-  akita-proxyable:
+  nedcas:
     extends:
       file: common.yml
-      service: akita-proxyable
-    environment:
-      - CAS_URL=https://nedcas-ssl:443
+      service: nedcas
 
-  nedcas-ssl:
-    extends:
-      file: common.yml
-      service: nedcas-ssl
-    depends_on:
-      - nedcas-proxyable
-
-  nedcas-proxyable:
-    extends:
-      file: common.yml
-      service: nedcas-proxyable
+  # akita-ssl:
+  #   extends:
+  #     file: common.yml
+  #     service: akita-ssl
+  #   depends_on:
+  #     - akita-proxyable
+  #
+  # akita-proxyable:
+  #   extends:
+  #     file: common.yml
+  #     service: akita-proxyable
+  #   environment:
+  #     - CAS_URL=https://nedcas-ssl:443
+  #
+  # nedcas-ssl:
+  #   extends:
+  #     file: common.yml
+  #     service: nedcas-ssl
+  #   depends_on:
+  #     - nedcas-proxyable
+  #
+  # nedcas-proxyable:
+  #   extends:
+  #     file: common.yml
+  #     service: nedcas-proxyable
 
   nedapi:
     extends:
@@ -44,6 +54,9 @@ services:
     extends:
       file: common.yml
       service: wombat
+
+  memcached:
+    image: memcached:alpine
 
   rhino:
     extends:

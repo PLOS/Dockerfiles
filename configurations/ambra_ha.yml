@@ -1,3 +1,11 @@
+
+# This config should be run in swarm mode. This abstraction should simplify testing high availablity of each of the sub services.
+
+# PREREQ: set Dockerfiles and populate themes volume> docker run -it -v wombat-themes:/root/themes -v $DOCKERFILES/themes/minimal:/themes alpine sh -c 'rm -rf /root/themes/* && cp -r /themes/* /root/themes && ls /root/themes'
+
+# run, scale, lb > docker stack deploy --compose-file ambra_ha.yml ambra
+#  > docker service scale ambra_rhino=2
+
 version: '3.2'
 
 services:
@@ -23,7 +31,7 @@ services:
     image: plos/contentrepo:1.2.0
     ports:
     - 8085:8080/tcp
-    volumes:
+    volumes:  # probably should use mogile when in swarm mode
     - /repodata
 
   memcached:
@@ -52,11 +60,13 @@ services:
       USER_API_AUTH: dev
       USER_API_SERVER: http://nedapi:8080
       USER_API_USER: dev
-    image: plos/rhino:2.2.2
+    # image: plos/rhino:2.2.2
+    image: plos/rhino:master
+    deploy:
+      mode: replicated
+      replicas: 3
     ports:
     - 8006:8080/tcp
-    # volumes:
-    # - /home/jfinger/datastores/ingest:/root/ingest:rw
 
   solr_dummy:
     image: solr:5-alpine
@@ -70,49 +80,35 @@ services:
       SERVER: http://rhino:8080
       SOLR: http://solr:8080/select
     image: plos/wombat:3.3.3
+    # image: plos/wombat:master
     ports:
     - 8015:8080/tcp
-    # volumes:
-      # - theme-volume:/root/themes
-    # - /themes/minimal:/root/themes:ro
-
-  # theme:
-  #   image: plos/plosthemes:master
-  #   volumes:
-  #     - /root/themes:/root/themes
-  #     - theme-volume:/
-
-  themes_nfs:
-    image: itsthenetwork/nfs-server-alpine
     volumes:
-      - $DOCKERFILES:/nfsshare
-    environment:
-      SHARED_DIRECTORY=/nfsshare
-      READ_ONLY=true
-    privileged: true
+      - wombat-themes:/root/themes:ro
 
-  # zookeeper: # for kafka only
-  #   image: wurstmeister/zookeeper
-  #   ports:
-  #     - "2181:2181"
-  #
-  # kafka:
-  #   image: wurstmeister/kafka
-  #   ports:
-  #     - target: 9094
-  #       published: 9094
-  #       protocol: tcp
-  #       mode: host
-  #   environment:
-  #     HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
-  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-  #     KAFKA_ADVERTISED_PROTOCOL_NAME: OUTSIDE
-  #     KAFKA_ADVERTISED_PORT: 9094
-  #     KAFKA_PROTOCOL_NAME: INSIDE
-  #     KAFKA_PORT: 9092
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
+  zookeeper: # for kafka
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_PROTOCOL_NAME: OUTSIDE
+      KAFKA_ADVERTISED_PORT: 9094
+      KAFKA_PROTOCOL_NAME: INSIDE
+      KAFKA_PORT: 9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 volumes:
-  theme-volume:
+  wombat-themes:
+    external: true
