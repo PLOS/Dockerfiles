@@ -1,0 +1,56 @@
+version: '2'
+
+services:
+
+  # NOTE: we use HA Proxy here only for testing HA CAS in development. elsewhere we load blanace with Traefik, because its better :-)
+  nedcas-lb:
+    image: dockercloud/haproxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8880:80"
+    links:
+      - nedcasA
+      # - nedcasB
+
+  hazelcast:
+    image: hazelcast/hazelcast
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config_ext/hazelcast.xml
+    volumes:
+      - $DOCKERFILES/projects/nedcas:/opt/hazelcast/config_ext
+
+  hazelcast-manager:
+    image: hazelcast/management-center
+    ports:
+      - "8080:8080"
+
+  nedcasA:
+    extends:
+      file: common.yml
+      service: nedcas-proxyable
+    image: plos/nedcas:1.7.0-SNAPSHOT
+    environment:
+      # - CLUSTER_MEMBERS=nedcasA,nedcasB
+      - CLUSTER_MEMBERS=hazelcast
+      - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
+      - JPDA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n
+
+  # nedcasB:
+  #   extends:
+  #     file: common.yml
+  #     service: nedcas-proxyable
+  #   environment:
+  #     - CLUSTER_MEMBERS=nedcasA,nedcasB
+  #     - CATALINA_OPTS=-Dlog4j.configurationFile=/usr/local/tomcat/conf/log4j2.xml -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=1099 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dhazelcast.jmx=true
+  #     - JPDA_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8001,server=y,suspend=n
+
+  nedapi:
+    extends:
+      file: common.yml
+      service: nedapi
+
+  neddb:
+    extends:
+      file: common.yml
+      service: neddb
