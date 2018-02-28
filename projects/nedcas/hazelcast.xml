@@ -47,6 +47,7 @@
                 <interface>127.0.0.1</interface>
                 <member-list>
                     <member>127.0.0.1</member>
+                    <member>nedcasA</member>
                 </member-list>
             </tcp-ip>
             <aws enabled="false">
