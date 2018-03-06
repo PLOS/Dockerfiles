@@ -21,11 +21,11 @@ services:
       - nedcasB
 
   hazelcast:
-    image: hazelcast/hazelcast
-    # environment:
-    #   - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config_ext/hazelcast.xml
-    # volumes:
-    #   - $DOCKERFILES/projects/nedcas:/opt/hazelcast/config_ext
+    image: hazelcast/hazelcast:3.7.1
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config_ext/hazelcast.xml
+    volumes:
+      - $DOCKERFILES/projects/nedcas:/opt/hazelcast/config_ext
 
   # hazelcast-manager:
   #   image: hazelcast/management-center
@@ -37,6 +37,8 @@ services:
       file: common.yml
       service: nedcas-proxyable
     image: plos/nedcas:1.7.0-SNAPSHOT
+    ports:
+      - "5701:5701"
     environment:
       # - CLUSTER_MEMBERS=nedcasA,nedcasB
       - CLUSTER_MEMBERS=nedcasA,nedcasB,hazelcast
@@ -48,6 +50,8 @@ services:
       file: common.yml
       service: nedcas-proxyable
     image: plos/nedcas:1.7.0-SNAPSHOT
+    ports:
+      - "5702:5701"
     environment:
       # - CLUSTER_MEMBERS=nedcasA,nedcasB
       - CLUSTER_MEMBERS=nedcasA,nedcasB,hazelcast

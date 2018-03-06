@@ -17,18 +17,18 @@
 
 <!--
     The default Hazelcast configuration. This is used when no hazelcast.xml is present.
-    Please see the schema for how to configure Hazelcast at https://hazelcast.com/schema/config/hazelcast-config-3.9.xsd
+    Please see the schema for how to configure Hazelcast at https://hazelcast.com/schema/config/hazelcast-config-3.7.xsd
     or the documentation at https://hazelcast.org/documentation/
 -->
 <!--suppress XmlDefaultAttributeValue -->
-<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.9.xsd"
+<hazelcast xsi:schemaLocation="http://www.hazelcast.com/schema/config hazelcast-config-3.7.xsd"
            xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <group>
         <name>dev</name>
         <password>dev-pass</password>
     </group>
-    <management-center enabled="true">http://hazelcast-manager:8080/mancenter</management-center>
+    <management-center enabled="false">http://hazelcast-manager:8080/mancenter</management-center>
     <network>
         <port auto-increment="true" port-count="100">5701</port>
         <outbound-ports>
@@ -37,31 +37,20 @@
             0 or * means use system provided port.
             -->
             <ports>0</ports>
+            <!-- <ports>33000-33100</ports> -->
         </outbound-ports>
         <join>
-            <multicast enabled="true">
+            <!-- <multicast enabled="true">
                 <multicast-group>224.2.2.3</multicast-group>
                 <multicast-port>54327</multicast-port>
-            </multicast>
+            </multicast> -->
             <tcp-ip enabled="false">
-                <interface>127.0.0.1</interface>
+                <interface>localhost</interface>
                 <member-list>
-                    <member>127.0.0.1</member>
                     <member>nedcasA</member>
+                    <member>nedcasB</member>
                 </member-list>
             </tcp-ip>
-            <aws enabled="false">
-                <access-key>my-access-key</access-key>
-                <secret-key>my-secret-key</secret-key>
-                <!--optional, default is us-east-1 -->
-                <region>us-west-1</region>
-                <!--optional, default is ec2.amazonaws.com. If set, region shouldn't be set as it will override this property -->
-                <host-header>ec2.amazonaws.com</host-header>
-                <!-- optional, only instances belonging to this group will be discovered, default will try all running instances -->
-                <security-group-name>hazelcast-sg</security-group-name>
-                <tag-key>type</tag-key>
-                <tag-value>hz-nodes</tag-value>
-            </aws>
             <discovery-strategies>
             </discovery-strategies>
         </join>
@@ -207,23 +196,6 @@
         <cache-deserialized-values>INDEX-ONLY</cache-deserialized-values>
 
     </map>
-
-    <!--
-           Configuration for an event journal. The event journal keeps events related
-           to a specific partition and data structure. For instance, it could keep
-           map add, update, remove, merge events along with the key, old value, new value and so on.
-        -->
-    <event-journal enabled="false">
-        <mapName>mapName</mapName>
-        <capacity>10000</capacity>
-        <time-to-live-seconds>0</time-to-live-seconds>
-    </event-journal>
-
-    <event-journal enabled="false">
-        <cacheName>cacheName</cacheName>
-        <capacity>10000</capacity>
-        <time-to-live-seconds>0</time-to-live-seconds>
-    </event-journal>
 
     <multimap name="default">
         <backup-count>1</backup-count>
