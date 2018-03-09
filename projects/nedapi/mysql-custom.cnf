@@ -1,2 +1,4 @@
 [mysqld]
 max_connections=300
+early-plugin-load = keyring_file.so
+keyring_file_data = /var/lib/mysql-keyring/keyring

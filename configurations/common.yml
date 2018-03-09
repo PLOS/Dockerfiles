@@ -104,7 +104,9 @@ services:
       - ${DOCKERFILES}/projects/nedapi/seeds:/seeds:ro
 
   neddb:
-    extends: mysql
+    image: percona:5.7.21 # using this version to test DB encryption
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
       - ${DOCKERFILES}/projects/nedapi/mysql-custom.cnf:/etc/mysql/conf.d/mysq-custom.cnf:ro
 

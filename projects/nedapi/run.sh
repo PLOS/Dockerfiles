@@ -17,6 +17,13 @@ else
   echo "Skipping creating DB since it already exists"
 fi
 
+MYSQL="mysql -h ${MYSQL_HOSTNAME} -u ${MYSQL_USER} --password=${MYSQL_USER_PASSWORD} ${MYSQL_DATABASE}"
+
+echo "ALTER TABLE emails ENCRYPTION='Y'" | $MYSQL
+echo "ALTER TABLE individualProfiles ENCRYPTION='Y'" | $MYSQL
+echo "ALTER TABLE addresses ENCRYPTION='Y'" | $MYSQL
+echo "ALTER TABLE phoneNumbers ENCRYPTION='Y'" | $MYSQL
+
 set_db_grants
 
 bash $HOME/flyway-*/flyway -url="jdbc:mysql://${MYSQL_HOSTNAME}:3306/${MYSQL_DATABASE}?useUnicode=true&amp;characterEncoding=utf8" \
