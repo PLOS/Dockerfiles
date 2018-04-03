@@ -10,6 +10,8 @@ services:
     volumes:
       # - $HOME/ambra_demo/themes:/root/themes
       - $DOCKERFILES/themes/minimal:/root/themes
+    environment:
+      - SOLR=http://solr_dummy:8983/select
 
   memcached:
     extends:
@@ -24,7 +26,7 @@ services:
     environment:
       - MODE=example
       - MYSQL_HOSTNAME=ambradb_demo
-      - SOLR=http://solr_dummy:8080/select
+      - SOLR=http://solr_dummy:8983/select
 
   ambradb_demo:
     extends:
