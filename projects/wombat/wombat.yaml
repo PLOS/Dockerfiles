@@ -5,7 +5,7 @@
 server: ${SERVER}
 # URL of the server for the service API ("Rhino")
 
-solrServer: ${SOLR}
+# solrServer: ${SOLR}
 # URL of the Solr server.
 
 mailServer: ${EMAIL}
