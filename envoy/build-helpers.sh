@@ -315,7 +315,10 @@ function build_rails_ember_images() {
 function build_image_non_compiled() {
 
 	PROJECT_DIR=$1
-	IMAGE_NAME=${IMAGE_PREFIX}${2}
+	IMAGE_NAME=$2
+
+  # this would include the prefix if the image is to be stored remotely
+  FULL_IMAGE_NAME=${IMAGE_PREFIX}${2}
 
   DOCKER_SETUP_DIR=$PROJECTS/$IMAGE_NAME
   PROJECT_LOCAL_REPO=$(get_local_src_dir $PROJECT_DIR)
@@ -332,14 +335,14 @@ function build_image_non_compiled() {
   cd $PROJECT_LOCAL_REPO
 
 	echo "Building image..."
-  docker build -f Dockerfile.tmp -t $IMAGE_NAME:$BASE_TAG . || die "build failed"
+  docker build -f Dockerfile.tmp -t $FULL_IMAGE_NAME:$BASE_TAG . || die "build failed"
 
-  echo "image tag = $IMAGE_NAME:$BASE_TAG"
+  echo "image tag = $FULL_IMAGE_NAME:$BASE_TAG"
 
   # TODO: should we handle if there is a version file or if they need the run helper?
 
   # clean up
-  rm $PROJECT_LOCAL_REPO/{Dockerfile.tmp,.dockerignore}
+  rm -f $PROJECT_LOCAL_REPO/{Dockerfile.tmp,.dockerignore}
 }
 
 

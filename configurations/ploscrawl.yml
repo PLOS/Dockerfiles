@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+
+  solr:
+    image: solr:6.6
+    command: solr-create -c site_search -d /app-solr-conf
+    ports:
+     - "8985:8983"
+    volumes:
+      - $DOCKERFILES/../ploscrawl/solr-conf:/app-solr-conf

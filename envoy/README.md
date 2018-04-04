@@ -16,8 +16,8 @@ Additionally Envoy is most helpful for managing a group of projects instead of a
 
 Requirements
 ------------
-* docker >= 1.12
-* docker-compose >= 1.8
+* docker >= 17.06
+* docker-compose >= 1.16
 * git
 
 Make sure Docker is configured to run [without sudo](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/create-a-docker-group).

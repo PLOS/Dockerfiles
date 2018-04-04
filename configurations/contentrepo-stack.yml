@@ -1,0 +1,40 @@
+version: '3.0'
+services:
+
+  contentrepo:
+    environment:
+      FS_DIRECTORY: /repodata
+      MYSQL_DATABASE: repo
+      MYSQL_HOSTNAME: repodb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: repouser
+      MYSQL_USER_PASSWORD: ''
+      STORE_TYPE: FileSystem
+    image: plos/contentrepo:1.2.0
+    ports:
+    - 8085:8080/tcp
+    volumes:
+    - /repodata
+#    deploy:
+#    	replicas: 3
+    
+  repodb:
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    image: percona:5.6
+    ports:
+    - 3305:3306/tcp
+
+
+#docker swarm for NED load balancing
+
+#	docker swarm init --advertise-addr $(hostname -i)
+
+#	docker stack deploy repo --compose-file configurations/contentrepo-stack.yml
+	
+#	curl 127.0.0.1:8085/status
+	
+#	docker service ls
+	
+#	docker service scale repo_contentrepo=4
+	

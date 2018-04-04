@@ -6,12 +6,6 @@ services:
     extends:
       file: common.yml
       service: akita-lb
-    ports:
-      - "1936:1936"
-    links:
-      - akita
-    # environment:
-    #   - DEBUG=True
 
   akita:
     extends:

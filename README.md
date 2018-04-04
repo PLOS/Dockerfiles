@@ -87,8 +87,8 @@ There is a scaling demo that runs multiple instances of NED using HAProxy. Here 
 
 * Start stack: `./nv stack ned_lb_scale`
 * Run more NED instances: `./nv stack ned_lb_scale scale nedapi=4`
-* Visit NED proxy at http://localhost:8880/v1/service/config while watching that log is spanning requests
-* You can see proxy stats at http://localhost:1936/ but it wont be accurate since scaling restarts haproxy which reset the values to 0
+* Visit NED proxy at http://localhost:8888/v1/service/config while watching that log is spanning requests
+* You can see proxy stats at http://localhost:8000/
 
 
 Docker Registry

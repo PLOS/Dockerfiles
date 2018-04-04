@@ -4,7 +4,7 @@
 
 source $HOME/run-helpers.sh
 
-[ -d "$ROOT" ] || die "Theme root not found"
+[ "$(ls -A $ROOT)" ] && echo "Themes found" || die "Themes not found"
 
 require_envs SERVER SOLR EMAIL ROOT CAS
 

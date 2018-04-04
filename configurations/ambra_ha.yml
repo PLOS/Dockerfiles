@@ -1,0 +1,114 @@
+
+# This config should be run in swarm mode. This abstraction should simplify testing high availablity of each of the sub services.
+
+# PREREQ: set Dockerfiles and populate themes volume> docker run -it -v wombat-themes:/root/themes -v $DOCKERFILES/themes/minimal:/themes alpine sh -c 'rm -rf /root/themes/* && cp -r /themes/* /root/themes && ls /root/themes'
+
+# run, scale, lb > docker stack deploy --compose-file ambra_ha.yml ambra
+#  > docker service scale ambra_rhino=2
+
+version: '3.2'
+
+services:
+
+  ambradb_demo:
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    image: percona:5.6
+    ports:
+    - 3307:3306/tcp
+
+  contentrepo:
+    environment:
+      FS_DIRECTORY: /repodata
+      MOGILE_DOMAIN: maindomain
+      MOGILE_TRACKERS: mogiletracker:7001
+      MYSQL_DATABASE: repo
+      MYSQL_HOSTNAME: repodb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: repouser
+      MYSQL_USER_PASSWORD: ''
+      STORE_TYPE: FileSystem
+    image: plos/contentrepo:1.2.0
+    ports:
+    - 8085:8080/tcp
+    volumes:  # probably should use mogile when in swarm mode
+    - /repodata
+
+  memcached:
+    image: memcached:alpine
+
+  repodb:
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    image: percona:5.6
+    ports:
+    - 3305:3306/tcp
+
+  rhino:
+    environment:
+      CORPUS_BUCKET: corpus
+      EDITORIAL_BUCKET: cms
+      MODE: example
+      MYSQL_DATABASE: ambra
+      MYSQL_HOSTNAME: ambradb_demo
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: ambra
+      MYSQL_USER_PASSWORD: ambra
+      QUEUE_LOCATION: tcp://plosqueue:61616
+      REPO_LOCATION: http://contentrepo:8080
+      SOLR: http://solr_dummy:8080/select
+      USER_API_AUTH: dev
+      USER_API_SERVER: http://nedapi:8080
+      USER_API_USER: dev
+    # image: plos/rhino:2.2.2
+    image: plos/rhino:master
+    deploy:
+      mode: replicated
+      replicas: 3
+    ports:
+    - 8006:8080/tcp
+
+  solr_dummy:
+    image: solr:5-alpine
+
+  wombat:
+    environment:
+      CAS: https://localhost:8443/cas
+      EMAIL: plos-org.mail.protection.outlook.com
+      MEMCACHEDHOST: memcached
+      ROOT: /root/themes/
+      SERVER: http://rhino:8080
+      SOLR: http://solr:8080/select
+    image: plos/wombat:3.3.3
+    # image: plos/wombat:master
+    ports:
+    - 8015:8080/tcp
+    volumes:
+      - wombat-themes:/root/themes:ro
+
+  zookeeper: # for kafka
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - target: 9094
+        published: 9094
+        protocol: tcp
+        mode: host
+    environment:
+      HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_PROTOCOL_NAME: OUTSIDE
+      KAFKA_ADVERTISED_PORT: 9094
+      KAFKA_PROTOCOL_NAME: INSIDE
+      KAFKA_PORT: 9092
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  wombat-themes:
+    external: true

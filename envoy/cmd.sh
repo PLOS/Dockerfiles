@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# script contains a function for command line operation of controlling envoy. it should not be called directly.
+# this script contains a function for command line operation of controlling envoy. it should not be called directly.
 
 # set -x
 
@@ -88,51 +88,36 @@ function cmd {
   elif [[ "$OPERATION" == "test" ]]; then
 
     if [ "$#" -eq 0 ]; then
-      echo "Use: $SCRIPT test TESTNAME [stack]"
-      echo
-      echo "If you dont specify a stack, it will default to be the same as testname."
+      echo "Use: $SCRIPT test TESTNAME"
       echo
       echo TESTS:
-      echo "$(find $TESTS -name "*.py" ! -name "test-helper.py" ! -name "run.sh" -exec basename -s .py -a {} +)"
+      echo "$(find $TESTS -name "*.py" -exec basename -s .py -a {} +)"
       exit 1
     fi
 
     TEST=$1
-    STACK=$1
 
-    if [[ -n $2 ]]; then
-      STACK=$2
-    fi
+    echo Running tests/$TEST.py
 
-    COMPOSE_FILE=$CONFIGURATIONS/$STACK.yml
+    cd $ENVOY
+    docker build . --file testrunner.dockerfile --tag testrunner:envoy || exit 2
+    cd -
 
-    COMPOSE="docker-compose -f $COMPOSE_FILE"
-
-    echo Running tests/$TEST.py against $COMPOSE_FILE
-
-    # build test runner images if they do not exist
-    # docker images testrunner | grep -q envoy || \
-      docker build . --file $ENVOY/testrunner.dockerfile --tag testrunner:envoy || exit 2
-
+    cd $TESTS
     # TODO: change 'custom' to something like 'plos' so we can have more then one of these on a system
-    # docker images testrunner | grep -q custom || \
-      docker build $TESTS --tag testrunner:custom || exit 3
+    docker build . --tag testrunner:custom || exit 3
+    cd -
 
     docker run --rm --network=configurations_default \
       -e "DOCKERFILES=$DOCKERFILES" \
+      -e "CONFIGURATIONS=/dockerfiles/configurations" \
       -v $DOCKERFILES:/dockerfiles:ro \
       -v /var/run/docker.sock:/var/run/docker.sock \
-      -v $ENVOY:/envoy:ro testrunner:custom \
+      testrunner:custom \
       pytest -p no:cacheprovider --capture=no /dockerfiles/tests/${TEST}.py -v
 
-    EXIT_CODE=$?
-
-    # [ $EXIT_CODE -eq 0 ] && echo "ALL TESTS PASSED"
-
-    echo EXIT CODE : $EXIT_CODE
-
-    # preserve the exit code of the container test
-    exit $EXIT_CODE
+    # pass up the exit code to the caller
+    exit $?
 
   else
     echo $USAGE

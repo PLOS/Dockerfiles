@@ -7,7 +7,7 @@ ENV HOME /root/
 
 RUN mkdir -p $CATALINA_HOME/webapps/ROOT ; echo '<meta http-equiv="refresh" content="0;url=v1/docs/"/>' > $CATALINA_HOME/webapps/ROOT/index.html
 
-HEALTHCHECK --interval=2m --timeout=3s \
+HEALTHCHECK --interval=10s \
   CMD curl -f http://localhost:8080/v1/service/config || exit 1
 
 COPY run*.sh $HOME

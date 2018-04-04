@@ -19,7 +19,7 @@ class Test():
   article_solr = solr + '/select?q=10.1371%2Fjournal.' + article +  '&wt=json&indent=true'
 
   def test_post_article(self, stack):
-    assert_status(requests.post(rhino + '/articles?bucket=corpus', files={'archive': open('/dockerfiles/tests/test_data/accman/'+ self.article +'.zip', 'rb')}), 201)
+    assert_status(requests.post(rhino + '/articles?bucket=corpus', files={'archive': open('/dockerfiles/tests/test_data/'+ self.article +'.zip', 'rb')}), 201)
 
     req = assert_status(self.article_rhino)
     assert req.json()['ingestions']['1'] == [], req.json()
