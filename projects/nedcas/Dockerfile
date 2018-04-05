@@ -11,11 +11,13 @@ HEALTHCHECK --interval=10s \
   CMD curl -f http://localhost:8080/cas/login || exit 1
 
 COPY run*.sh *.sql $HOME
-COPY ned-cas-*.war $CATALINA_HOME/webapps/cas.war
+COPY *.war $CATALINA_HOME/webapps/cas.war
 
 # TODO: fetch cas.properties from <src>/setup/ so it does not get out of sync
 COPY cas.properties $CATALINA_HOME/conf/
 COPY log4j2.xml $CATALINA_HOME/conf/
 COPY migrations $HOME/migrations
+
+RUN mkdir /etc/cas && ln -s $CATALINA_HOME/conf /etc/cas/config
 
 CMD bash $HOME/run.sh

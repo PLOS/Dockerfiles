@@ -6,6 +6,7 @@ services:
     extends:
       file: common.yml
       service: nedcas
+    image: plos/nedcas:PLT-1620_CAS52-from-scratch
 
   nedapi:
     extends:
